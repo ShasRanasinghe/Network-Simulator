@@ -3,7 +3,7 @@ package network;
 import java.util.*;
 
 /**
- * @author Alex Hoecht(100933730)
+ * @author Alex Hoecht(100933730), Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
  * 
  * Iteration 1: Implementing the Random algorithm
  * 
@@ -18,6 +18,8 @@ import java.util.*;
  * 						up with one of your own imagination (but in either case you need to document it precisely).
  * 		Don’t worry: we don’t expect you to come up with the best possible algorithm; just something
  * 					that might reasonably be better than Random or Flooding.
+ * 
+ * When the algorithms are finished running, the method returns the number of hops to the graph
  *
  */
 public interface RoutingAlgorithms {
@@ -33,53 +35,81 @@ public interface RoutingAlgorithms {
 	 */
 	public default void runAlgorithm(Node source, Node destination, ALGORITHM algorithm) 
 	{
+		// The amount of hops
+		int hopCounter = 0;
+		// If the algorithm is still running
+		boolean running = true;
+		
 		switch(algorithm)
 		{
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// The message will be forwarded to ONE RANDOM neighbor
 			case RANDOM:
 				
-				Random random = new Random();
-				// Select a random edge from the source vertex
-				Edge temp = source.getNeighbor(random.nextInt(source.getNeighborhoodsize()));
-				
-				// The message will be forwarded to the destination of the random edge
-				Node tempD = temp.getDestination();
-				
-				//////////////////////////////////////////////////////////////////////
-				//		INSERT SOURCE VERTEX AND TEMPD INTO TABLE
-				//////////////////////////////////////////////////////////////////////
+				while(running)
+				{
+					// Create a random variable
+					Random random = new Random();
+					
+					// Select a random edge from the source vertex
+					Edge temp = source.getNeighbor(random.nextInt(source.getNeighborhoodsize()));
+					
+					// The message will be forwarded to the destination of the random edge
+					Node nextNode = temp.getDestination();
+					
+					// Hop
+					hopCounter++;
+					
+					//Check if the the next node is the destination
+					if(nextNode == destination)
+					{
+						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
+						//PASS HOP COUNTER TO GRAPH
+						running = false;
+					}
+					else
+					{
+						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
+						// Shift nodes for loop
+						source = nextNode;
+						nextNode = null;
+					}
+					//Loop
+				}
 				
 				// End of case
 				break;
 				
-				
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// The message will be forwarded to ALL neighbors, EXCEPT the one it came from	
 			case FLOODING:
 
-				
-				
 				// End of case
 				break;
 			
-				
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// The message will be forwarded across the shortest path to get to a node(Depth-first)
 			case SHORTESTPATH:
 
-				
-				
 				// End of case
 				break;
 			
-				
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// Undecided on what our own algorithm will be
 			case CUSTOM:
-
-				
-				
+		
 				// End of case
 				break;
 				
 		}
+		
+		//RETURN THE HOP COUNT TO THE GRAPH
+		
+
 		
 	}
 
