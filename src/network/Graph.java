@@ -7,7 +7,7 @@ import java.util.*;
  *
  */
 
-public class Graph 
+public class Graph implements RoutingAlgorithms
 {
 	private HashMap<String, Node> vertices; // hashmap for vertices
 	private HashMap<Integer,Edge> edges; // hashmap for edges
@@ -18,7 +18,10 @@ public class Graph
 
 	public Graph()
 	{
-		this(null);
+		this.vertices = new HashMap<String,Node>();
+		this.edges = new HashMap<Integer, Edge>();
+		this.table = new ArrayList<Table>();
+		this.hops = 0;
 	}
 
 	/**
@@ -141,7 +144,7 @@ public class Graph
 	{
 		for(Table t: table)
 		{
-			System.out.println(t.toString());
+			System.out.println(t.makeString());
 		}
 	}
 	
@@ -238,6 +241,11 @@ public class Graph
 		// add E's to hashmap
 		graph.addEdge("E->A",v5,v1,1);
 		graph.addEdge("E->B",v5,v1,1);
+		
+		graph.runAlgorithm(graph, v1, v5, ALGORITHM.RANDOM); 
+		
+		graph.printTable();
+		
 	}
 	
 	

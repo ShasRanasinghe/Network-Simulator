@@ -17,5 +17,11 @@ public class Table {
 		this.current = c;
 		this.next = n;
 	}
+	
+	public String makeString()
+	{
+		String s = (current.getID() + " -> " + next.getID());
+		return s;
+	}
 
 }
