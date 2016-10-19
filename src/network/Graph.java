@@ -125,7 +125,7 @@ public class Graph implements RoutingAlgorithms
 	 */
 	public Set<Edge> getEdges()
 	{
-		return new HashSet<Edge>(this.edges.values());
+		return new HashSet<Edge>(edges.values());
 	}
 	
 	/**
@@ -156,6 +156,10 @@ public class Graph implements RoutingAlgorithms
 	public void setHops(int i)
 	{
 		hops = i;
+	}
+	public void printHops()
+	{
+		System.out.println(hops);
 	}
 	
 	public static void main(String args[])
@@ -213,38 +217,11 @@ public class Graph implements RoutingAlgorithms
 		
 		
 		Graph graph = new Graph();
-		// add vertices to hasmap
-		graph.addVertex(v1);
-		graph.addVertex(v2);
-		graph.addVertex(v3);
-		graph.addVertex(v4);
-		graph.addVertex(v5);
 		
-		// add A's to hashmap
-		graph.addEdge("A->B",v1,v2,1);
-		graph.addEdge("A->C",v1,v3,1);
-		graph.addEdge("A->E",v1,v5,1);
-		
-		//add B's to hashmap
-		graph.addEdge("B->A",v2,v1,1);
-		graph.addEdge("B->D",v2,v4,1);
-		graph.addEdge("B->E",v2,v5,1);
-		
-		// add C's to hashmap
-		graph.addEdge("C->A",v3,v1,1);
-		graph.addEdge("C->D",v3,v4,1);
-		
-		// add D's to hashmap 
-		graph.addEdge("D->C",v4,v3,1);
-		graph.addEdge("D->B",v4,v2,1);
-		
-		// add E's to hashmap
-		graph.addEdge("E->A",v5,v1,1);
-		graph.addEdge("E->B",v5,v1,1);
-		
-		graph.runAlgorithm(graph, v1, v5, ALGORITHM.RANDOM); 
+		graph.runAlgorithm(graph, v5, v3, ALGORITHM.RANDOM); 
 		
 		graph.printTable();
+		graph.printHops();
 		
 	}
 	

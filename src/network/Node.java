@@ -27,12 +27,12 @@ public class Node
 	public void addNeighbor(Edge edge)
 	{
 		// if the edge object is already in the neighborhood return
-		if(this.thehood.contains(edge))
+		if(thehood.contains(edge))
 		{
 			return;
 		}
 		//otherwise add the edge to the arrayList of neighbors 
-		this.thehood.add(edge);
+		thehood.add(edge);
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class Node
 	 */
 	public boolean containsNeighbor(Edge edge)
 	{
-		return this.thehood.contains(edge);
+		return thehood.contains(edge);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class Node
 	 */
 	public Edge getNeighbor(int index)
 	{
-		return this.thehood.get(index);
+		return thehood.get(index);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class Node
 	 */
 	public Edge removeNeighbor(int index)
 	{
-		return this.thehood.remove(index);
+		return thehood.remove(index);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class Node
 	 */
 	public void removeNeighbor(Edge e)
 	{
-		this.thehood.remove(e);
+		thehood.remove(e);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class Node
 	 */
 	public int getNeighborhoodsize()
 	{
-		return this.thehood.size();
+		return thehood.size();
 	}
 	
 
@@ -87,31 +87,7 @@ public class Node
 	 */
 	public String getID()
 	{
-		return this.id;
-	}
-	// String representation of this vertex
-	public String toString()
-	{
-		return "Vertex " + id;
-	}
-	
-	// return hash code of this vertex id
-	public int hashCode()
-	{
-		return this.id.hashCode();
-	}
-
-
-	public boolean equals(Object vertex)
-	{
-		// if they aren't equal return false
-		if(!(vertex instanceof Node))
-		{
-			return false;
-		}
-		// returns true if they are
-	    Node v = (Node)vertex;
-	    return this.id.equals(v.id);
+		return id;
 	}
 	
 	/**
@@ -119,7 +95,7 @@ public class Node
 	 */
 	public ArrayList<Edge> getNeighbors()
 	{
-		return this.thehood;
+		return thehood;
 	}
 	
 }

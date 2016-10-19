@@ -58,6 +58,7 @@ public interface RoutingAlgorithms {
 					// The message will be forwarded to the destination of the random edge
 					Node nextNode = temp.getDestination();
 					
+					
 					// Hop
 					hopCounter++;
 					
@@ -77,8 +78,9 @@ public interface RoutingAlgorithms {
 						graph.addToTable(source, nextNode);
 						source = nextNode;
 						nextNode = null;
+						temp = null;
 					}
-					//Loop
+				//Loop
 				}
 				
 				// End of case
