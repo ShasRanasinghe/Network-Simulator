@@ -33,7 +33,7 @@ public interface RoutingAlgorithms {
 	 * 			algorithm	-An enum telling the interface which algorithm to run.
 	 * 
 	 */
-	public default void runAlgorithm(Node source, Node destination, ALGORITHM algorithm) 
+	public default void runAlgorithm(Graph graph, Node source, Node destination, ALGORITHM algorithm) 
 	{
 		// The amount of hops
 		int hopCounter = 0;
@@ -66,12 +66,15 @@ public interface RoutingAlgorithms {
 					{
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						//PASS HOP COUNTER TO GRAPH
+						graph.addToTable(source, nextNode);
+						graph.setHops(hopCounter);
 						running = false;
 					}
 					else
 					{
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						// Shift nodes for loop
+						graph.addToTable(source, nextNode);
 						source = nextNode;
 						nextNode = null;
 					}
