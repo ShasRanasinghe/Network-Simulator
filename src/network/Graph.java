@@ -13,7 +13,12 @@ public class Graph implements RoutingAlgorithms
 	private HashMap<Integer,Edge> edges; // hashmap for edges
 	private ArrayList<Table> table;
 	
+	private ArrayList<Message> messageList;
+	
 	private int hops;
+	
+	private int totalHops;
+	private int totalmessages;
 	
 
 	public Graph()
@@ -21,7 +26,11 @@ public class Graph implements RoutingAlgorithms
 		this.vertices = new HashMap<String,Node>();
 		this.edges = new HashMap<Integer, Edge>();
 		this.table = new ArrayList<Table>();
+		
+		this.messageList = new ArrayList<Message>();
 		this.hops = 0;
+		totalHops = 0;
+		totalmessages = 0;
 	}
 
 	/**
@@ -36,13 +45,36 @@ public class Graph implements RoutingAlgorithms
 		this.edges = new HashMap<Integer, Edge>();
 
 		this.table = new ArrayList<Table>();
+		this.messageList = new ArrayList<Message>();
 		
 		this.hops = 0;
+		totalHops = 0;
+		totalmessages = 0;
 		
 		for(Node v: vertices)
 		{
 			this.vertices.put(v.getID(), v);
 		}
+	}
+	
+	
+	public Message getMessage()
+	{
+		return messageList.get(0);
+	}
+	
+	public void createMessage()
+	{
+		Random random = new Random();
+		Node tempS = vertices.get(random.nextInt(vertices.size()));
+		Node tempD = vertices.get(random.nextInt(vertices.size()));
+		while(tempS.equals(tempD))
+		{
+			tempD = vertices.get(random.nextInt(vertices.size()));
+		}
+		Message message = new Message(tempS,tempD);
+		messageList.add(message);
+		
 	}
 	
 	
@@ -218,7 +250,9 @@ public class Graph implements RoutingAlgorithms
 		
 		Graph graph = new Graph();
 		
-		graph.runAlgorithm(graph, v5, v3, ALGORITHM.RANDOM); 
+		int f = 5;
+		
+		graph.runAlgorithm(graph, f, ALGORITHM.RANDOM); 
 		
 		graph.printTable();
 		graph.printHops();

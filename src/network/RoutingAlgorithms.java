@@ -33,12 +33,17 @@ public interface RoutingAlgorithms {
 	 * 			algorithm	-An enum telling the interface which algorithm to run.
 	 * 
 	 */
-	public default void runAlgorithm(Graph graph, Node source, Node destination, ALGORITHM algorithm) 
+	public default void runAlgorithm(Graph graph, int frequency, ALGORITHM algorithm) 
 	{
 		// The amount of hops
 		int hopCounter = 0;
 		// If the algorithm is still running
 		boolean running = true;
+		
+		Message currentMessage = graph.getMessage();
+		
+		Node tempSource = currentMessage.getSource();
+		Node tempDestination = currentMessage.getDestination();
 		
 		switch(algorithm)
 		{
@@ -53,7 +58,7 @@ public interface RoutingAlgorithms {
 					Random random = new Random();
 					
 					// Select a random edge from the source vertex
-					Edge temp = source.getNeighbor(random.nextInt(source.getNeighborhoodsize()));
+					Edge temp = tempSource.getNeighbor(random.nextInt(tempSource.getNeighborhoodsize()));
 					
 					// The message will be forwarded to the destination of the random edge
 					Node nextNode = temp.getDestination();
@@ -63,20 +68,24 @@ public interface RoutingAlgorithms {
 					hopCounter++;
 					
 					//Check if the the next node is the destination
-					if(nextNode == destination)
+					if(nextNode == tempDestination)
 					{
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						//PASS HOP COUNTER TO GRAPH
-						graph.addToTable(source, nextNode);
+						graph.addToTable(tempSource, nextNode);
 						graph.setHops(hopCounter);
 						running = false;
 					}
 					else
 					{
+						if(hopCounter == frequency)
+						{
+							graph.createMessage();
+						}	
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						// Shift nodes for loop
-						graph.addToTable(source, nextNode);
-						source = nextNode;
+						graph.addToTable(tempSource, nextNode);
+						tempSource = nextNode;
 						nextNode = null;
 						temp = null;
 					}

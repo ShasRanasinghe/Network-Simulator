@@ -20,6 +20,10 @@ public class Edge implements Comparable<Edge>
         this.source = s;
         this.destination = d;
         this.weight = weight;
+        
+        
+        
+        
 	}
 	
 	/**
