@@ -40,11 +40,11 @@ public class Controller {
 			inputLine = inputLine(in.nextLine());
 			if(inputLine.equals("Y")){
 				testing = true;
-				System.out.println("You have chosen default mode");
+				System.out.println("You have chosen default mode\n");
 				break;
 			}else if(inputLine.equals("N")){
 				testing = false;
-				System.out.println("You have chosen use defined mode");
+				System.out.println("You have chosen use defined mode\n");
 				break;
 			}//if input is invalid, ask again
 		}
