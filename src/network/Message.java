@@ -12,9 +12,12 @@ public class Message {
 	private Node source;
 	private Node destination;
 	
+	private int hopCount;
+
 	public Message(Node source, Node destination){
 		this.source = source;
 		this.destination = destination;
+		this.hopCount = 0;
 	}
 
 	/**
@@ -44,5 +47,23 @@ public class Message {
 	public void setDestination(Node destination) {
 		this.destination = destination;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getHopCount() {
+		return hopCount;
+	}
+
+	/**
+	 * 
+	 * @param hopCount
+	 */
+	public void setHopCount(int hopCount) {
+		this.hopCount = hopCount;
+	}
+	
+	
 	
 }

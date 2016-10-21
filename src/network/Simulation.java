@@ -130,9 +130,11 @@ public class Simulation {
 		ArrayList<Node> nodes = simulation.createNodes(nodeIDs);
 		//Handle the edges
 		Graph graph = simulation.createGraph(nodes, edgeIDs);
+		
+		graph.createMessage();
 
 		//Algorithm  runs
-		graph.runAlgorithm(graph, frequency, ALGORITHM.RANDOM);
+		graph.runAlgorithm(frequency, ALGORITHM.RANDOM);
 
 		//Metrics
 		int totalMessages = graph.getTotalMessages();
@@ -146,7 +148,7 @@ public class Simulation {
 
 		//Print metrics
 		controller.printMetrics(simulation.getPackets(), simulation.getAverageHops());
-		System.out.println(totalMessages);
-		graph.printTable();
+		System.out.println("total number of messages created: " + totalMessages);
+		//graph.printTable();
 	}
 }

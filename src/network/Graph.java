@@ -58,6 +58,17 @@ public class Graph implements RoutingAlgorithms
 	}
 	
 	
+	public void removeMessage(Message m)
+	{
+		for(int i = 0; i<messageList.size(); i++)
+		{
+			if(messageList.get(i).equals(m))
+			{
+				messageList.remove(i);
+			}
+		}
+	}
+	
 	/**
 	 * @return a message at index 0
 	 */
@@ -71,7 +82,7 @@ public class Graph implements RoutingAlgorithms
 	/**
 	 * Generates a random message to be injected into the network 
 	 */
-	public void createMessage()
+	public Message createMessage()
 	{
 		Random random = new Random();
 		Node tempS = vertices.get(random.nextInt(vertices.size()));
@@ -84,7 +95,7 @@ public class Graph implements RoutingAlgorithms
 		messageList.add(message);
 		
 		totalmessages++;
-		
+		return message;
 	}
 	
 	/**
@@ -114,16 +125,17 @@ public class Graph implements RoutingAlgorithms
 	 * 
 	 * @param i - A passed int from the algorithm that counted how many
 	 * hops took place.
-	 */
+	 
 	public void setHops(int i)
 	{
 		hops = i;
 		totalHops = totalHops + hops;
 	}
+	*/
 	
 	/**
 	 * Prints out the number of hops
-	 */
+	 
 	public void printHops()
 	{
 		System.out.println(hops);
@@ -133,9 +145,14 @@ public class Graph implements RoutingAlgorithms
 	{
 		return hops;
 	}
+	*/
 	public int getTotalHops()
 	{
 		return totalHops;
+	}
+	public void setTotalHops(int i)
+	{
+		totalHops =+ i;
 	}
 	
 	/**
