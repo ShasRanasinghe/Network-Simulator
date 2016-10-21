@@ -1,5 +1,7 @@
 package network;
+
 import java.util.*;
+
 /**
  * 
  * This class creates a simulation of the Network
@@ -125,7 +127,7 @@ public class Simulation {
 		edgeIDs = controller.getEdges();
 
 		//Handle the nodes
-		ArrayList<Node> nodes = simulation.createNodes(nodes);
+		ArrayList<Node> nodes = simulation.createNodes(nodeIDs);
 		//Handle the edges
 		Graph graph = simulation.createGraph(nodes, edgeIDs);
 
@@ -133,8 +135,10 @@ public class Simulation {
 		graph.runAlgorithm(graph, frequency, ALGORITHM.RANDOM);
 
 		//Metrics
-		int totalMessages = graph.getMessageList().size();
-		int totalHops = graph.getHops();
+		int totalMessages = graph.getTotalMessages();
+		
+		//IS THIS THE TOTAL FOR EACH MESSAGE OR IS IT THE RUNNING TOTAL???
+		int totalHops = graph.getTotalHops();
 
 		//Set simulation metrics
 		simulation.setPackets(totalHops);
@@ -142,5 +146,7 @@ public class Simulation {
 
 		//Print metrics
 		controller.printMetrics(simulation.getPackets(), simulation.getAverageHops());
+		System.out.println(totalMessages);
+		graph.printTable();
 	}
 }

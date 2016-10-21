@@ -3,47 +3,47 @@ package network;
 import java.util.*;
 
 /**
- * @author Andrew
- *
+ * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @version 1.0
+ * 
+ * Graph implements the "Network" consisting of Nodes that are linked together by edges
  */
 
 public class Graph implements RoutingAlgorithms
 {
-	private HashMap<String, Node> vertices; // hashmap for vertices
-	private HashMap<Integer,Edge> edges; // hashmap for edges
-	private ArrayList<Table> table;
 	
-	private ArrayList<Message> messageList;
+	private ArrayList<Node> vertices; // ArrayList of Nodes for testing purposes
+	private ArrayList<Table> table; // Table used to record the route
+	private ArrayList<Message> messageList; // Messages
 	
-	private int hops;
+	private int hops; //counter
+	private int totalHops; // total amount of hops
+	private int totalmessages; // total amount of messages
 	
-	private int totalHops;
-	private int totalmessages;
 	
-
+	/**
+	 *Graph constructor creates a network
+	 */
 	public Graph()
 	{
-		this.vertices = new HashMap<String,Node>();
-		this.edges = new HashMap<Integer, Edge>();
+
 		this.table = new ArrayList<Table>();
-		
+		this.vertices = new ArrayList<Node>();
 		this.messageList = new ArrayList<Message>();
 		this.hops = 0;
 		totalHops = 0;
 		totalmessages = 0;
+		
+		
 	}
 
 	/**
 	 * @param vertices
-	 * Graph constructor accepts an ArrayList<Vertex> and populates the HashMap
-	 * If multiple Vertex's have the same ID
-	 * The last Vertex with the ID is used
+	 * Graph constructor accepts an ArrayList<Node> to create the network
 	 */
 	public Graph(ArrayList<Node> vertices)
 	{
-		this.vertices = new HashMap<String,Node>();
-		this.edges = new HashMap<Integer, Edge>();
-
+		this.vertices = new ArrayList<Node>();
 		this.table = new ArrayList<Table>();
 		this.messageList = new ArrayList<Message>();
 		
@@ -53,16 +53,24 @@ public class Graph implements RoutingAlgorithms
 		
 		for(Node v: vertices)
 		{
-			this.vertices.put(v.getID(), v);
+			this.vertices.add(v);
 		}
 	}
 	
 	
+	/**
+	 * @return a message at index 0
+	 */
 	public Message getMessage()
 	{
-		return messageList.get(0);
+		Message temp = messageList.get(0);
+		messageList.remove(0);
+		return temp;
 	}
 	
+	/**
+	 * Generates a random message to be injected into the network 
+	 */
 	public void createMessage()
 	{
 		Random random = new Random();
@@ -75,89 +83,8 @@ public class Graph implements RoutingAlgorithms
 		Message message = new Message(tempS,tempD);
 		messageList.add(message);
 		
-	}
-	
-	
-	/**
-	 * @param id edge id
-	 * @param source vertex source
-	 * @param destination vertex
-	 * @param weight of edge
-	 * Passses two vertices and creates an edge if no edge already exists
-	 * @return
-	 */
-	public boolean addEdge(String id, Node source, Node destination, int weight)
-	{
+		totalmessages++;
 		
-		if(source.equals(destination))
-		{
-			return false;
-		}
-		Edge e = new Edge(id ,source, destination, weight);
-		if(edges.containsKey(e.hashCode()))
-		{
-			return false;
-		}
-		else if(source.containsNeighbor(e) || destination.containsNeighbor(e))
-		{
-			return false;
-		}
-		
-		edges.put(e.hashCode(), e);
-		source.addNeighbor(e);
-		destination.addNeighbor(e);
-		
-		return true;
-		
-		
-	}
-	
-	/**
-	 * @param e
-	 * @return true if the edge exists
-	 */
-	public boolean containsEdge(Edge e)
-	{
-		if(e.getSource() == null || e.getDestination() == null)
-		{
-			return false;
-		}
-		return this.edges.containsKey(e.hashCode());
-	}
-	
-	/**
-	 * @param id
-	 * @return the vertex with the specified id
-	 */
-	public Node getVertex(String id)
-	{
-		return vertices.get(id);
-	}
-	
-	
-	/**
-	 * @param vertex
-	 * adds a vertex to vertices
-	 */
-	public void addVertex(Node vertex)
-	{
-		vertices.put(vertex.getID(), vertex);
-	}
-	
-	/**
-	 * @return the id's of the vertex objects
-	 */
-	public Set<String> vertexKeys()
-	{
-		return this.vertices.keySet();
-	}
-	
-	/**
-	 * @return the edges of the graph
-	 */
-	public Set<Edge> getEdges()
-	{
-		return new HashSet<Edge>(edges.values());
 	}
 	
 	/**
@@ -172,6 +99,9 @@ public class Graph implements RoutingAlgorithms
 		table.add(currentHop);
 	}
 	
+	/**
+	 * Prints the table of the route for testing purposes and MILESTONE 1 
+	 */
 	public void printTable()
 	{
 		for(Table t: table)
@@ -188,77 +118,47 @@ public class Graph implements RoutingAlgorithms
 	public void setHops(int i)
 	{
 		hops = i;
+		totalHops = totalHops + hops;
 	}
+	
+	/**
+	 * Prints out the number of hops
+	 */
 	public void printHops()
 	{
 		System.out.println(hops);
 	}
 	
-	public static void main(String args[])
+	public int getHops()
 	{
-		// Vertex's
-		Node v1 = new Node("A");
-		Node v2 = new Node("B");
-		Node v3 = new Node("C");
-		Node v4 = new Node("D");
-		Node v5 = new Node("E");
-		
-		// A
-		Edge ea1 = new Edge("A->B",v1,v2,1);
-		Edge ea2 = new Edge("A->C",v1,v3,1);
-		Edge ea3 = new Edge("A->E",v1,v5,1);
-		
-		//adding routes
-		v1.addNeighbor(ea1);
-		v1.addNeighbor(ea2);
-		v1.addNeighbor(ea3);
-		
-		//B
-		Edge eb1 = new Edge("B->A",v2,v1,1);
-		Edge eb2 = new Edge("B->D",v2,v4,1);
-		Edge eb3 = new Edge("B->E",v2,v5,1);
-		 
-		//adding routes
-		v2.addNeighbor(eb1);
-		v2.addNeighbor(eb2);
-		v2.addNeighbor(eb3);
-		
-		//C 
-		Edge ec1 = new Edge("C->A",v3,v1,1);
-		Edge ec2 = new Edge("C->D",v3,v4,1);
-		
-		// adding routes
-		v3.addNeighbor(ec1);
-		v3.addNeighbor(ec2);
-		
-		//D
-		Edge ed1 = new Edge("D->C",v4,v3,1);
-		Edge ed2 = new Edge("D->B",v4,v2,1);
-		
-		// adding routes 
-		v4.addNeighbor(ed1);
-		v4.addNeighbor(ed2);
-		
-		//E
-		Edge ee1 = new Edge("E->A",v5,v1,1);
-		Edge ee2 = new Edge("E->B",v5,v1,1);
-		
-		//adding routes
-		v5.addNeighbor(ee1);
-		v5.addNeighbor(ee2);
-		
-		
-		Graph graph = new Graph();
-		
-		int f = 5;
-		
-		graph.runAlgorithm(graph, f, ALGORITHM.RANDOM); 
-		
-		graph.printTable();
-		graph.printHops();
-		
+		return hops;
+	}
+	public int getTotalHops()
+	{
+		return totalHops;
 	}
 	
+	/**
+	 * @param A Node 
+	 * @param B Node
+	 * Creates a link between the two nodes. IE adds an edge to each nodes "hood" (ArrayList)
+	 */
+	public void createLink(Node A, Node B)
+	{
+		Edge e = new Edge(A.getID() + "->" + B.getID(),A,B);
+		Edge e2 = new Edge(B.getID() + "->" + A.getID(),B,A);
+		A.addNeighbor(e);
+		B.addNeighbor(e2);
+	}
 	
+	public ArrayList<Message> getMessageList()
+	{
+		return messageList;
+	}
+	
+	public int getTotalMessages()
+	{
+		return totalmessages;
+	}
 
 }

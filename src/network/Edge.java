@@ -1,38 +1,31 @@
 package network;
-
-public class Edge implements Comparable<Edge>
+/**
+ * 
+ * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @version 1.0
+ * 
+ * Class Edge implements a "Link" between two nodes consisting of a source and destination
+ */
+public class Edge 
 {
 	private String id; // String id for an edge
-	private Node source; // Vertex source for edge
-	private Node destination; // Vertex destination for edge
-	private int weight; // used to determine shortest path
+	private Node source; // Node source for edge
+	private Node destination; // Node destination for edge
 	
 	/**
 	 * @param id
 	 * @param source
 	 * @param destination
-	 * @param weight
-	 * Creates an Edge with a String ID, a Vector object source a Vector object destination and the weight of the edge
+	 * Creates an Edge with a String ID, a Node object source a Node object destination 
 	 */
-	public Edge(String id, Node s, Node d, int weight)
+	public Edge(String id, Node s, Node d)
 	{
 		this.id = id ;
         this.source = s;
         this.destination = d;
-        this.weight = weight;
-        
-        
-        
-        
+  
 	}
 	
-	/**
-	 * @return returns the weight of the current weight
-	 */
-	public int getWeight()
-	{
-		return weight;
-	}
 	
 	/**
 	 * @return the source Vertex
@@ -50,12 +43,6 @@ public class Edge implements Comparable<Edge>
 		return destination;
 	}
 	
-	// compareTo overwrites the Comparable interface
 
-	public int compareTo(Edge edge)
-	{
-		return this.weight - edge.weight;
-	}
-	
 
 }

@@ -3,7 +3,8 @@ package network;
 import java.util.*;
 
 /**
- * @author Alex Hoecht(100933730), Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @version 1.0
  * 
  * Iteration 1: Implementing the Random algorithm
  * 
@@ -40,11 +41,12 @@ public interface RoutingAlgorithms {
 		// If the algorithm is still running
 		boolean running = true;
 		
+		// Create the starting message
+		graph.createMessage();
 		Message currentMessage = graph.getMessage();
-		
 		Node tempSource = currentMessage.getSource();
 		Node tempDestination = currentMessage.getDestination();
-		
+	
 		switch(algorithm)
 		{
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,21 +75,33 @@ public interface RoutingAlgorithms {
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						//PASS HOP COUNTER TO GRAPH
 						graph.addToTable(tempSource, nextNode);
+						
 						graph.setHops(hopCounter);
-						running = false;
+						
+						if(graph.getMessageList().size() != 0)
+						{
+							currentMessage = graph.getMessage();
+						}
+						else
+						{
+							running = false;
+						}
+						
 					}
 					else
 					{
-						if(hopCounter == frequency)
-						{
-							graph.createMessage();
-						}	
+							
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						// Shift nodes for loop
 						graph.addToTable(tempSource, nextNode);
 						tempSource = nextNode;
 						nextNode = null;
 						temp = null;
+						
+						if(hopCounter == frequency)
+						{
+								graph.createMessage();	
+						}
 					}
 				//Loop
 				}
