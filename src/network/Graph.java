@@ -82,7 +82,7 @@ public class Graph implements RoutingAlgorithms
 	/**
 	 * Generates a random message to be injected into the network 
 	 */
-	public Message createMessage()
+	public void createMessage()
 	{
 		Random random = new Random();
 		Node tempS = vertices.get(random.nextInt(vertices.size()));
@@ -95,7 +95,7 @@ public class Graph implements RoutingAlgorithms
 		messageList.add(message);
 		
 		totalmessages++;
-		return message;
+		//return message;
 	}
 	
 	/**

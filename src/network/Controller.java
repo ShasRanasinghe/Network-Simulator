@@ -47,6 +47,7 @@ public class Controller {
 		
 		System.out.print("Enter user-settable rate: ");
 		inputLine = inputLine(in.nextLine());
+		if(Integer.parseInt(inputLine)<=4) System.out.println("Beware this might take an infinite amount of time");
 		frequency = Integer.parseInt(inputLine);
 	}
 
@@ -168,6 +169,22 @@ public class Controller {
 	 */
 	public void printMessage(String msg, String startNode, String endNode, int hops){
 		System.out.println(msg + " = " + startNode + " -> " + endNode + " | " + "Average Hops: " + hops);
+	}
+	
+	/**
+	 * @param packets
+	 * 
+	 * Print out the total number of packets
+	 */
+	public void printTotalPackets(int packets){
+		System.out.println("Total number of Packets: " + packets);
+	}
+	
+	/**
+	 * Shows the user the algorithm is running
+	 */
+	public void runAlgorithm(){
+		System.out.println("Running Algorithm....\n");
 	}
 	
 	/**

@@ -38,16 +38,11 @@ public interface RoutingAlgorithms {
 	{
 		Graph graph = (Graph) this;
 		
-		ArrayList<Message> tempMessages = graph.getMessageList();
-		
-		Node tempSource = new Node(null);
-		Node tempDestination = new Node(null);
+		ArrayList<Message> tempMessages = new ArrayList<>();
 		// The amount of hops
 		int hopCounter = 0;
-		int fCounter = 0;
 		// If the algorithm is still running
 		boolean running = true;
-		boolean start = true;
 	
 		switch(algorithm)
 		{
@@ -58,50 +53,39 @@ public interface RoutingAlgorithms {
 				
 				while(running)
 				{
-					tempMessages = graph.getMessageList();
+					tempMessages.clear();
+					tempMessages.addAll(graph.getMessageList());
 					for(int i=0;i<tempMessages.size();i++)
 					{
 						Message message = tempMessages.get(i);
-						// If the node is starting
-						if(start)
-						{
-							// Create the starting message
-							tempSource = message.getSource();
-							tempDestination = message.getDestination();
-							start = false;
-						}
 						// Create a random variable
 						Random random = new Random();
 						
 						// Select a random edge from the source vertex
-						Edge temp = tempSource.getNeighbor(random.nextInt(tempSource.getNeighborhoodsize()));
+						Edge temp = message.getSource().getNeighbor(random.nextInt(message.getSource().getNeighborhoodsize()));
 						
 						// The message will be forwarded to the destination of the random edge
 						Node nextNode = temp.getDestination();
 						
-						
 						// Hop
 						hopCounter++;
-						fCounter++;
+						message.setHopCount(message.getHopCount()+1);
 						
-						if(fCounter == frequency)
+						if(message.getHopCount() == frequency)
 						{
 								graph.createMessage();
-								start = true;
-								fCounter = 0;
+								message.setHopCount(0);
 						}
 						
 						//Check if the the next node is the destination
-						if(nextNode == tempDestination)
+						if(nextNode == message.getDestination())
 						{
 							//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 							//PASS HOP COUNTER TO GRAPH
-							//graph.addToTable(tempSource, nextNode);
-							message.setHopCount(hopCounter);
 							graph.setTotalHops(hopCounter);
 							graph.removeMessage(message);
 							
-							if(tempMessages.size() == 0)
+							if(graph.getMessageList().size() == 0)
 							{
 								running = false;
 								break;
@@ -113,9 +97,7 @@ public interface RoutingAlgorithms {
 							//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 							// Shift nodes for loop
 							//graph.addToTable(tempSource, nextNode);
-							tempSource = nextNode;
-							nextNode = null;
-							temp = null;
+							message.setSource(nextNode);
 						}
 					}
 				//Loop
