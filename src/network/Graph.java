@@ -58,6 +58,9 @@ public class Graph implements RoutingAlgorithms
 	}
 	
 	
+	/**
+	 * @param message, the message to be removed from the List of messages
+	 */
 	public void removeMessage(Message m)
 	{
 		for(int i = 0; i<messageList.size(); i++)
@@ -120,36 +123,18 @@ public class Graph implements RoutingAlgorithms
 			System.out.println(t.makeString());
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param i - A passed int from the algorithm that counted how many
-	 * hops took place.
-	 
-	public void setHops(int i)
-	{
-		hops = i;
-		totalHops = totalHops + hops;
-	}
-	*/
-	
-	/**
-	 * Prints out the number of hops
-	 
-	public void printHops()
-	{
-		System.out.println(hops);
-	}
-	
-	public int getHops()
-	{
-		return hops;
-	}
-	*/
+	 * @return the total number of hops
+	 */
 	public int getTotalHops()
 	{
 		return totalHops;
 	}
+	
+	/**
+	 * @param i increment the total hops
+	 */
 	public void setTotalHops(int i)
 	{
 		totalHops =+ i;
@@ -168,11 +153,17 @@ public class Graph implements RoutingAlgorithms
 		B.addNeighbor(e2);
 	}
 	
+	/**
+	 * @return the message arrayList
+	 */
 	public ArrayList<Message> getMessageList()
 	{
 		return messageList;
 	}
 	
+	/**
+	 * @return the total amount of messages
+	 */
 	public int getTotalMessages()
 	{
 		return totalmessages;
