@@ -58,6 +58,7 @@ public interface RoutingAlgorithms {
 				
 				while(running)
 				{
+					tempMessages = graph.getMessageList();
 					for(Message message: tempMessages)
 					{
 						// If the node is starting
@@ -84,7 +85,7 @@ public interface RoutingAlgorithms {
 						
 						if(fCounter == frequency)
 						{
-								tempMessages.add(graph.createMessage());
+								graph.createMessage();
 								start = true;
 								fCounter = 0;
 						}
