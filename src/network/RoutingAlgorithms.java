@@ -38,6 +38,7 @@ public interface RoutingAlgorithms {
 	{
 		// The amount of hops
 		int hopCounter = 0;
+		int fCounter = 0;
 		// If the algorithm is still running
 		boolean running = true;
 		
@@ -68,10 +69,12 @@ public interface RoutingAlgorithms {
 					
 					// Hop
 					hopCounter++;
+					fCounter++;
 					
-					if(hopCounter == frequency)
+					if(fCounter == frequency)
 					{
-							graph.createMessage();	
+							graph.createMessage();
+							fCounter = 0;
 					}
 					
 					//Check if the the next node is the destination
@@ -80,7 +83,6 @@ public interface RoutingAlgorithms {
 						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
 						//PASS HOP COUNTER TO GRAPH
 						graph.addToTable(tempSource, nextNode);
-						
 						graph.setHops(hopCounter);
 						
 						if(graph.getMessageList().size() != 0)
