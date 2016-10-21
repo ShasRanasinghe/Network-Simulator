@@ -22,6 +22,7 @@ public class Controller {
 	private ArrayList<String> links;
 	
 	private int frequency;
+	private boolean testing;
 	
 	/**
 	 * The constructor initializes the lists and scanner needed for the controller
@@ -30,6 +31,23 @@ public class Controller {
 		in = new Scanner(System.in);
 		nodes = new ArrayList<String>();
 		links = new ArrayList<String>();
+		
+		//request use to use the default graph
+		for(;;){
+			//request user for verbose or quiet mode
+			System.out.print("Would you like to use the default network shown in the project specification"
+					+ "with a user-settable rate of 5? (Y/N)");
+			inputLine = inputLine(in.nextLine());
+			if(inputLine.equals("Y")){
+				testing = true;
+				System.out.println("You have chosen default mode");
+				break;
+			}else if(inputLine.equals("N")){
+				testing = false;
+				System.out.println("You have chosen use defined mode");
+				break;
+			}//if input is invalid, ask again
+		}
 	}
 	
 	/**
@@ -161,6 +179,10 @@ public class Controller {
 		return links;
 	}
 	
+	public boolean isTesting() {
+		return testing;
+	}
+
 	/**
 	 * @param msg The message being sent
 	 * @param startNode The node where the message started

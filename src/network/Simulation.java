@@ -111,8 +111,6 @@ public class Simulation {
 	}
 	
 	public static void main(String[] args) {
-		//Internal Testing flag
-		boolean testFlag = true;
 		
 		//Initialize Simulation
 		Simulation simulation = new Simulation();
@@ -123,7 +121,7 @@ public class Simulation {
 		//Initialize Controller
 		Controller controller = new Controller();
 		
-		if(!testFlag){
+		if(!controller.isTesting()){
 			//Get user input from controller
 			controller.start();
 			frequency = controller.getFrequency();
@@ -132,8 +130,8 @@ public class Simulation {
 		}
 		
 		//Used to test network
-		if(testFlag){
-			frequency = 2;
+		if(controller.isTesting()){
+			frequency = 5;
 			nodeIDs.add("A");nodeIDs.add("B");nodeIDs.add("C");nodeIDs.add("D");nodeIDs.add("E");
 			edgeIDs.add("A->B");edgeIDs.add("A->C");edgeIDs.add("A->E");edgeIDs.add("C->D");edgeIDs.add("D->B");
 			edgeIDs.add("B->E");
@@ -147,6 +145,7 @@ public class Simulation {
 		graph.createMessage();
 
 		//Algorithm  runs
+		controller.runAlgorithm();
 		graph.runAlgorithm(frequency, ALGORITHM.RANDOM);
 
 		//Metrics
@@ -160,7 +159,7 @@ public class Simulation {
 		simulation.setAverageHops(totalHops/totalMessages);
 
 		//Print metrics
-		controller.printMetrics(simulation.getPackets(), simulation.getAverageHops());
+		controller.printTotalPackets(simulation.getPackets());
 		System.out.println("total number of messages created: " + totalMessages);
 		//graph.printTable();
 	}
