@@ -121,11 +121,16 @@ public class Simulation {
 		Controller controller = new Controller();
 
 		//Get user input from controller
-		controller.start();
-		frequency = controller.getFrequency();
-		nodeIDs = controller.getNodes();
-		edgeIDs = controller.getEdges();
+		//controller.start();
+		//frequency = controller.getFrequency();
+		//nodeIDs = controller.getNodes();
+		//edgeIDs = controller.getEdges();
 
+		frequency = 3;
+		nodeIDs.add("A");nodeIDs.add("B");nodeIDs.add("C");nodeIDs.add("D");nodeIDs.add("E");
+		edgeIDs.add("A->B");edgeIDs.add("A->C");edgeIDs.add("A->E");edgeIDs.add("C->D");edgeIDs.add("D->B");
+		edgeIDs.add("B->E");
+		
 		//Handle the nodes
 		ArrayList<Node> nodes = simulation.createNodes(nodeIDs);
 		//Handle the edges
