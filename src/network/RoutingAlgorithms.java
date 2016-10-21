@@ -69,6 +69,11 @@ public interface RoutingAlgorithms {
 					// Hop
 					hopCounter++;
 					
+					if(hopCounter == frequency)
+					{
+							graph.createMessage();	
+					}
+					
 					//Check if the the next node is the destination
 					if(nextNode == tempDestination)
 					{
@@ -97,11 +102,6 @@ public interface RoutingAlgorithms {
 						tempSource = nextNode;
 						nextNode = null;
 						temp = null;
-						
-						if(hopCounter == frequency)
-						{
-								graph.createMessage();	
-						}
 					}
 				//Loop
 				}
