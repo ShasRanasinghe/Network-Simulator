@@ -3,7 +3,8 @@ package network;
 import java.util.*;
 
 /**
- * @author Alex Hoecht(100933730), Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @version 1.0
  * 
  * Iteration 1: Implementing the Random algorithm
  * 
@@ -33,13 +34,16 @@ public interface RoutingAlgorithms {
 	 * 			algorithm	-An enum telling the interface which algorithm to run.
 	 * 
 	 */
-	public default void runAlgorithm(Graph graph, Node source, Node destination, ALGORITHM algorithm) 
+	public default void runAlgorithm(int frequency, ALGORITHM algorithm) 
 	{
+		Graph graph = (Graph) this;
+		
+		ArrayList<Message> tempMessages = new ArrayList<>();
 		// The amount of hops
 		int hopCounter = 0;
 		// If the algorithm is still running
 		boolean running = true;
-		
+	
 		switch(algorithm)
 		{
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,36 +53,52 @@ public interface RoutingAlgorithms {
 				
 				while(running)
 				{
-					// Create a random variable
-					Random random = new Random();
-					
-					// Select a random edge from the source vertex
-					Edge temp = source.getNeighbor(random.nextInt(source.getNeighborhoodsize()));
-					
-					// The message will be forwarded to the destination of the random edge
-					Node nextNode = temp.getDestination();
-					
-					
-					// Hop
-					hopCounter++;
-					
-					//Check if the the next node is the destination
-					if(nextNode == destination)
+					tempMessages.clear();
+					tempMessages.addAll(graph.getMessageList());
+					for(int i=0;i<tempMessages.size();i++)
 					{
-						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
-						//PASS HOP COUNTER TO GRAPH
-						graph.addToTable(source, nextNode);
-						graph.setHops(hopCounter);
-						running = false;
-					}
-					else
-					{
-						//PLACE SOURCE NODE AND NEXTNODE IN TABLE
-						// Shift nodes for loop
-						graph.addToTable(source, nextNode);
-						source = nextNode;
-						nextNode = null;
-						temp = null;
+						Message message = tempMessages.get(i);
+						// Create a random variable
+						Random random = new Random();
+						
+						// Select a random edge from the source vertex
+						Edge temp = message.getSource().getNeighbor(random.nextInt(message.getSource().getNeighborhoodsize()));
+						
+						// The message will be forwarded to the destination of the random edge
+						Node nextNode = temp.getDestination();
+						
+						// Hop
+						hopCounter++;
+						message.setHopCount(message.getHopCount()+1);
+						
+						if(message.getHopCount() == frequency)
+						{
+								graph.createMessage();
+								message.setHopCount(0);
+						}
+						
+						//Check if the the next node is the destination
+						if(nextNode == message.getDestination())
+						{
+							//PLACE SOURCE NODE AND NEXTNODE IN TABLE
+							//PASS HOP COUNTER TO GRAPH
+							graph.setTotalHops(hopCounter);
+							graph.removeMessage(message);
+							
+							if(graph.getMessageList().size() == 0)
+							{
+								running = false;
+								break;
+							}
+							
+						}
+						else
+						{	
+							//PLACE SOURCE NODE AND NEXTNODE IN TABLE
+							// Shift nodes for loop
+							//graph.addToTable(tempSource, nextNode);
+							message.setSource(nextNode);
+						}
 					}
 				//Loop
 				}

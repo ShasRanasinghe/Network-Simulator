@@ -2,17 +2,24 @@ package network;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
+ * @version 1.0
+ * 
+ * Class Node implements a possible routing location and contains a List of possible neighbors that may be "visited"
+ */
 
 public class Node 
 {
 	
 	private ArrayList<Edge> thehood; // an ArrayList of routes
-	public String id; // the "ID" for the vertex
+	private String id; // the "ID" for the vertex
 	
 	
 	
 	/**
-	 * @param id Creates a Vertex with a String id
+	 * @param id Creates a Vertex with a String id initialize an arraylist of edges(Neighbors)
 	 */
 	public Node(String id)
 	{
@@ -55,15 +62,6 @@ public class Node
 		return thehood.get(index);
 	}
 	
-	/**
-	 * @param index
-	 * remove neighbor at specific index
-	 * @return
-	 */
-	public Edge removeNeighbor(int index)
-	{
-		return thehood.remove(index);
-	}
 	
 	/**
 	 * @param e remove a specified edge

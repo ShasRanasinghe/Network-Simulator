@@ -9,12 +9,20 @@ package network;
 
 public class Message {
 	
-	private Node source;
-	private Node destination;
+	private Node source; // source node
+	private Node destination; // destination node
 	
+	private int hopCount; // hop count for message
+
+	/**
+	 * @param source node
+	 * @param destination node
+	 * creates a message to be injected into the network 
+	 */
 	public Message(Node source, Node destination){
 		this.source = source;
 		this.destination = destination;
+		this.hopCount = 0;
 	}
 
 	/**
@@ -44,5 +52,23 @@ public class Message {
 	public void setDestination(Node destination) {
 		this.destination = destination;
 	}
+	
+	/**
+	 * 
+	 * @return the hop count of the message
+	 */
+	public int getHopCount() {
+		return hopCount;
+	}
+
+	/**
+	 * 
+	 * @param hopCount  set the hopCount 
+	 */
+	public void setHopCount(int hopCount) {
+		this.hopCount = hopCount;
+	}
+	
+	
 	
 }
