@@ -35,8 +35,8 @@ public class Controller {
 		//request use to use the default graph
 		for(;;){
 			//request user for verbose or quiet mode
-			System.out.print("Would you like to use the default network shown in the project specification"
-					+ "with a user-settable rate of 5? (Y/N)");
+			System.out.print("Would you like to use the default network shown in the project specification \n"
+					+ "with a user-settable rate of 5?(Y/N): ");
 			inputLine = inputLine(in.nextLine());
 			if(inputLine.equals("Y")){
 				testing = true;

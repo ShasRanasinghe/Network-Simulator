@@ -16,7 +16,6 @@ public class Graph implements RoutingAlgorithms
 	private ArrayList<Table> table; // Table used to record the route
 	private ArrayList<Message> messageList; // Messages
 	
-	private int hops; //counter
 	private int totalHops; // total amount of hops
 	private int totalmessages; // total amount of messages
 	
@@ -30,7 +29,6 @@ public class Graph implements RoutingAlgorithms
 		this.table = new ArrayList<Table>();
 		this.vertices = new ArrayList<Node>();
 		this.messageList = new ArrayList<Message>();
-		this.hops = 0;
 		totalHops = 0;
 		totalmessages = 0;
 		
@@ -47,7 +45,6 @@ public class Graph implements RoutingAlgorithms
 		this.table = new ArrayList<Table>();
 		this.messageList = new ArrayList<Message>();
 		
-		this.hops = 0;
 		totalHops = 0;
 		totalmessages = 0;
 		

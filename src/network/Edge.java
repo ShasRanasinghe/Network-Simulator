@@ -42,6 +42,16 @@ public class Edge
 	{
 		return destination;
 	}
+
+
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 
 
