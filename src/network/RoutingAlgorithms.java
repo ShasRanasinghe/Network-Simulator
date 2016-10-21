@@ -59,8 +59,9 @@ public interface RoutingAlgorithms {
 				while(running)
 				{
 					tempMessages = graph.getMessageList();
-					for(Message message: tempMessages)
+					for(int i=0;i<tempMessages.size();i++)
 					{
+						Message message = tempMessages.get(i);
 						// If the node is starting
 						if(start)
 						{

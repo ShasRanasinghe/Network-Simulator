@@ -133,7 +133,7 @@ public class Simulation {
 		
 		//Used to test network
 		if(testFlag){
-			frequency = 3;
+			frequency = 2;
 			nodeIDs.add("A");nodeIDs.add("B");nodeIDs.add("C");nodeIDs.add("D");nodeIDs.add("E");
 			edgeIDs.add("A->B");edgeIDs.add("A->C");edgeIDs.add("A->E");edgeIDs.add("C->D");edgeIDs.add("D->B");
 			edgeIDs.add("B->E");
