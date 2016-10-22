@@ -60,6 +60,7 @@ A **Simulation** class was created to simulate the project generating a **Graph*
 * Once we all had each of sections ready, we collectively decided at our second meeting that it was better for the first milestone if we manually place all the code we have into the master branch and delete our individual branches. We then branched from master in order to have at least a semi-functional program to work with and each member knows how the design was implemented in code
 * We still had trouble merging code. To work around this we decided to manually copy the most up-to-date code into M1_Alex branch and work on that together either from our own computers or on the same computer
 * For the first milestone, the total packets metric was implemented
+* The JavaDocs are included for all public members in the **doc** folder
 
 ###How to Run
 ----------------------------------------------
