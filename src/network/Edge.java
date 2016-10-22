@@ -13,9 +13,9 @@ public class Edge
 	private Node destination; // Node destination for edge
 	
 	/**
-	 * @param id
-	 * @param source
-	 * @param destination
+	 * @param id ID
+	 * @param s Source
+	 * @param d Destination
 	 * Creates an Edge with a String ID, a Node object source a Node object destination 
 	 */
 	public Edge(String id, Node s, Node d)

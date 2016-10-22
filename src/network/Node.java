@@ -45,7 +45,7 @@ public class Node
 	/**
 	 * @param edge
 	 * the edge for which the algorithm will use to search
-	 * @return
+	 * @return Returns true if edge exists for Node else false
 	 */
 	public boolean containsNeighbor(Edge edge)
 	{
@@ -55,7 +55,7 @@ public class Node
 	/**
 	 * @param index
 	 * returns the edge(neighbor route) at the specified index
-	 * @return
+	 * @return The edge given index
 	 */
 	public Edge getNeighbor(int index)
 	{

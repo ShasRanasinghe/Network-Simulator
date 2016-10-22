@@ -33,7 +33,7 @@ public class Simulation {
 	}
 
 	/**
-	 * @param hops Set the number of hops of a message
+	 * @param averageHops Set the number of hops of a message
 	 */
 	public void setAverageHops(int averageHops) {
 		this.averageHops = averageHops;
@@ -110,6 +110,9 @@ public class Simulation {
 		return graph;
 	}
 	
+	/**
+	 * @param args Main method input
+	 */
 	public static void main(String[] args) {
 		
 		//Initialize Simulation

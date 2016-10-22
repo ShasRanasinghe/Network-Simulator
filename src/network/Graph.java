@@ -36,7 +36,7 @@ public class Graph implements RoutingAlgorithms
 	}
 
 	/**
-	 * @param vertices
+	 * @param vertices Array List of verticies
 	 * Graph constructor accepts an ArrayList<Node> to create the network
 	 */
 	public Graph(ArrayList<Node> vertices)
@@ -56,7 +56,7 @@ public class Graph implements RoutingAlgorithms
 	
 	
 	/**
-	 * @param message, the message to be removed from the List of messages
+	 * @param m the message to be removed from the List of messages
 	 */
 	public void removeMessage(Message m)
 	{

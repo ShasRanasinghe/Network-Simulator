@@ -29,9 +29,8 @@ public interface RoutingAlgorithms {
 	 * The default behavior of when a class that implements the RoutingAlgorithms
 	 * calls runAlgorithm
 	 * 
-	 * @param	source	- The vertex the algorithm will start at.
-	 * 			destination	- The vertex that the message will end up at.
-	 * 			algorithm	-An enum telling the interface which algorithm to run.
+	 * @param frequency	The frequency of injecting new messages
+	 * @param algorithm	An enum telling the interface which algorithm to run.
 	 * 
 	 */
 	public default void runAlgorithm(int frequency, ALGORITHM algorithm) 
