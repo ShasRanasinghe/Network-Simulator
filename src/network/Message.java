@@ -12,7 +12,7 @@ public class Message {
 	private Node source; // source node
 	private Node destination; // destination node
 	
-	private int hopCount; // hop count for message
+	private int hopCount; // hop count for this message
 
 	/**
 	 * @param source node
@@ -28,28 +28,32 @@ public class Message {
 	/**
 	 * @return The source of the message
 	 */
-	public Node getSource() {
+	public Node getSource() 
+	{
 		return source;
 	}
 
 	/**
 	 * @param source Vertex to be set as the source
 	 */
-	public void setSource(Node source) {
+	public void setSource(Node source) 
+	{
 		this.source = source;
 	}
 
 	/**
 	 * @return The destination of the message
 	 */
-	public Node getDestination() {
+	public Node getDestination() 
+	{
 		return destination;
 	}
 
 	/**
 	 * @param destination Vertex to be set as the destination
 	 */
-	public void setDestination(Node destination) {
+	public void setDestination(Node destination) 
+	{
 		this.destination = destination;
 	}
 	
@@ -57,7 +61,8 @@ public class Message {
 	 * 
 	 * @return the hop count of the message
 	 */
-	public int getHopCount() {
+	public int getHopCount() 
+	{
 		return hopCount;
 	}
 
@@ -65,8 +70,14 @@ public class Message {
 	 * 
 	 * @param hopCount  set the hopCount 
 	 */
-	public void setHopCount(int hopCount) {
+	public void setHopCount(int hopCount) 
+	{
 		this.hopCount = hopCount;
+	}
+	
+	public void incrumentHopCount()
+	{
+		hopCount++;
 	}
 	
 	
