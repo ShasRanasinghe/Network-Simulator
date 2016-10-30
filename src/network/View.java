@@ -9,11 +9,14 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 
 public class View {
 
+	//constants
 	private final String ABOUT = "SYSC 3110 Group Project: Network Routing Simulator\n"
 			+ "Group Members: Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe\n\n"
 			+ "Summary:\n"
@@ -24,7 +27,28 @@ public class View {
 			+ "* Flooding\n"
 			+ "* Shortest path\n"
 			+ "* Custom method";
+	private final String TEST_CASES = "Test1: \n"
+			+ "Test 2: \n"
+			+ "Test 3: \n"
+			+ "Test 4: \n"
+			+ "Test 5: \n"
+			+ "Test 6: \n";
+	private final String README = "README.txt";
+	private final String UML = "Milestone2_UML.jpg";
+	private final String JAVADOC1 = "doc\\index.html";
+	private final String JAVADOC2 = "doc\\network\\Simulation.html";
+	private final String COUTLD_NOT_OPEN_FILE = "Could not open file properly";
+	private final String FILE_DOES_NOT_EXIST = "Could Not Find Files Required";
+	private List<String> algorithms = new ArrayList<>();
 	
+	//Store Network information
+	private int frequency;
+	private ArrayList<String> nodes;
+	private ArrayList<String> edges;
+	private ALGORITHM algorithm;
+	
+	
+	//GUI
 	private JFrame frame;
 	private JPanel networkPanel;
 	private JTextArea outputsPanel;
@@ -34,18 +58,30 @@ public class View {
 	private JScrollPane scrollPane;
 	private JButton newNode;
 	private JButton newEdge;
-	private JButton frequency;
-	private JButton algorithm;
+	private JButton freqButton;
+	private JButton algorithmButton;
 	private JButton run;
 	private JButton stepNext;
 	private JButton stepBack;
 	
 	public static void main(String[] arg0){
-		View v = new View();
+		new View();
 	}
 	
 	public View(){
+		initialize();
 		makeFrame();
+	}
+	
+	private void initialize(){
+		nodes = new ArrayList<String>();
+		edges = new ArrayList<String>();
+		
+		ALGORITHM[] algorithms;
+		algorithms = ALGORITHM.values();
+		for(ALGORITHM alg: algorithms){
+			this.algorithms.add(alg.getALGString());
+		}
 	}
 	
 	private void makeFrame(){
@@ -71,13 +107,13 @@ public class View {
 		newEdge.addActionListener(e -> newEdge());
 		toolBar.add(newEdge);
 		
-		frequency = new JButton("Set Frequency");
-		frequency.addActionListener(e -> setFrequency());
-		toolBar.add(frequency);
+		freqButton = new JButton("Set Frequency");
+		freqButton.addActionListener(e -> setFrequency());
+		toolBar.add(freqButton);
 		
-		algorithm = new JButton("Set Algorithm");
-		algorithm.addActionListener(e -> setAlgorithm());
-		toolBar.add(algorithm);
+		algorithmButton = new JButton("Set Algorithm");
+		algorithmButton.addActionListener(e -> setAlgorithm());
+		toolBar.add(algorithmButton);
 		
 		JPanel west = new JPanel();
 		west.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -120,7 +156,6 @@ public class View {
 		south.add(statusLabel);
 		contentPane.add(south,BorderLayout.SOUTH);
 		
-		setButtonsEnabled(true);
 		frame.pack();
 		frame.setSize(new Dimension(1000,500));
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -133,6 +168,7 @@ public class View {
 
 	private void setStatus(String str) {
 		statusLabel.setText(str);
+		frame.repaint();
 	}
 
 	private void defaultOption() {
@@ -257,31 +293,26 @@ public class View {
 		item.addActionListener(e -> showTestCases());
 		menu.add(item);
 	}
-	
-	private void setButtonsEnabled(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	private Object showTestCases() {
-		// TODO Auto-generated method stub
-		return null;
+	private void showTestCases() {
+		JOptionPane.showMessageDialog(frame, TEST_CASES);
+		setStatus("");
 	}
 
 	private void showUML() {
-		File file = new File("Milestone2_UML.jpg");
+		File file = new File(UML);
 		if(file.exists()){
 			try {
 				Desktop.getDesktop().open(file);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(frame,
-			    	    "Could not open file properly",
+						COUTLD_NOT_OPEN_FILE,
 			    	    "WARNING",
 			    	    JOptionPane.ERROR_MESSAGE);
 			}
 		}else{
 			JOptionPane.showMessageDialog(frame,
-		    	    "Could Not File Files Required",
+					FILE_DOES_NOT_EXIST,
 		    	    "WARNING",
 		    	    JOptionPane.ERROR_MESSAGE);
 		}
@@ -289,21 +320,21 @@ public class View {
 	}
 
 	private void showJavadoc() {
-		File index = new File("doc\\index.html");
-		File classes = new File("doc\\network\\Simulation.html");
+		File index = new File(JAVADOC1);
+		File classes = new File(JAVADOC2);
 		if(index.exists() && classes.exists()){
 			try {
 				Desktop.getDesktop().open(index);
 				Desktop.getDesktop().open(classes);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(frame,
-			    	    "Could not open file properly",
+			    	    COUTLD_NOT_OPEN_FILE,
 			    	    "WARNING",
 			    	    JOptionPane.ERROR_MESSAGE);
 			}
 		}else{
 			JOptionPane.showMessageDialog(frame,
-		    	    "Could Not File Files Required",
+					FILE_DOES_NOT_EXIST,
 		    	    "WARNING",
 		    	    JOptionPane.ERROR_MESSAGE);
 		}
@@ -316,19 +347,19 @@ public class View {
 	}
 
 	private void showREADME() {
-		File file = new File("README.txt");
+		File file = new File(README);
 		if(file.exists()){
 			try {
 				Desktop.getDesktop().open(file);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(frame,
-			    	    "Could not open file properly",
+			    	    COUTLD_NOT_OPEN_FILE,
 			    	    "WARNING",
 			    	    JOptionPane.ERROR_MESSAGE);
 			}
 		}else{
 			JOptionPane.showMessageDialog(frame,
-		    	    "Could Not File Files Required",
+					FILE_DOES_NOT_EXIST,
 		    	    "WARNING",
 		    	    JOptionPane.ERROR_MESSAGE);
 		}
@@ -350,34 +381,208 @@ public class View {
 		return null;
 	}
 
-	private Object deleteEdge() {
-		// TODO Auto-generated method stub
-		return null;
+	private void deleteEdge() {
+		String edge = "";
+		JTextField startNode = new JTextField(5);
+		JTextField endNode = new JTextField(5);
+
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("Enter Start NodeID:")); panel.add(startNode);
+		panel.add(Box.createHorizontalStrut(15)); // a spacer
+		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
+		
+		for(;;){
+			int result = JOptionPane.showConfirmDialog(null, panel, 
+					"Remove Edge", JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.OK_OPTION) {
+				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
+					edge = startNode.getText() + "->" + endNode.getText();
+					if(edges.contains(edge)){
+						edges.remove(edge);
+						setStatus("Edge " + edge + " Removed");
+						break;
+					}else{
+						JOptionPane.showMessageDialog(frame,
+								"Edge Doesnt Exist",
+								"WARNING",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}else{
+					JOptionPane.showMessageDialog(frame,
+							"Node(s) Specified Does not Exist",
+							"WARNING",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}else{
+				setStatus("No Edges Removed");
+				break;
+			}
+		}
 	}
 
-	private Object editEdge() {
-		// TODO Auto-generated method stub
-		return null;
+	private void editEdge() {
+		String edge = "";
+		String newEdge = "";
+		JTextField startNode = new JTextField(5);
+		JTextField endNode = new JTextField(5);
+
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("Enter Start NodeID:")); panel.add(startNode);
+		panel.add(Box.createHorizontalStrut(15)); // a spacer
+		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
+		
+		for(;;){
+			int result = JOptionPane.showConfirmDialog(null, panel, 
+					"Edit Existing Edge", JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.OK_OPTION) {
+				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
+					edge = startNode.getText() + "->" + endNode.getText();
+					if(edges.contains(edge)){
+						String nodeID = JOptionPane.showInputDialog(frame,"Enter New End NodeID:","Edit Edge",JOptionPane.QUESTION_MESSAGE);
+						if(nodeID == null){
+							setStatus("No Edges Changed");
+							break;
+						}else{
+							if(nodes.contains(nodeID)){
+								newEdge = startNode.getText() + "->" + nodeID;
+								edges.set(edges.indexOf(edge), newEdge);
+								setStatus("Edge " + edge + " Changes to " + newEdge);
+								break;
+							}else{
+								JOptionPane.showMessageDialog(frame,
+										"Node Doesnt Exist",
+										"WARNING",
+										JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					}else{
+						JOptionPane.showMessageDialog(frame,
+								"Edge Doesnt Exist",
+								"WARNING",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}else{
+					JOptionPane.showMessageDialog(frame,
+							"Node(s) Specified Does not Exist",
+							"WARNING",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}else{
+				setStatus("No Edges Changed");
+				break;
+			}
+		}
 	}
 
-	private Object newEdge() {
-		// TODO Auto-generated method stub
-		return null;
+	private void newEdge() {
+		String edge = "";
+		JTextField startNode = new JTextField(5);
+		JTextField endNode = new JTextField(5);
+
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("Enter Start NodeID:")); panel.add(startNode);
+		panel.add(Box.createHorizontalStrut(15)); // a spacer
+		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
+		
+		for(;;){
+			int result = JOptionPane.showConfirmDialog(null, panel, 
+					"Create New Edge", JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.OK_OPTION) {
+				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
+					edge = startNode.getText() + "->" + endNode.getText();
+					if(!edges.contains(edge)){
+						edges.add(edge);
+						setStatus("Edge " + edge + " Created");
+						break;
+					}else{
+						JOptionPane.showMessageDialog(frame,
+								"Edge Already Exists",
+								"WARNING",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}else{
+					JOptionPane.showMessageDialog(frame,
+							"Node(s) Specified Does not Exist",
+							"WARNING",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}else{
+				setStatus("No New Edges Created");
+				break;
+			}
+		}
 	}
 
-	private Object deleteNode() {
-		// TODO Auto-generated method stub
-		return null;
+	private void deleteNode() {
+		for(;;){
+			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Delete Node",JOptionPane.QUESTION_MESSAGE);
+			if(nodeID == null){
+				setStatus("No Nodes Deleted");
+				break;
+			}else{
+				if(nodes.contains(nodeID)){
+					nodes.remove(nodeID);
+					setStatus("Node " + nodeID + " Removed");
+					break;
+				}else{
+					JOptionPane.showMessageDialog(frame,
+							"Node Doesnt Exist",
+							"WARNING",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
 	}
 
-	private Object editNode() {
-		// TODO Auto-generated method stub
-		return null;
+	private void editNode() {
+		JTextField nodeID = new JTextField(5);
+		JTextField newNodeID = new JTextField(5);
+
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("Enter NodeID:")); panel.add(nodeID);
+		panel.add(Box.createHorizontalStrut(15)); // a spacer
+		panel.add(new JLabel("Enter New NodeID:")); panel.add(newNodeID);
+		
+		for(;;){
+			int result = JOptionPane.showConfirmDialog(null, panel, 
+					"Edit Node", JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.OK_OPTION) {
+				if(nodes.contains(nodeID.getText())){
+					nodes.set(nodes.indexOf(nodeID.getText()), newNodeID.getText());
+					setStatus("Node " + nodeID.getText() +" Changed to " + newNodeID.getText());
+					break;
+				}else{
+					JOptionPane.showMessageDialog(frame,
+							"Node Doesnt Exist",
+							"WARNING",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}else{
+				setStatus("No Nodes Were Changed");
+				break;
+			}
+		}
 	}
 
 	private void newNode() {
-		String nodeID = JOptionPane.showInputDialog("Enter NodeID:");
-	    setStatus("Node " + nodeID + " Created");
+		for(;;){
+			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Create New Node",JOptionPane.QUESTION_MESSAGE);
+			if(nodeID == null){
+				setStatus("No Nodes Created");
+				break;
+			}else{
+				if(!nodes.contains(nodeID)){
+					nodes.add(nodeID);
+					setStatus("Node " + nodeID + " Created");
+					break;
+				}else{
+					JOptionPane.showMessageDialog(frame,
+							"Node Already Exists",
+							"WARNING",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
 	}
 
 	private void setFrequency() {
@@ -390,15 +595,17 @@ public class View {
 	    frequency = (String) JOptionPane.showInputDialog(frame, "Pick a Frequency", "Set Frequency", JOptionPane.QUESTION_MESSAGE
 	    		, null, list, "1");
 		setStatus("Frequency set to: " + frequency);
+		this.frequency = Integer.parseInt(frequency);
 	}
 
 	private void setAlgorithm() {
-		String[] choices = { "Random", "Flooding", "Shortest Path", "Custom"};
+		String[] choices = algorithms.toArray(new String[0]);
 	    String algorithm = (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
 	        "Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
 	        choices, // Array of choices
 	        choices[0]); // Initial choice
 	    setStatus("Algortihm set to: " + algorithm);
+	    this.algorithm = ALGORITHM.valueOf(algorithm);
 	}
 
 	private void quit() {
@@ -419,4 +626,11 @@ public class View {
 		return null;
 	}
 	
+	public ALGORITHM getAlgorithm() {
+		return algorithm;
+	}
+
+	public int getFrequency(){
+		return frequency;
+	}
 }
