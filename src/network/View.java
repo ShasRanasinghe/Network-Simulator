@@ -27,7 +27,7 @@ public class View {
 			+ "* Flooding\n"
 			+ "* Shortest path\n"
 			+ "* Custom method";
-	private final String TEST_CASES = "Test1: \n"
+	private final String TEST_CASES = "Test 1: \n"
 			+ "Test 2: \n"
 			+ "Test 3: \n"
 			+ "Test 4: \n"
@@ -40,6 +40,7 @@ public class View {
 	private final String COUTLD_NOT_OPEN_FILE = "Could not open file properly";
 	private final String FILE_DOES_NOT_EXIST = "Could Not Find Files Required";
 	private List<String> algorithms = new ArrayList<>();
+	private String frequencyList[];
 	
 	//Store Network information
 	private int frequency;
@@ -76,6 +77,11 @@ public class View {
 	private void initialize(){
 		nodes = new ArrayList<String>();
 		edges = new ArrayList<String>();
+		
+		frequencyList = new String[30];
+		for (int i = 1; i < frequencyList.length; i++) {
+			frequencyList[i] = Integer.toString(i);
+		}
 		
 		ALGORITHM[] algorithms;
 		algorithms = ALGORITHM.values();
@@ -168,7 +174,9 @@ public class View {
 
 	private void setStatus(String str) {
 		statusLabel.setText(str);
-		frame.repaint();
+		if(!str.equals("")){
+			frame.repaint();
+		}
 	}
 
 	private void defaultOption() {
@@ -586,26 +594,30 @@ public class View {
 	}
 
 	private void setFrequency() {
-		String frequency;
-		String list[] = new String[30];
-
-	    for (int i = 1; i < list.length; i++) {
-	      list[i] = Integer.toString(i);
+	    String frequency = (String) JOptionPane.showInputDialog(frame, "Pick a Frequency",
+		        "Set Frequency", JOptionPane.QUESTION_MESSAGE, null, // Use
+		        frequencyList, // Array of choices
+		        frequencyList[0]); // Initial choice
+	    if(frequency == null){
+	    	setStatus("Frequency Not Set");
+	    }else{
+	    	setStatus("Frequency set to: " + frequency);
+			this.frequency = Integer.parseInt(frequency);
 	    }
-	    frequency = (String) JOptionPane.showInputDialog(frame, "Pick a Frequency", "Set Frequency", JOptionPane.QUESTION_MESSAGE
-	    		, null, list, "1");
-		setStatus("Frequency set to: " + frequency);
-		this.frequency = Integer.parseInt(frequency);
 	}
 
 	private void setAlgorithm() {
 		String[] choices = algorithms.toArray(new String[0]);
 	    String algorithm = (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
-	        "Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
+	        "Set Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
 	        choices, // Array of choices
 	        choices[0]); // Initial choice
-	    setStatus("Algortihm set to: " + algorithm);
-	    this.algorithm = ALGORITHM.valueOf(algorithm);
+	    if(algorithm == null){
+	    	setStatus("Algortihm Not Set");
+	    }else{
+	    	setStatus("Algortihm set to: " + algorithm);
+	    	this.algorithm = ALGORITHM.valueOf(algorithm); //TODO
+	    }
 	}
 
 	private void quit() {
