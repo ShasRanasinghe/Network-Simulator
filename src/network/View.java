@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Scrollbar;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -13,9 +14,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class View {
+	
+	//Model
+	Simulation model;
 
+	//test
+	Object rows[][] = { { "AMZN", "Amazon", "67 9/16" },
+	        { "AOL", "America Online", "68 3/4" },
+	        { "BOUT", "About.com", "56 3/8" },
+	        { "AOL", "America Online", "68 3/4" },
+	        { "BOUT", "About.com", "56 3/8" },
+	        { "YHOO", "Yahoo!", "151 1/8" },
+			{ "AOL", "America Online", "68 3/4" },
+	        { "BOUT", "About.com", "56 3/8" },
+	        { "YHOO", "Yahoo!", "151 1/8" },
+	        { "YHOO", "Yahoo!", "151 1/8" }};
+		    final Object headers[] = { "Symbol", "Name", "Price" };;
+
+	
+	
 	//constants
 	private final String ABOUT = "SYSC 3110 Group Project: Network Routing Simulator\n"
 			+ "Group Members: Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe\n\n"
@@ -41,6 +63,8 @@ public class View {
 	private final String FILE_DOES_NOT_EXIST = "Could Not Find Files Required";
 	private List<String> algorithms = new ArrayList<>();
 	private String frequencyList[];
+	private DefaultListModel<Message> messageList;
+	private JList<Message> list;
 	
 	//Store Network information
 	private int frequency;
@@ -56,7 +80,9 @@ public class View {
 	private JPanel playPanel;
 	private JPanel toolBar;
 	private JLabel statusLabel;
-	private JScrollPane scrollPane;
+	private JScrollPane scrollPaneCenter;
+	private JScrollPane scrollPaneList;
+	private JScrollPane scrollPaneTable;
 	private JButton newNode;
 	private JButton newEdge;
 	private JButton freqButton;
@@ -64,12 +90,14 @@ public class View {
 	private JButton run;
 	private JButton stepNext;
 	private JButton stepBack;
+	private JTable table;
 	
-	public static void main(String[] arg0){
+	public static void main(String[] args){
 		new View();
 	}
 	
 	public View(){
+		//this.model = model;
 		initialize();
 		makeFrame();
 	}
@@ -88,6 +116,48 @@ public class View {
 		for(ALGORITHM alg: algorithms){
 			this.algorithms.add(alg.getALGString());
 		}
+		
+		//TODO
+		messageList = new DefaultListModel<>();
+		messageList.addElement(new Message(new Node("A"),new Node("B")));
+		messageList.get(0).setName("Message 1");
+		messageList.get(0).setRunning(true);
+		messageList.addElement(new Message(new Node("C"),new Node("D")));
+		messageList.get(1).setName("Message 2");
+		messageList.get(1).setRunning(false);
+		messageList.addElement(new Message(new Node("E"),new Node("F")));
+		messageList.get(2).setName("Message 3");
+		messageList.get(2).setRunning(true);
+		messageList.addElement(new Message(new Node("E2"),new Node("F3")));
+		messageList.get(3).setName("Message 3");
+		messageList.get(3).setRunning(true);
+		messageList.addElement(new Message(new Node("Aa"),new Node("Bs")));
+		messageList.get(4).setName("Message 1");
+		messageList.get(4).setRunning(true);
+		messageList.addElement(new Message(new Node("Cd"),new Node("Dd")));
+		messageList.get(5).setName("Message 2");
+		messageList.get(5).setRunning(false);
+		messageList.addElement(new Message(new Node("aE"),new Node("dF")));
+		messageList.get(6).setName("Message 3");
+		messageList.get(6).setRunning(true);
+		messageList.addElement(new Message(new Node("Ad"),new Node("Ba")));
+		messageList.get(7).setName("Message 1");
+		messageList.get(7).setRunning(true);
+		messageList.addElement(new Message(new Node("Cg"),new Node("gD")));
+		messageList.get(8).setName("Message 2");
+		messageList.get(8).setRunning(false);
+		messageList.addElement(new Message(new Node("gE"),new Node("gF")));
+		messageList.get(9).setName("Message 3");
+		messageList.get(9).setRunning(true);
+		messageList.addElement(new Message(new Node("dA"),new Node("Bg")));
+		messageList.get(10).setName("Message 1");
+		messageList.get(10).setRunning(true);
+		messageList.addElement(new Message(new Node("Cg"),new Node("dD")));
+		messageList.get(11).setName("Message 2");
+		messageList.get(11).setRunning(false);
+		messageList.addElement(new Message(new Node("Eas"),new Node("faF")));
+		messageList.get(12).setName("Message 3");
+		messageList.get(12).setRunning(true);
 	}
 	
 	private void makeFrame(){
@@ -125,15 +195,16 @@ public class View {
 		west.setLayout(new FlowLayout(FlowLayout.CENTER));
 		west.add(toolBar);
 		
-		contentPane.add(west,BorderLayout.WEST);
 		
 		//scroll bar
 		
 		JPanel center = new JPanel();
 		center.setLayout(new BorderLayout());
 		networkPanel = new JPanel();
-		scrollPane = new JScrollPane(networkPanel);
-		center.add(scrollPane,BorderLayout.CENTER);
+		scrollPaneCenter = new JScrollPane(networkPanel);
+		center.add(scrollPaneCenter,BorderLayout.CENTER);
+		
+		center.add(west,BorderLayout.WEST);
 		
 		playPanel = new JPanel();
 		center.add(playPanel,BorderLayout.SOUTH);
@@ -162,6 +233,41 @@ public class View {
 		south.add(statusLabel);
 		contentPane.add(south,BorderLayout.SOUTH);
 		
+		//set list bar
+		
+		JPanel east = new JPanel();
+		east.setLayout(new FlowLayout(FlowLayout.CENTER));
+		JPanel listBar = new JPanel();
+		listBar.setLayout(new GridLayout(0,1));
+		east.add(listBar);
+		
+		list =  new JList<>(messageList);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.addListSelectionListener(e -> createPopup(e));
+		listBar.add(list);
+		
+		//set list renderer
+		list.setCellRenderer(new messageListCellRenderer());
+		
+		scrollPaneList = new JScrollPane(east,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
+		center.add(scrollPaneList,BorderLayout.EAST);
+		
+		//set table bar
+		JPanel north = new JPanel();
+		north.setLayout(new FlowLayout(FlowLayout.CENTER));
+		JPanel tableBar = new JPanel();
+		tableBar.setLayout(new GridLayout(0,1));
+		north.add(tableBar);
+		table = new JTable(rows,headers);
+		scrollPaneTable = new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//scrollPaneTable.setViewportView();
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableBar.add(scrollPaneTable);
+		center.add(north,BorderLayout.NORTH);
+		
+		//Finish it off
 		frame.pack();
 		frame.setSize(new Dimension(1000,500));
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -616,7 +722,7 @@ public class View {
 	    	setStatus("Algortihm Not Set");
 	    }else{
 	    	setStatus("Algortihm set to: " + algorithm);
-	    	this.algorithm = ALGORITHM.valueOf(algorithm); //TODO
+	    	this.algorithm = ALGORITHM.getEnum(algorithm); //TODO
 	    }
 	}
 
@@ -625,7 +731,7 @@ public class View {
 				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
 		if (response == JOptionPane.YES_OPTION) {
 		      System.exit(0);
-		    }
+		}
 	}
 
 	private Object defaultNetwork() {
@@ -644,5 +750,14 @@ public class View {
 
 	public int getFrequency(){
 		return frequency;
+	}
+	
+	protected void createPopup(ListSelectionEvent e) {
+		Message message = (Message)list.getSelectedValue();
+		int response = JOptionPane.showConfirmDialog(null,message.toString(),message.toString(),
+				JOptionPane.PLAIN_MESSAGE,JOptionPane.CLOSED_OPTION);
+		if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) {
+			//list.clearSelection(); //TODO
+		}
 	}
 }

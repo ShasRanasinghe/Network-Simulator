@@ -22,6 +22,8 @@ public abstract class Graph {
 	
 	protected int creationFrequency;
 	
+	protected int messageCount = 0;
+	protected String message = "Message";
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		METHODS WITH SET BEHAVIOR TO BE SHARED BY ALL ALGORITHMS											 //
@@ -32,6 +34,8 @@ public abstract class Graph {
 	 */
 	public void createNewMessage()
 	{
+		messageCount++;
+		String messageName = message + messageCount;
 		// The message's source and destination are set randomly
 		Random random = new Random();
 		Node tempS = graphNodes.get(random.nextInt(graphNodes.size()));
@@ -46,6 +50,7 @@ public abstract class Graph {
 		
 		// Form the message and add it to the message queue and total 
 		Message message = new Message(tempS,tempD);
+		message.setName(messageName);
 		messageQueue.add(message);
 		completeMessageList.add(message);
 	}

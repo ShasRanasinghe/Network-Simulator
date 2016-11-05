@@ -11,8 +11,9 @@ public class Message {
 	
 	private Node source; // source node
 	private Node destination; // destination node
-	
+	private boolean running;
 	private int hopCount; // hop count for this message
+	private String name;
 
 	/**
 	 * @param source node
@@ -23,6 +24,8 @@ public class Message {
 		this.source = source;
 		this.destination = destination;
 		this.hopCount = 0;
+		this.running = true;
+		this.name = "";
 	}
 
 	/**
@@ -79,7 +82,24 @@ public class Message {
 	{
 		hopCount++;
 	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	@Override
+	public String toString(){
+		return name;
+		
+	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	
 }
