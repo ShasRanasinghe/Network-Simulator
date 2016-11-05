@@ -10,7 +10,8 @@ import javax.swing.*;
 /**
  * GraphPanel creates the panel that allows a visual of the network to be displayed
  * The graph is displayed with dots and edges connecting them and can be resized
- * Functionalities are: Add node, delete node, add edge and clear graph 
+ * Functionalities are: Add node, delete node, add edge and clear graph
+ *  
  * @author Mohamed Dahrouj, Andrew Ward
  * Highly refactored to meet project needs from Dr.John B. Matthews implementation(https://sites.google.com/site/drjohnbmatthews/graphpanel)
  */
@@ -338,6 +339,7 @@ public class GraphPanel extends JComponent {
             g.fillOval(b.x, b.y, b.width, b.height);
             
             // Draw centered text
+            //TODO Allow GraphicNode to have an ID variable 
             String text = "A";
             FontMetrics fm = g.getFontMetrics();
             double textWidth = fm.getStringBounds(text, g).getWidth();
