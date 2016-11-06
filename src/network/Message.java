@@ -10,10 +10,15 @@ package network;
 public class Message {
 	
 	private Node source; // source node
+	private Node current; // current node of message
 	private Node destination; // destination node
-	private boolean running;
-	private int hopCount; // hop count for this message
+	
 	private String name;
+	
+	private boolean running;
+	
+	private int hopCount; // hop count for this message
+	
 
 	/**
 	 * @param source node
@@ -22,10 +27,11 @@ public class Message {
 	 */
 	public Message(Node source, Node destination){
 		this.source = source;
+		this.current = source;
 		this.destination = destination;
-		this.hopCount = 0;
 		this.running = true;
 		this.name = "";
+		this.hopCount = 0;
 	}
 
 	/**
@@ -78,11 +84,6 @@ public class Message {
 		this.hopCount = hopCount;
 	}
 	
-	public void incrumentHopCount()
-	{
-		hopCount++;
-	}
-
 	public boolean isRunning() {
 		return running;
 	}
@@ -92,14 +93,27 @@ public class Message {
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return name;
-		
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public Node getCurrentNode() {
+		return current;
+	}
+
+	public void setCurrentNode(Node current) {
+		this.current = current;
+	}
+
+	public void incrumentHopCount()
+	{
+		hopCount++;
+	}
+	
 	
 	
 }

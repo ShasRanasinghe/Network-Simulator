@@ -15,11 +15,17 @@ public enum ALGORITHM {
     public String getALGString() {
         return algString;
     }
-    
-    public static ALGORITHM getEnum(String str){
-    	for(ALGORITHM alg: ALGORITHM.values()){
-    		if(alg.algString.equals(str)){return alg;}
+  
+    public static ALGORITHM getEnum(String str)
+    {
+    	for(ALGORITHM alg: ALGORITHM.values())
+    	{
+    		if(alg.algString.equals(str))
+    		{
+    			return alg;
+    		}
     	}
     	return RANDOM;
     }
 }
+

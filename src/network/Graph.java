@@ -25,6 +25,7 @@ public abstract class Graph {
 	protected int messageCount = 0;
 	protected String message = "Message";
 	
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		METHODS WITH SET BEHAVIOR TO BE SHARED BY ALL ALGORITHMS											 //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,7 @@ public abstract class Graph {
 	{
 		messageCount++;
 		String messageName = message + messageCount;
+		
 		// The message's source and destination are set randomly
 		Random random = new Random();
 		Node tempS = graphNodes.get(random.nextInt(graphNodes.size()));
@@ -67,6 +69,7 @@ public abstract class Graph {
 			if(messageQueue.get(i).equals(message))
 			{
 				// Remove
+				messageQueue.get(i).setRunning(false);
 				messageQueue.remove(i);
 			}
 		}
@@ -80,6 +83,15 @@ public abstract class Graph {
 		Message temp = messageQueue.get(0);
 		messageQueue.remove(0);
 		return temp;
+	}
+	
+	public ArrayList<Message> getCompleteMessageList()
+	{
+		return completeMessageList;
+	}
+	public ArrayList<Message> getCurrentMessageList()
+	{
+		return messageQueue;
 	}
 	
 	/**
@@ -101,7 +113,8 @@ public abstract class Graph {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		METHODS THAT HAVE SPECIFIC BEHAVIOR DEPENDING ON THE ALGORITHM										 //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	abstract void run(ArrayList<Node> nodes, int stepSize);
+	abstract void run(int stepSize);
 	abstract int getTotalHops();
+	abstract int getNumberOfCurrentMessages();
 	
 }

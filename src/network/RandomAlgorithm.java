@@ -27,11 +27,11 @@ public class RandomAlgorithm extends Graph{
 	// ALL OTHER INSTANCE VARIABLES INHERITED FROM GRAPH!!!!
 	
 	
-	public RandomAlgorithm(int frequency)
+	public RandomAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
 		// INHERITED FROM GRAPH!!!!!
 		// List of Nodes within the graph
-		this.graphNodes = new ArrayList<Node>();
+		this.graphNodes = nodes;
 		// List of ALL messages created during the simulation
 		this.completeMessageList = new ArrayList<Message>();
 		// List of messages currently in the network
@@ -42,63 +42,66 @@ public class RandomAlgorithm extends Graph{
 		// INDEPENDENT RANDOM ALGORITHM VARIABLES
 		this.totalRandomHops = 0;
 		this.currentMessageQueue = new ArrayList<Message>();
+		
+		// Create the first message
+		createNewMessage();
 	}
 	
 	
-	public void run(ArrayList<Node> nodes, int stepSize)
+	public void run(int stepSize)
 	{
-		// Step 1) Define nodes to send messages across
-		graphNodes = nodes;
-		
-		// Step 2) Create first message and add it to the queue and total
-		createNewMessage();
-		
-		// Step 3) Loop n times, where n is = to the stepSize
+		// Step 1) Loop n times, where n is = to the stepSize
 		int n = 0;
 		while(n != stepSize)
 		{
-			// Step 3.1) Refresh the currentMessageQueue (Clear and Copy)
+			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
 			currentMessageQueue.clear();
 			currentMessageQueue.addAll(messageQueue);
 			
-			// Step 3.2) Iterate through the currentMessageQueue
+			// Step 1.2) Iterate through the currentMessageQueue
 			for(Message message : currentMessageQueue)
 			{
-				// Step 3.2.1) Choose a random edge of the current message's source, and save the destination of the edge
+				// Step 1.2.1) Choose a random edge of the current message's location, and save the destination of the edge
 				Random random = new Random();
-				Node messageSource = message.getSource();
-				Edge randomEdge = messageSource.getNeighbor(random.nextInt(messageSource.getNeighborhoodsize()));
+				Node messageCurrent = message.getCurrentNode();
+				Edge randomEdge = messageCurrent.getNeighbor(random.nextInt(messageCurrent.getNeighborhoodsize()));
 				Node nextNode = randomEdge.getDestination();
 				
-				// Step 3.2.2) Increment the message's hop count and the total amount of hops for the algorithm
+				while(nextNode == messageCurrent)
+				{
+					randomEdge = messageCurrent.getNeighbor(random.nextInt(messageCurrent.getNeighborhoodsize()));
+					nextNode = randomEdge.getDestination();
+				}
+				
+				// Step 1.2.2) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrumentHopCount();
 				totalRandomHops++;
 				
-				// Step 3.2.3) Check to see if the message should create a new message
+				// Step 1.2.3) Check to see if the message should create a new message
 				checkFrequency(message);
 				
-				// Step 3.2.4) Check if nextNode is the destination of the message
+				// Step 1.2.4) Check if nextNode is the destination of the message
 				if(message.getDestination().equals(nextNode))
 				{
-					// Step 3.2.4.1) Remove the message from the queue
+					// Step 1.2.4.1) Remove the message from the queue
 					removeMessage(message);
 					
-					// Step 3.2.4.2) Check to see if the queue is now empty
+					// Step 1.2.4.2) Check to see if the queue is now empty
 					if(messageQueue.size() == 0)
 					{
 						// TERMINATE ALGORITHM
-						n = stepSize;
 						break;
 					}
 				}
 				
-				// Step 3.2.5) If nextNode is not the destination of the message
+				// Step 1.2.5) If nextNode is not the destination of the message
 				else
 				{
-					// Step 3.2.5.1) Forward the message to the nextNode
-					message.setSource(nextNode);
+					// Step 1.2.5.1) Forward the message to the nextNode
+					message.setCurrentNode(nextNode);
 				}
 			}
+			n++;
 		}
 	}
 	
@@ -108,6 +111,11 @@ public class RandomAlgorithm extends Graph{
 	public int getTotalHops()
 	{
 		return totalRandomHops;
+	}
+	
+	public int getNumberOfCurrentMessages()
+	{
+		return messageQueue.size();
 	}
 
 }

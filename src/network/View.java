@@ -12,11 +12,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 public class View {
 	
@@ -65,8 +67,10 @@ public class View {
 	private String frequencyList[];
 	private DefaultListModel<Message> messageList;
 	private JList<Message> list;
+	private DefaultTableModel tableModel;
 	
 	//Store Network information
+	private Simulation network;
 	private int frequency;
 	private ArrayList<String> nodes;
 	private ArrayList<String> edges;
@@ -92,12 +96,22 @@ public class View {
 	private JButton stepBack;
 	private JTable table;
 	
-	public static void main(String[] args){
-		new View();
+	/**
+	 * 
+	 * @param MAIN FUNCTION OF GUI
+	 */
+	public static void main(String[] arg0)
+	{
+		Simulation sim = new Simulation();
+		new View(sim);
 	}
 	
-	public View(){
-		//this.model = model;
+	/**
+	 * MAIN CONSTRUCTOR OF GUI
+	 */
+	public View(Simulation sim)
+	{
+		this.network = sim;
 		initialize();
 		makeFrame();
 	}
@@ -117,47 +131,10 @@ public class View {
 			this.algorithms.add(alg.getALGString());
 		}
 		
+		tableModel = new DefaultTableModel();
+		
 		//TODO
 		messageList = new DefaultListModel<>();
-		messageList.addElement(new Message(new Node("A"),new Node("B")));
-		messageList.get(0).setName("Message 1");
-		messageList.get(0).setRunning(true);
-		messageList.addElement(new Message(new Node("C"),new Node("D")));
-		messageList.get(1).setName("Message 2");
-		messageList.get(1).setRunning(false);
-		messageList.addElement(new Message(new Node("E"),new Node("F")));
-		messageList.get(2).setName("Message 3");
-		messageList.get(2).setRunning(true);
-		messageList.addElement(new Message(new Node("E2"),new Node("F3")));
-		messageList.get(3).setName("Message 3");
-		messageList.get(3).setRunning(true);
-		messageList.addElement(new Message(new Node("Aa"),new Node("Bs")));
-		messageList.get(4).setName("Message 1");
-		messageList.get(4).setRunning(true);
-		messageList.addElement(new Message(new Node("Cd"),new Node("Dd")));
-		messageList.get(5).setName("Message 2");
-		messageList.get(5).setRunning(false);
-		messageList.addElement(new Message(new Node("aE"),new Node("dF")));
-		messageList.get(6).setName("Message 3");
-		messageList.get(6).setRunning(true);
-		messageList.addElement(new Message(new Node("Ad"),new Node("Ba")));
-		messageList.get(7).setName("Message 1");
-		messageList.get(7).setRunning(true);
-		messageList.addElement(new Message(new Node("Cg"),new Node("gD")));
-		messageList.get(8).setName("Message 2");
-		messageList.get(8).setRunning(false);
-		messageList.addElement(new Message(new Node("gE"),new Node("gF")));
-		messageList.get(9).setName("Message 3");
-		messageList.get(9).setRunning(true);
-		messageList.addElement(new Message(new Node("dA"),new Node("Bg")));
-		messageList.get(10).setName("Message 1");
-		messageList.get(10).setRunning(true);
-		messageList.addElement(new Message(new Node("Cg"),new Node("dD")));
-		messageList.get(11).setName("Message 2");
-		messageList.get(11).setRunning(false);
-		messageList.addElement(new Message(new Node("Eas"),new Node("faF")));
-		messageList.get(12).setName("Message 3");
-		messageList.get(12).setRunning(true);
 	}
 	
 	private void makeFrame(){
@@ -259,13 +236,12 @@ public class View {
 		JPanel tableBar = new JPanel();
 		tableBar.setLayout(new GridLayout(0,1));
 		north.add(tableBar);
-		table = new JTable(rows,headers);
-		scrollPaneTable = new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		//scrollPaneTable.setViewportView();
+		table = new JTable(tableModel);
+		scrollPaneTable = new JScrollPane(table);
+		scrollPaneTable.setPreferredSize(new Dimension(frame.getWidth(),100));
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tableBar.add(scrollPaneTable);
-		center.add(north,BorderLayout.NORTH);
+		center.add(tableBar,BorderLayout.NORTH);
 		
 		//Finish it off
 		frame.pack();
@@ -408,91 +384,29 @@ public class View {
 		menu.add(item);
 	}
 
-	private void showTestCases() {
-		JOptionPane.showMessageDialog(frame, TEST_CASES);
-		setStatus("");
+	private void stepBack() 
+	{
+		// ALGORITHMS CURRENTLY DO NOT SUPPORT BACK STEPS!!!!!!!!!!!!!!!!!!!!!
+		// WILL BE IMPLEMENTED LATER!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 
-	private void showUML() {
-		File file = new File(UML);
-		if(file.exists()){
-			try {
-				Desktop.getDesktop().open(file);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame,
-						COUTLD_NOT_OPEN_FILE,
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
-			}
-		}else{
-			JOptionPane.showMessageDialog(frame,
-					FILE_DOES_NOT_EXIST,
-		    	    "WARNING",
-		    	    JOptionPane.ERROR_MESSAGE);
+	private void stepForward() 
+	{
+		network.runAlgorithm(1);
+		addMessagesToChart();
+		addMessagesToTable();
+	}
+
+	private void run() 
+	{
+		while(network.currentMessageList.size() != 0)
+		{
+			network.runAlgorithm(1);
+			addMessagesToChart();
+			addMessagesToTable();
+			
+			table.changeSelection(table.getRowCount() - 1, 0, false, false);
 		}
-		setStatus("");
-	}
-
-	private void showJavadoc() {
-		File index = new File(JAVADOC1);
-		File classes = new File(JAVADOC2);
-		if(index.exists() && classes.exists()){
-			try {
-				Desktop.getDesktop().open(index);
-				Desktop.getDesktop().open(classes);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame,
-			    	    COUTLD_NOT_OPEN_FILE,
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
-			}
-		}else{
-			JOptionPane.showMessageDialog(frame,
-					FILE_DOES_NOT_EXIST,
-		    	    "WARNING",
-		    	    JOptionPane.ERROR_MESSAGE);
-		}
-		setStatus("");
-	}
-
-	private void showAbout() {
-		JOptionPane.showMessageDialog(frame, ABOUT);
-		setStatus("");
-	}
-
-	private void showREADME() {
-		File file = new File(README);
-		if(file.exists()){
-			try {
-				Desktop.getDesktop().open(file);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame,
-			    	    COUTLD_NOT_OPEN_FILE,
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
-			}
-		}else{
-			JOptionPane.showMessageDialog(frame,
-					FILE_DOES_NOT_EXIST,
-		    	    "WARNING",
-		    	    JOptionPane.ERROR_MESSAGE);
-		}
-		setStatus("");
-	}
-
-	private Object stepBack() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Object stepForward() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Object run() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	private void deleteEdge() {
@@ -687,6 +601,7 @@ public class View {
 			}else{
 				if(!nodes.contains(nodeID)){
 					nodes.add(nodeID);
+					tableModel.addColumn(nodeID);
 					setStatus("Node " + nodeID + " Created");
 					break;
 				}else{
@@ -734,15 +649,38 @@ public class View {
 		}
 	}
 
-	private Object defaultNetwork() {
-		// TODO Auto-generated method stub
-		return null;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//						WILL BE CHANGED DEPENDING ON GRAPHIC IMPLEMENTATION!!!!!!!!!!!
+	//
+	private void defaultNetwork() 
+	{		
+		frequency = 5;
+		nodes.add("A");nodes.add("B");nodes.add("C");nodes.add("D");nodes.add("E");
+		edges.add("A->B");edges.add("A->C");edges.add("A->E");edges.add("B->D");edges.add("B->E");
+		edges.add("C->D");
+		
+		addNodesToTable(nodes);
+		
+		network.createNodes(nodes);
+		network.addNeighbors(network.getSimulationNodes(), edges);
+		network.setFrequency(frequency);
+		network.setAlgorithm(ALGORITHM.RANDOM);
 	}
 
-	private Object newNetwork() {
-		// TODO Auto-generated method stub
-		return null;
+	private void newNetwork() 
+	{
+		messageList.clear();
+		tableModel.setNumRows(0);
+		tableModel.setColumnCount(0);
+		table.revalidate();
+		frequency = 0;
+		nodes.clear();
+		edges.clear();
+		algorithm = null;
+		
+		setStatus("Creating a new Network");
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public ALGORITHM getAlgorithm() {
 		return algorithm;
@@ -754,10 +692,121 @@ public class View {
 	
 	protected void createPopup(ListSelectionEvent e) {
 		Message message = (Message)list.getSelectedValue();
-		int response = JOptionPane.showConfirmDialog(null,message.toString(),message.toString(),
+		int response = JOptionPane.showConfirmDialog(null,message.getSource() + "->" + message.getDestination(),message.toString(),
 				JOptionPane.PLAIN_MESSAGE,JOptionPane.CLOSED_OPTION);
 		if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) {
 			//list.clearSelection(); //TODO
 		}
+	}
+	
+	public void addNodesToTable(ArrayList<String> list)
+	{
+		for(int i = 0; i < list.size(); i++)
+		{
+			String node = list.get(i);
+			tableModel.addColumn(node);
+		}
+	}
+	
+	public void addMessagesToChart()
+	{
+		for(Message m : network.totalMessageList)
+		{
+			if(!messageList.contains(m))
+			{
+				messageList.addElement(m);
+			}
+		}
+	}
+	
+	public void addMessagesToTable()
+	{
+		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
+		for(String n : nodes)
+		{
+			ArrayList<String> nodeMessages = new ArrayList<>();
+			
+			for(Message m : network.currentMessageList)
+			{
+				if(m.getCurrentNode().toString().equals(n))
+				{
+					nodeMessages.add(m.toString());
+				}
+			}
+			allMessages.add(nodes.indexOf(n), nodeMessages);
+		}
+		tableModel.addRow(allMessages.toArray());
+	}
+
+	private void showTestCases() {
+		JOptionPane.showMessageDialog(frame, TEST_CASES);
+		setStatus("");
+	}
+
+	private void showUML() {
+		File file = new File(UML);
+		if(file.exists()){
+			try {
+				Desktop.getDesktop().open(file);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(frame,
+						COUTLD_NOT_OPEN_FILE,
+			    	    "WARNING",
+			    	    JOptionPane.ERROR_MESSAGE);
+			}
+		}else{
+			JOptionPane.showMessageDialog(frame,
+					FILE_DOES_NOT_EXIST,
+		    	    "WARNING",
+		    	    JOptionPane.ERROR_MESSAGE);
+		}
+		setStatus("");
+	}
+
+	private void showJavadoc() {
+		File index = new File(JAVADOC1);
+		File classes = new File(JAVADOC2);
+		if(index.exists() && classes.exists()){
+			try {
+				Desktop.getDesktop().open(index);
+				Desktop.getDesktop().open(classes);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(frame,
+			    	    COUTLD_NOT_OPEN_FILE,
+			    	    "WARNING",
+			    	    JOptionPane.ERROR_MESSAGE);
+			}
+		}else{
+			JOptionPane.showMessageDialog(frame,
+					FILE_DOES_NOT_EXIST,
+		    	    "WARNING",
+		    	    JOptionPane.ERROR_MESSAGE);
+		}
+		setStatus("");
+	}
+
+	private void showAbout() {
+		JOptionPane.showMessageDialog(frame, ABOUT);
+		setStatus("");
+	}
+
+	private void showREADME() {
+		File file = new File(README);
+		if(file.exists()){
+			try {
+				Desktop.getDesktop().open(file);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(frame,
+			    	    COUTLD_NOT_OPEN_FILE,
+			    	    "WARNING",
+			    	    JOptionPane.ERROR_MESSAGE);
+			}
+		}else{
+			JOptionPane.showMessageDialog(frame,
+					FILE_DOES_NOT_EXIST,
+		    	    "WARNING",
+		    	    JOptionPane.ERROR_MESSAGE);
+		}
+		setStatus("");
 	}
 }

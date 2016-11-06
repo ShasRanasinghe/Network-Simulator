@@ -17,9 +17,17 @@ public class Simulation {
 	private int averageHops;
 	private int packets;
 	private int totalMessages;
+	private int frequency;
+	
+	private ALGORITHM algorithm;
+	private Graph selectedAlgorithm;
 	
 	// Nodes of the simulation
 	private ArrayList<Node> simulationNodes;
+	
+	// Message instance of the simulation (returned after the algorithm finishes a set amount of steps)
+	public ArrayList<Message> totalMessageList;
+	public ArrayList<Message> currentMessageList;
 	
 	/**
 	 * Constructor initializes the simulation
@@ -29,9 +37,10 @@ public class Simulation {
 		averageHops = 0;
 		packets = 0;
 		totalMessages = 0;
+		frequency = 0;
 		simulationNodes = new ArrayList<Node>();
 	}
-
+	
 	/**
 	 * @param nodeIDs Array list of node IDs
 	 */
@@ -79,10 +88,11 @@ public class Simulation {
      * @param allNodes Array list of nodes
      * @param edgeIDs Array list of edge IDs
 	 */
-	public void addNeighbors(ArrayList<Node> allNodes, ArrayList<String> edgeIDs) {
-
+	public void addNeighbors(ArrayList<Node> allNodes, ArrayList<String> edgeIDs) 
+	{
 		//Edges already validated when passed in
-		for(String edgeID : edgeIDs){
+		for(String edgeID : edgeIDs)
+		{
 		    String[] splitEdge = edgeID.split("->");
 		    String nodeOneID = splitEdge[0]; 
 		    String nodeTwoID = splitEdge[1];
@@ -94,6 +104,39 @@ public class Simulation {
 			createLink(nodeOne, nodeTwo);
 		    }
 		}
+	}
+	
+	public void runAlgorithm(int stepSize)
+	{
+		if(frequency == 0 || frequency == 1)
+		{
+			// ERROR: invalid message creation frequency
+			System.out.println("ERROR: invalid message creation frequency (please select a frequency not equal to 0 or 1)");
+		}
+		selectedAlgorithm.run(stepSize);
+		retrieveState();
+	}
+	
+	/*public void runFullAlgorithm()
+	{
+		
+		while(selectedAlgorithm.getNumberOfCurrentMessages() != 0)
+		{
+			runAlgorithm(1);
+		}
+		
+		retrieveState();
+	}*/
+	
+	public void retrieveState()
+	{
+		totalMessageList = selectedAlgorithm.getCompleteMessageList();
+		currentMessageList = selectedAlgorithm.getCurrentMessageList();
+		
+		setPackets(selectedAlgorithm.getTotalHops());
+		setTotalMessages(totalMessageList.size());
+		
+		setAverageHops(packets/totalMessages);
 	}
 	
 	
@@ -154,6 +197,27 @@ public class Simulation {
 		this.totalMessages = totalMessages;
 	}
 
+	public void setFrequency(int frequency) {
+		this.frequency = frequency;
+	}
+
+	public void setAlgorithm(ALGORITHM algorithm) 
+	{
+		this.algorithm = algorithm;
+		switch(this.algorithm)
+		{
+			case FLOODING: break;// No Flooding Algorithm implemented yet
+				
+			case SHORTESTPATH:	break;// No Shortest Path Algorithm implemented yet
+				
+			case CUSTOM:	break;// No Custom Algorithm implemented yet
+				
+			default: selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
+					 currentMessageList = selectedAlgorithm.messageQueue;
+					 break;
+		}			
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		MAIN METHOD FOR ENTIRE NETWORK!!!!																	 //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,10 +263,10 @@ public class Simulation {
 		// If the user wants to run the random algorithm
 		if(userAlgorithm == ALGORITHM.RANDOM)
 		{
-			RandomAlgorithm randomAlgorithm = new RandomAlgorithm(frequency);
+			RandomAlgorithm randomAlgorithm = new RandomAlgorithm(simulation.simulationNodes, frequency);
 			
 			// USER MUST INPUT THE STEP SIZE!!!!!!!!!!!!!!!!!!!!!!!!!!
-			randomAlgorithm.run(simulation.simulationNodes, 50);
+			randomAlgorithm.run(50);
 			
 			//Metrics
 			simulation.setTotalMessages(randomAlgorithm.completeMessageList.size());
