@@ -26,7 +26,7 @@ The project is divided into 4 iterations, each of which correspond to a mileston
 
 ###How to Run
 ----------------------------------------------
-INSERT STEPS HERE
+INSERT STEPS HERE from DOC
 
 
 ###Notes
