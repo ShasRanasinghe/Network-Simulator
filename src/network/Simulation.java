@@ -40,6 +40,7 @@ public class Simulation {
 		totalMessages = 0;
 		frequency = 0;
 		simulationNodes = new ArrayList<Node>();
+		totalMessageList = new ArrayList<Message>();
 	}
 	
 	/**

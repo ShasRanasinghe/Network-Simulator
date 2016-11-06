@@ -73,6 +73,11 @@ public class View {
 	private ArrayList<String> edges;
 	private ALGORITHM algorithm;
 	
+	//Metrics
+	JTextField totalMessagesMetric = new JTextField(18);
+	JTextField averageHopsMetric = new JTextField(18);
+	JTextField frequencyMetric = new JTextField(18);
+	
 	
 	//GUI
 	private JFrame frame;
@@ -202,18 +207,15 @@ public class View {
 		outputsPanel = new JPanel();
 		
 		//Metric block
-		JTextField metric1 = new JTextField(20);
-		JTextField metric2 = new JTextField(20);
-		JTextField frequencyMetric = new JTextField(20);
-		outputsPanel.add(new JLabel("Metric 1"));
-		outputsPanel.add(metric1);
-		outputsPanel.add(new JLabel("Metric 2"));
-		outputsPanel.add(metric2);
+		outputsPanel.add(new JLabel("Total Messages:"));
+		outputsPanel.add(totalMessagesMetric);
+		outputsPanel.add(new JLabel("Average amount of Hops:"));
+		outputsPanel.add(averageHopsMetric);
 		outputsPanel.add(new JLabel("Frequency"));
 		outputsPanel.add(frequencyMetric);
-		metric1.setText("walala...");
-		metric2.setText("running..");
-		frequencyMetric.setText("" + frequency);
+		totalMessagesMetric.setEditable(false);
+		averageHopsMetric.setEditable(false);
+		frequencyMetric.setEditable(false);
 		//Metric Block Ends
 		
 		//status label
@@ -275,6 +277,7 @@ public class View {
 		frame.setVisible(true);
 		
 		defaultOption();
+		updateMetrics();
 	}
 	
 
@@ -421,6 +424,8 @@ public class View {
 			network.runAlgorithm(1);
 			addMessagesToChart();
 			addMessagesToTable();
+			updateMetrics();
+			table.changeSelection(table.getRowCount() - 1, 0, false, false);
 		}
 	}
 
@@ -433,7 +438,7 @@ public class View {
 				network.runAlgorithm(1);
 				addMessagesToChart();
 				addMessagesToTable();
-				
+				updateMetrics();
 				table.changeSelection(table.getRowCount() - 1, 0, false, false);
 			}
 		}
@@ -658,6 +663,7 @@ public class View {
 	    	setStatus("Frequency Not Set");
 	    }else{
 	    	setStatus("Frequency set to: " + frequency);
+	    	frequencyMetric.setText("" + frequency);
 			this.frequency = Integer.parseInt(frequency);
 	    }
 	}
@@ -798,12 +804,23 @@ public class View {
 	public boolean checkFullInitialization()
 	{
 		Integer tempF = frequency;
-		if(nodes.size() != 0 && edges.size() != 0 && tempF != null && algorithm != null)
+		if((frequency != 0 || tempF != null) && algorithm != null)
 		{
 			return true;
 		}
-		return false;
-
+		else
+		{
+			algorithm = ALGORITHM.RANDOM;
+			frequency = 5;
+			return true;
+		}
+	}
+	
+	public void updateMetrics()
+	{
+		totalMessagesMetric.setText("" + network.totalMessageList.size());
+		averageHopsMetric.setText("" + network.getAverageHops());
+		frequencyMetric.setText("" + frequency);
 	}
 
 	private void showTestCases() {
