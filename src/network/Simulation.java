@@ -1,6 +1,7 @@
 package network;
 
 import java.util.*;
+import java.lang.Integer;
 
 /**
  * 
@@ -108,7 +109,8 @@ public class Simulation {
 	
 	public void runAlgorithm(int stepSize)
 	{
-		if(frequency == 0 || frequency == 1)
+		Integer tempF = frequency;
+		if(frequency == 0 || frequency == 1 && tempF != null)
 		{
 			// ERROR: invalid message creation frequency
 			System.out.println("ERROR: invalid message creation frequency (please select a frequency not equal to 0 or 1)");

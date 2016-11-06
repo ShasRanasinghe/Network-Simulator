@@ -386,9 +386,12 @@ public class View {
 
 	private void stepForward() 
 	{
-		network.runAlgorithm(1);
-		addMessagesToChart();
-		addMessagesToTable();
+		if(checkFullInitialization())
+		{
+			network.runAlgorithm(1);
+			addMessagesToChart();
+			addMessagesToTable();
+		}
 	}
 
 	private void run() 
@@ -658,6 +661,17 @@ public class View {
 		edges.add("A->B");edges.add("A->C");edges.add("A->E");edges.add("B->D");edges.add("B->E");
 		edges.add("C->D");
 		
+		for(String s : nodes)
+		{
+			gp.NewNodeAction(s);
+		}
+		gp.ConnectAction("A","B");
+		gp.ConnectAction("A","C");
+		gp.ConnectAction("A","E");
+		gp.ConnectAction("B","D");
+		gp.ConnectAction("B","E");
+		gp.ConnectAction("C","D");
+		
 		addNodesToTable(nodes);
 		
 		network.createNodes(nodes);
@@ -677,6 +691,10 @@ public class View {
 		edges.clear();
 		algorithm = null;
 		
+		this.network = new Simulation();
+		
+		gp.ClearAction();
+		
 		setStatus("Creating a new Network");
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -689,12 +707,18 @@ public class View {
 		return frequency;
 	}
 	
-	protected void createPopup(ListSelectionEvent e) {
+	protected void createPopup(ListSelectionEvent e) 
+	{
 		Message message = (Message)list.getSelectedValue();
-		int response = JOptionPane.showConfirmDialog(null,message.getSource() + "->" + message.getDestination(),message.toString(),
-				JOptionPane.PLAIN_MESSAGE,JOptionPane.CLOSED_OPTION);
-		if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) {
-			//list.clearSelection(); //TODO
+		if(list.getSelectedIndex() != -1)
+		{
+			int response = JOptionPane.showConfirmDialog(null,message.toString(),message.toString(),
+														JOptionPane.PLAIN_MESSAGE,
+														JOptionPane.CLOSED_OPTION);
+			if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) 
+			{
+				list.clearSelection();
+			}
 		}
 	}
 	
@@ -735,6 +759,18 @@ public class View {
 			allMessages.add(nodes.indexOf(n), nodeMessages);
 		}
 		tableModel.addRow(allMessages.toArray());
+	}
+	
+	
+	public boolean checkFullInitialization()
+	{
+		Integer tempF = frequency;
+		if(nodes.size() != 0 && edges.size() != 0 && tempF != null && algorithm != null)
+		{
+			return true;
+		}
+		return false;
+
 	}
 
 	private void showTestCases() {
