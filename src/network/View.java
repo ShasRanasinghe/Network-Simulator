@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
@@ -76,7 +77,7 @@ public class View {
 	//GUI
 	private JFrame frame;
 	private GraphicPanel gp;
-	private JTextArea outputsPanel;
+	private JPanel outputsPanel;
 	private JPanel playPanel;
 	private JPanel toolBar;
 	private JLabel statusLabel;
@@ -140,7 +141,7 @@ public class View {
 		
 		makeMenu(frame);
 		
-		contentPane.setLayout(new BorderLayout(50,50));
+		contentPane.setLayout(new BorderLayout());
 		
 		//tool bar
 		
@@ -196,11 +197,35 @@ public class View {
 		//output bar
 		
 		JPanel south = new JPanel();
-		south.setLayout(new GridLayout(0,1));
-		outputsPanel = new JTextArea("hello");
+		//south
+		south.setLayout(new BorderLayout());
+		outputsPanel = new JPanel();
+		
+		//Metric block
+		JTextField metric1 = new JTextField(20);
+		JTextField metric2 = new JTextField(20);
+		JTextField frequencyMetric = new JTextField(20);
+		outputsPanel.add(new JLabel("Metric 1"));
+		outputsPanel.add(metric1);
+		outputsPanel.add(new JLabel("Metric 2"));
+		outputsPanel.add(metric2);
+		outputsPanel.add(new JLabel("Frequency"));
+		outputsPanel.add(frequencyMetric);
+		metric1.setText("walala...");
+		metric2.setText("running..");
+		frequencyMetric.setText("" + frequency);
+		//Metric Block Ends
+		
+		//status label
 		statusLabel = new JLabel();
-		south.add(outputsPanel);
-		south.add(statusLabel);
+		TitledBorder title;
+		title = BorderFactory.createTitledBorder("STATUS");
+		statusLabel.setBorder(title);
+		south.add(outputsPanel,BorderLayout.CENTER);
+		south.add(statusLabel,BorderLayout.SOUTH);
+		statusLabel.setText(" ");
+		//status label block ends
+		
 		contentPane.add(south,BorderLayout.SOUTH);
 		
 		//set list bar
@@ -215,6 +240,11 @@ public class View {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(e -> createPopup(e));
 		listBar.add(list);
+		list.setCellRenderer(new messageListCellRenderer());
+		east.setPreferredSize(new Dimension(100,0));
+		scrollPaneList = new JScrollPane(east,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
+		contentPane.add(scrollPaneList,BorderLayout.EAST);
 		
 		//set list renderer
 		list.setCellRenderer(new messageListCellRenderer());
@@ -396,13 +426,16 @@ public class View {
 
 	private void run() 
 	{
-		while(network.currentMessageList.size() != 0)
+		if(checkFullInitialization())
 		{
-			network.runAlgorithm(1);
-			addMessagesToChart();
-			addMessagesToTable();
-			
-			table.changeSelection(table.getRowCount() - 1, 0, false, false);
+			while(network.currentMessageList.size() != 0)
+			{
+				network.runAlgorithm(1);
+				addMessagesToChart();
+				addMessagesToTable();
+				
+				table.changeSelection(table.getRowCount() - 1, 0, false, false);
+			}
 		}
 	}
 
