@@ -16,17 +16,23 @@ import java.util.*;
  * ALL ALGORITHM CLASSES EXTEND THE SUPERCLASS GRAPH, ALLOWING ALL ALGORITHMS TO SHARE SPECIFIC BEHAVIOR AND VARIABLES
  * 
  */
-
 public class RandomAlgorithm extends Graph{
 	
 	// Total hops that occur during the RANDOM algorithm
-	private int totalRandomHops;
+	private int totalRandomHops = 0;
 	// A copy of the messageQueue to remove concurrency issues
 	private ArrayList<Message> currentMessageQueue;
 	
 	// ALL OTHER INSTANCE VARIABLES INHERITED FROM GRAPH!!!!
 	
 	
+	/**
+	 * @return the current message Queue
+	 */
+	public ArrayList<Message> getCurrentMessageQueue() {
+		return currentMessageQueue;
+	}
+
 	public RandomAlgorithm(int frequency)
 	{
 		// INHERITED FROM GRAPH!!!!!
@@ -108,6 +114,17 @@ public class RandomAlgorithm extends Graph{
 	public int getTotalHops()
 	{
 		return totalRandomHops;
+	}	
+	//TD
+	@Override
+	public boolean equals(Object obj){
+		RandomAlgorithm randomalgorithm = (RandomAlgorithm)obj;
+		if(this.getTotalHops() == randomalgorithm.getTotalHops()
+				&& this.completeMessageList.equals(randomalgorithm.getCurrentMessageQueue()))
+		{
+			return true;
+		}
+		return false;
 	}
 
 }

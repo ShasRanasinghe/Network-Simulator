@@ -31,6 +31,14 @@ public class Simulation {
 		totalMessages = 0;
 		simulationNodes = new ArrayList<Node>();
 	}
+	
+	public Simulation(Simulation simulation)
+	{
+		this.averageHops = simulation.getAverageHops();
+		this.packets = simulation.getPackets();
+		this.totalMessages = simulation.getTotalMessages();
+		this.simulationNodes = simulation.getSimulationNodes();
+	}
 
 	/**
 	 * @param nodeIDs Array list of node IDs
@@ -121,6 +129,14 @@ public class Simulation {
 	public int getAverageHops() 
 	{
 		return averageHops;
+	}
+	
+	/**
+	 * @return The total number of messages
+	 */
+	public int getTotalMessages()
+	{
+		return totalMessages;
 	}
 
 	/**
@@ -217,5 +233,18 @@ public class Simulation {
 		controller.printTotalPackets(simulation.getPackets());
 		System.out.println("total number of messages created: " + simulation.totalMessages);
 		//graph.printTable();
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Simulation simulation = (Simulation)obj;
+		if(this.getAverageHops() == simulation.getAverageHops() 
+				&& this.getPackets() == simulation.getPackets() 
+				&& this.getTotalMessages() == simulation.getTotalMessages()
+				&& this.getSimulationNodes().equals(simulation.getSimulationNodes()))
+		{
+			return true;
+		}
+		return false;
 	}
 }

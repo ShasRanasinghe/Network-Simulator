@@ -24,6 +24,13 @@ public class Message {
 		this.destination = destination;
 		this.hopCount = 0;
 	}
+	
+	public Message(Message message)
+	{
+		this.source = message.getSource();
+		this.destination = message.getDestination();
+		this.hopCount = message.getHopCount();
+	}
 
 	/**
 	 * @return The source of the message
@@ -78,6 +85,18 @@ public class Message {
 	public void incrumentHopCount()
 	{
 		hopCount++;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Message message = (Message)obj;
+		if(this.getSource().equals(message.getSource()) 
+				&& this.getDestination().equals(message.getDestination()) 
+				&& this.getHopCount() == message.getHopCount())
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	

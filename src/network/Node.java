@@ -27,6 +27,12 @@ public class Node
 		this.thehood = new ArrayList<Edge>();
 	}
 	
+	public Node(Node node)
+	{
+		this.id = node.getID();
+		this.thehood = node.getNeighbors();
+	}
+	
 	
 	/**
 	 * @param edge This method adds an edge to a Vertex
@@ -94,6 +100,14 @@ public class Node
 	public ArrayList<Edge> getNeighbors()
 	{
 		return thehood;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Node node = (Node)obj;
+		if(this.id.equals(node.getID()) 
+				&& this.thehood.equals(node.getNeighbors())){ return true;}
+		return false;
 	}
 	
 }
