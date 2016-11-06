@@ -22,8 +22,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import network.GraphPanel.GraphicNode;
-
 public class View {
 	
 	//Model
@@ -83,7 +81,7 @@ public class View {
 	
 	//GUI
 	private JFrame frame;
-	private GraphPanel gp;
+	private GraphicPanel gp;
 	private JTextArea outputsPanel;
 	private JPanel playPanel;
 	private JPanel toolBar;
@@ -180,7 +178,7 @@ public class View {
 		
 		JPanel center = new JPanel();
 		center.setLayout(new BorderLayout());
-		gp = new GraphPanel();
+		gp = new GraphicPanel();
 		center.add(new JScrollPane(gp), BorderLayout.CENTER);
 		center.add(west,BorderLayout.WEST);
 		
@@ -519,9 +517,12 @@ public class View {
 					"Create New Edge", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
 				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
-					edge = startNode.getText() + "->" + endNode.getText();
+					String startNodeID = startNode.getText();
+					String endNodeID = endNode.getText();
+					edge = startNodeID + "->" + endNodeID;
 					if(!edges.contains(edge)){
 						edges.add(edge);
+						gp.ConnectAction(startNodeID, endNodeID);
 						setStatus("Edge " + edge + " Created");
 						break;
 					}else{
@@ -604,12 +605,7 @@ public class View {
 				if(!nodes.contains(nodeID)){
 					nodes.add(nodeID);
 					tableModel.addColumn(nodeID);
-					//gp.NewNodeAction("New");
-					Point p = gp.mousePt.getLocation();
-		            GraphicNode n = new GraphicNode(p, gp.radius, gp.color);
-		            n.setSelected(true);
-		            gp.graphicNodes.add(n);
-		            gp.repaint();    
+		            gp.NewNodeAction(nodeID);
 		            
 					setStatus("Node " + nodeID + " Created");
 					break;
