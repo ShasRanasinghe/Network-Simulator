@@ -3,8 +3,10 @@ package network;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Scrollbar;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -19,6 +21,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+
+import network.GraphPanel.GraphicNode;
 
 public class View {
 	
@@ -79,12 +83,11 @@ public class View {
 	
 	//GUI
 	private JFrame frame;
-	private JPanel networkPanel;
+	private GraphPanel gp;
 	private JTextArea outputsPanel;
 	private JPanel playPanel;
 	private JPanel toolBar;
 	private JLabel statusLabel;
-	private JScrollPane scrollPaneCenter;
 	private JScrollPane scrollPaneList;
 	private JScrollPane scrollPaneTable;
 	private JButton newNode;
@@ -177,10 +180,8 @@ public class View {
 		
 		JPanel center = new JPanel();
 		center.setLayout(new BorderLayout());
-		networkPanel = new JPanel();
-		scrollPaneCenter = new JScrollPane(networkPanel);
-		center.add(scrollPaneCenter,BorderLayout.CENTER);
-		
+		gp = new GraphPanel();
+		center.add(new JScrollPane(gp), BorderLayout.CENTER);
 		center.add(west,BorderLayout.WEST);
 		
 		playPanel = new JPanel();
@@ -196,7 +197,7 @@ public class View {
 		
 		playPanel.add(stepBack);
 		playPanel.add(run);
-		playPanel.add(stepNext);
+		playPanel.add(stepNext);	
 		
 		contentPane.add(center,BorderLayout.CENTER);
 		
@@ -253,6 +254,7 @@ public class View {
 		
 		defaultOption();
 	}
+	
 
 	private void setStatus(String str) {
 		statusLabel.setText(str);
@@ -602,6 +604,13 @@ public class View {
 				if(!nodes.contains(nodeID)){
 					nodes.add(nodeID);
 					tableModel.addColumn(nodeID);
+					//gp.NewNodeAction("New");
+					Point p = gp.mousePt.getLocation();
+		            GraphicNode n = new GraphicNode(p, gp.radius, gp.color);
+		            n.setSelected(true);
+		            gp.graphicNodes.add(n);
+		            gp.repaint();    
+		            
 					setStatus("Node " + nodeID + " Created");
 					break;
 				}else{
