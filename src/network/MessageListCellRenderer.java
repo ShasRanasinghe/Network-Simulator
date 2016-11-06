@@ -20,7 +20,7 @@ public class MessageListCellRenderer extends JLabel implements ListCellRenderer<
 	}
 	
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		setText(((Message) value).toString());
 		if(!isSelected){
 			if(((Message) value).isRunning()){
