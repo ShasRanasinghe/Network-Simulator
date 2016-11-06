@@ -48,10 +48,30 @@ public class Simulation {
 	 */
 	public void createNodes(ArrayList<String> nodeIDs) 
 	{
-		for(String nodeID : nodeIDs)
+		simulationNodes.clear();
+	
+		for(String nodeId : nodeIDs)
 		{
-			simulationNodes.add(new Node(nodeID));
+			Node temp = new Node(nodeId);
+			simulationNodes.add(temp);
 		}
+		/*
+		if(simulationNodes.isEmpty())
+		{
+			Node newNode = new Node(nodeIDs.get(0));
+			simulationNodes.add(newNode);
+		}
+		else
+		{
+			int i = 0;
+			for(String nodeID : nodeIDs)
+			{
+				if(!simulationNodes.get(i).getID().equals(nodeID))
+				{
+					
+				}
+			}
+		} */
 	}
 
     /**

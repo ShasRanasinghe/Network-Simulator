@@ -22,6 +22,11 @@ public class GraphicPanel extends JComponent {
     private static final int HIGH = 480;
     private static final Color color = new Color(0x1E12FF); //Color blue
     private static final int radius = 20;
+    private int OFFSETRIGHT = 600;
+    private int OFFSETLEFT = radius * 3;
+    private int OFFSETUP = radius * 3;
+    private int OFFSETDOWN = 200;
+    private int nodeCount = 0;
     private Rectangle mouseRect = new Rectangle();
     private boolean selecting = false;
     private Point mousePt = new Point(WIDE / 2, HIGH / 2);
@@ -137,8 +142,10 @@ public class GraphicPanel extends JComponent {
      */
     public void NewNodeAction(){
     	
+    	nodeCount++;
 	    GraphicNode.selectNone(graphicNodes);
-	    Point p = getMousePoint();
+	    Point p = offsetP();
+
 	    //Retrieves node ID
 	    String nodeID = "";
 		JTextField id = new JTextField(1);
@@ -166,8 +173,9 @@ public class GraphicPanel extends JComponent {
      */
     public void NewNodeAction(String nodeID){
 	
+    	nodeCount++;
 	    GraphicNode.selectNone(graphicNodes);
-	    Point p = getMousePoint();
+	    Point p = offsetP();
 	    GraphicNode n = new GraphicNode(nodeID, p, radius, color);
 	    n.setSelected(true);
 	    graphicNodes.add(n);
@@ -274,6 +282,36 @@ public class GraphicPanel extends JComponent {
         graphicNodes.clear();
         graphicEdges.clear();
         repaint();
+        
+        OFFSETRIGHT = 600;
+        OFFSETLEFT = radius * 3;
+        OFFSETUP = radius * 3;
+        OFFSETDOWN = 200;
+        nodeCount = 0;
+    }
+    
+    /**
+     * 
+     */
+    public Point offsetP()
+    {
+    	Point p = getMousePoint();
+    	
+    	if(nodeCount % 2 == 0)
+    	{
+    		p.setLocation(OFFSETRIGHT, OFFSETUP);
+    		OFFSETRIGHT -= radius * 3;
+    		OFFSETUP += radius * 3;
+    	}
+    	else
+    	{
+    		p.setLocation(OFFSETLEFT, OFFSETDOWN);
+    		OFFSETLEFT += radius * 3;
+    		OFFSETDOWN -= radius *3;
+    	}
+    	
+    	
+    	return p;
     }
     
     /**

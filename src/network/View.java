@@ -557,6 +557,11 @@ public class View {
 					edge = startNodeID + "->" + endNodeID;
 					if(!edges.contains(edge)){
 						edges.add(edge);
+						
+						Node temp1 = network.getNodeGivenID(network.getSimulationNodes(), startNodeID);
+						Node temp2 = network.getNodeGivenID(network.getSimulationNodes(), endNodeID);
+						network.createLink(temp1, temp2);
+						
 						gp.ConnectAction(startNodeID, endNodeID);
 						setStatus("Edge " + edge + " Created");
 						break;
@@ -639,6 +644,7 @@ public class View {
 			}else{
 				if(!nodes.contains(nodeID)){
 					nodes.add(nodeID);
+					network.createNodes(nodes);
 					tableModel.addColumn(nodeID);
 		            gp.NewNodeAction(nodeID);
 		            
@@ -751,7 +757,7 @@ public class View {
 		Message message = (Message)list.getSelectedValue();
 		if(list.getSelectedIndex() != -1)
 		{
-			int response = JOptionPane.showConfirmDialog(null,message.toString(),message.toString(),
+			int response = JOptionPane.showConfirmDialog(null,message.getSource() + " -> " + message.getDestination(),message.toString(),
 														JOptionPane.PLAIN_MESSAGE,
 														JOptionPane.CLOSED_OPTION);
 			if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) 
@@ -804,7 +810,7 @@ public class View {
 	public boolean checkFullInitialization()
 	{
 		Integer tempF = frequency;
-		if((frequency != 0 || tempF != null) && algorithm != null)
+		if((frequency != 0 && tempF != null) && algorithm != null)
 		{
 			return true;
 		}
@@ -812,6 +818,8 @@ public class View {
 		{
 			algorithm = ALGORITHM.RANDOM;
 			frequency = 5;
+			network.setFrequency(frequency);
+			network.setAlgorithm(algorithm);
 			return true;
 		}
 	}
