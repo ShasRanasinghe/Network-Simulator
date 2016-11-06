@@ -25,17 +25,12 @@ public class GraphicPanel extends JComponent {
     private Rectangle mouseRect = new Rectangle();
     private boolean selecting = false;
     private Point mousePt = new Point(WIDE / 2, HIGH / 2);
-    public JPopupMenu popup;
-    public JMenuItem newNode;
-    public JMenuItem clearAll;
-    public JMenuItem connect;
-    public JMenuItem delete;
     public List<GraphicNode> graphicNodes;
     public List<GraphicNode> selected;
     public List<GraphicEdge> graphicEdges;
 
     /**
-     * Runs the GraphPanel
+     * Runs the GraphicPanel
      * @param args Arguments for main method
      * @throws Exception when error is found
      */
@@ -43,7 +38,7 @@ public class GraphicPanel extends JComponent {
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                JFrame f = new JFrame("GraphPanel");
+                JFrame f = new JFrame("GraphicPanel");
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 GraphicPanel gp = new GraphicPanel();
                 f.add(new JScrollPane(gp), BorderLayout.CENTER);
@@ -60,25 +55,9 @@ public class GraphicPanel extends JComponent {
      */
     public GraphicPanel() {
     	//Initialize
-    	popup = new JPopupMenu();
-        newNode = new JMenuItem("New");
-        clearAll = new JMenuItem("Clear");
-        connect = new JMenuItem("Connect");
-        delete = new JMenuItem("Delete Node");
         graphicNodes = new ArrayList<>();
         selected = new ArrayList<>();
         graphicEdges = new ArrayList<>();
-        
-        //Add action listeners
-        newNode.addActionListener(e-> NewNodeAction());
-        clearAll.addActionListener(e-> ClearAction());
-        connect.addActionListener(e-> ConnectAction());
-        delete.addActionListener(e-> DeleteAction());
-
-        popup.add(newNode);
-        popup.add(connect);
-        popup.add(delete);
-        popup.add(clearAll);
     	
         this.setOpaque(true);
         this.addMouseListener(new MouseHandler());
@@ -128,7 +107,6 @@ public class GraphicPanel extends JComponent {
     public int getNodeRadius(){
     	return radius;
     }
-    
 	
     /**
      * Controller for New Node Action that adds a node from pop up menu
@@ -186,8 +164,8 @@ public class GraphicPanel extends JComponent {
 	    if (selected.size() > 2){
 			JPanel idPanel = new JPanel();
 			idPanel.setLayout(new BoxLayout(idPanel, BoxLayout.Y_AXIS));
-			idPanel.add(new JLabel("You may only connect two nodes"));
-		    JOptionPane.showConfirmDialog(null, idPanel, "New node:", JOptionPane.OK_CANCEL_OPTION);
+			idPanel.add(new JLabel("You may only connect two nodes together."));
+		    JOptionPane.showConfirmDialog(null, idPanel, "Error", JOptionPane.OK_CANCEL_OPTION);
 	    }
 	    if (selected.size() == 2) {
 	        for (int i = 0; i < selected.size() - 1; ++i) {
@@ -252,6 +230,23 @@ public class GraphicPanel extends JComponent {
     }
     
     /**
+     * Deletes a single graphic node from graphic panel given ID
+     * @param nodeID ID of graphic node to be deleted
+     */
+    public void removeGraphicNode(String nodeID) {
+        
+    	ListIterator<GraphicNode> iter = graphicNodes.listIterator();
+        while (iter.hasNext()) {
+            GraphicNode n = iter.next();
+            if (n.getNodeID().equals(nodeID)) {
+                deleteEdges(n);
+                iter.remove();
+            }
+        }
+        repaint();
+    }
+    
+    /**
      * Deletes edges that are connected to the node to be deleted
      * @param n node to be deleted
      */
@@ -266,6 +261,22 @@ public class GraphicPanel extends JComponent {
     }
     
     /**
+     * Deletes an edges given edge ID
+     * @param edgeID ID of edge to be deleted
+     */
+    public void removeGraphicEdge(String edgeID) {
+        ListIterator<GraphicEdge> iter = graphicEdges.listIterator();
+        while (iter.hasNext()) {
+            GraphicEdge e = iter.next();
+            if (e.getEdgeID().equals(edgeID)) {
+                iter.remove();
+            }
+        }
+        repaint();
+    }
+    
+    
+    /**
      * Controller for Clear Action that clears the entire panel
      *
      */
@@ -274,6 +285,28 @@ public class GraphicPanel extends JComponent {
         graphicNodes.clear();
         graphicEdges.clear();
         repaint();
+    }
+    
+    /**
+     * Populates the selected nodes list
+     */
+    public void populateSelectedNodesList(){
+    	GraphicNode.getSelected(graphicNodes, selected);
+    }
+    
+    /**
+     * Returns the list of selected nodes
+     */
+    public List<GraphicNode> getSelectedNodesList(){
+    	return selected;
+    }
+    
+    
+    /**
+     * Returns the number of nodes that are selected
+     */
+    public int numberOfSelectedNodes(){
+    	return selected.size();
     }
     
     /**
@@ -286,9 +319,6 @@ public class GraphicPanel extends JComponent {
         public void mouseReleased(MouseEvent e) {
             selecting = false;
             mouseRect.setBounds(0, 0, 0, 0);
-            if (e.isPopupTrigger()) {
-                showPopup(e);
-            }
             e.getComponent().repaint();
         }
 
@@ -299,7 +329,6 @@ public class GraphicPanel extends JComponent {
                 GraphicNode.selectToggle(graphicNodes, mousePt);
             } else if (e.isPopupTrigger()) {
                 GraphicNode.selectOne(graphicNodes, mousePt);
-                showPopup(e);
             } else if (GraphicNode.selectOne(graphicNodes, mousePt)) {
                 selecting = false;
             } else {
@@ -307,10 +336,6 @@ public class GraphicPanel extends JComponent {
                 selecting = true;
             }
             e.getComponent().repaint();
-        }
-
-        public void showPopup(MouseEvent e) {
-            popup.show(e.getComponent(), e.getX(), e.getY());
         }
     }
 

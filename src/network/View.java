@@ -92,6 +92,8 @@ public class View {
 	private JButton newEdge;
 	private JButton freqButton;
 	private JButton algorithmButton;
+	private JButton deleteNodeButton;
+	private JButton deleteEdgeButton;
 	private JButton run;
 	private JButton stepNext;
 	private JButton stepBack;
@@ -169,6 +171,14 @@ public class View {
 		algorithmButton.addActionListener(e -> setAlgorithm());
 		toolBar.add(algorithmButton);
 		
+		deleteNodeButton = new JButton("Delete Node");
+		deleteNodeButton.addActionListener(e -> deleteNode());
+		toolBar.add(deleteNodeButton);
+		
+		deleteEdgeButton = new JButton("Delete Edge");
+		deleteEdgeButton.addActionListener(e -> deleteEdge());
+		toolBar.add(deleteEdgeButton);
+		
 		JPanel west = new JPanel();
 		west.setLayout(new FlowLayout(FlowLayout.CENTER));
 		west.add(toolBar);
@@ -242,14 +252,14 @@ public class View {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(e -> createPopup(e));
 		listBar.add(list);
-		list.setCellRenderer(new messageListCellRenderer());
+		list.setCellRenderer(new MessageListCellRenderer());
 		east.setPreferredSize(new Dimension(100,0));
 		scrollPaneList = new JScrollPane(east,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
 		contentPane.add(scrollPaneList,BorderLayout.EAST);
 		
 		//set list renderer
-		list.setCellRenderer(new messageListCellRenderer());
+		list.setCellRenderer(new MessageListCellRenderer());
 		
 		scrollPaneList = new JScrollPane(east,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
@@ -461,6 +471,12 @@ public class View {
 				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
 					edge = startNode.getText() + "->" + endNode.getText();
 					if(edges.contains(edge)){
+						//Remove graphic edge from graphic panel
+						for(GraphicEdge ge: gp.graphicEdges){
+							if(ge.getEdgeID().equals(edge)){
+								gp.removeGraphicEdge(edge);
+							}
+						}
 						edges.remove(edge);
 						setStatus("Edge " + edge + " Removed");
 						break;
@@ -581,6 +597,22 @@ public class View {
 
 	private void deleteNode() {
 		for(;;){
+			
+			//Remove graphic node from graphic panel
+			gp.populateSelectedNodesList();
+			if(gp.numberOfSelectedNodes()>0){
+				gp.DeleteAction();
+				for(GraphicNode gn: gp.getSelectedNodesList()){
+					String nodeID = gn.getNodeID();
+					if(nodes.contains(nodeID)){
+						nodes.remove(nodeID);
+						tableModel.fireTableStructureChanged();
+						setStatus("Node " + nodeID + " Removed");
+					}
+				}
+				break;
+			}
+			
 			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Delete Node",JOptionPane.QUESTION_MESSAGE);
 			if(nodeID == null){
 				setStatus("No Nodes Deleted");
@@ -588,8 +620,10 @@ public class View {
 			}else{
 				if(nodes.contains(nodeID)){
 					nodes.remove(nodeID);
+					tableModel.fireTableStructureChanged();
+					gp.removeGraphicNode(nodeID);
 					setStatus("Node " + nodeID + " Removed");
-					break;
+					break;	
 				}else{
 					JOptionPane.showMessageDialog(frame,
 							"Node Doesnt Exist",
