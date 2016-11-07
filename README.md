@@ -26,7 +26,12 @@ The project is divided into 4 iterations, each of which correspond to a mileston
 
 ###How to Run
 ----------------------------------------------
-INSERT STEPS HERE from DOC
+1) Download submitted .zip folder from CULearn
+2) "Extract All" files from .zip folder into a specified directory
+3) In the command prompt, either specify the directory the .zip folder was extracted to, or copy the file "milestone2.jar" to the
+   M-Drive directory (If on Carleton University computer).
+4) Type the following into the command propmt to begin executing the program: **java -jar milestone2.jar**
+5) For any further help with the program, refer to 'Help'->'README' in the GUI.
 
 
 ###Notes
