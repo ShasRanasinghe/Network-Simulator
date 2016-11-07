@@ -19,9 +19,15 @@ public class GraphicNode {
     private boolean selected = false;
     private Rectangle b = new Rectangle();
 	
-    /**
-     * Construct a new node given params
-     */
+
+	/**
+	 * @param nodeID Node id of the node to be drawn
+	 * @param p The location of the panel where the node will be drawn
+	 * @param r the radius of the node
+	 * @param color Color of the node
+	 * 
+	 * Construct a new node given params
+	 */
 	public GraphicNode(String nodeID, Point p, int r, Color color) {
         this.nodeID = nodeID;
 		this.p = p;
@@ -30,9 +36,12 @@ public class GraphicNode {
         setBoundary(b);
     }
 	
-    /**
-     * Constructs a temporary node
-     */
+    
+	/**
+	 * @param nodeID Node id of the node to be drawn 
+	 * 
+	 * Draws a temperary node
+	 */
 	public GraphicNode(String nodeID) {
         this.nodeID = nodeID;
     }

@@ -84,10 +84,16 @@ public class Message {
 		this.hopCount = hopCount;
 	}
 	
+	/**
+	 * @return true id message is running, false if message has reached its destination
+	 */
 	public boolean isRunning() {
 		return running;
 	}
 
+	/**
+	 * @param running true if running, false if message has reached its destination
+	 */
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
@@ -97,18 +103,30 @@ public class Message {
 		return name;
 	}
 
+	/**
+	 * @param name name of the message eg. "Message 1"
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return Current Node the message is in
+	 */
 	public Node getCurrentNode() {
 		return current;
 	}
 
+	/**
+	 * @param current The current node the message is in
+	 */
 	public void setCurrentNode(Node current) {
 		this.current = current;
 	}
 
+	/**
+	 * adds to the hop count the message has taken
+	 */
 	public void incrumentHopCount()
 	{
 		hopCount++;

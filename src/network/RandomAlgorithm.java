@@ -27,6 +27,10 @@ public class RandomAlgorithm extends Graph{
 	// ALL OTHER INSTANCE VARIABLES INHERITED FROM GRAPH!!!!
 	
 	
+	/**
+	 * @param nodes list of nodes in the network
+	 * @param frequency The frequency at which new messages are injected
+	 */
 	public RandomAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
 		// INHERITED FROM GRAPH!!!!!

@@ -44,11 +44,17 @@ public class Edge
 	}
 
 
+	/**
+	 * @return ID of the Edge
+	 */
 	public String getId() {
 		return id;
 	}
 
 
+	/**
+	 * @param id set the ID of the Edge
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}

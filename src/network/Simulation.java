@@ -79,12 +79,28 @@ public class Simulation {
 	 * @param B Node
 	 * Creates a link between the two nodes. IE adds an edge to each nodes "hood" (ArrayList)
 	 */
-	public void createLink(Node A, Node B)
+	public void createLink(String A, String B)
 	{
-		Edge e = new Edge(A.getID() + "->" + B.getID(),A,B);
-		Edge e2 = new Edge(B.getID() + "->" + A.getID(),B,A);
-		A.addNeighbor(e);
-		B.addNeighbor(e2);
+		Node node1 = getNodeGivenID(simulationNodes, A);
+		Node node2 = getNodeGivenID(simulationNodes, B);
+		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
+		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
+		node1.addNeighbor(e);
+		node2.addNeighbor(e2);
+	}
+	
+	/**
+	 * @param A Node
+	 * @param B Node
+	 * Removes the links between nodes in the nodes
+	 */
+	public void removeLink(String A, String B){
+		Node node1 = getNodeGivenID(simulationNodes, A);
+		Node node2 = getNodeGivenID(simulationNodes, B);
+		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
+		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
+		node1.removeNeighbor(e);
+		node2.removeNeighbor(e2);
 	}
 
 	/**
@@ -110,7 +126,7 @@ public class Simulation {
      * @param allNodes Array list of nodes
      * @param edgeIDs Array list of edge IDs
 	 */
-	public void addNeighbors(ArrayList<Node> allNodes, ArrayList<String> edgeIDs) 
+	public void addNeighbors(ArrayList<String> edgeIDs) 
 	{
 		//Edges already validated when passed in
 		for(String edgeID : edgeIDs)
@@ -118,16 +134,17 @@ public class Simulation {
 		    String[] splitEdge = edgeID.split("->");
 		    String nodeOneID = splitEdge[0]; 
 		    String nodeTwoID = splitEdge[1];
-		    Node nodeOne = getNodeGivenID(allNodes, nodeOneID);
-		    Node nodeTwo = getNodeGivenID(allNodes, nodeTwoID);
+		    //Node nodeOne = getNodeGivenID(simulationNodes, nodeOneID);
+		    //Node nodeTwo = getNodeGivenID(simulationNodes, nodeTwoID);
 
 		    //Add neighbors
-		    if(!nodeOne.getID().isEmpty() && !nodeTwo.getID().isEmpty()){
-			createLink(nodeOne, nodeTwo);
-		    }
+			createLink(nodeOneID, nodeTwoID);
 		}
 	}
 	
+	/**
+	 * @param stepSize The size of each step when run algorithm is called
+	 */
 	public void runAlgorithm(int stepSize)
 	{
 		Integer tempF = frequency;
@@ -151,6 +168,9 @@ public class Simulation {
 		retrieveState();
 	}*/
 	
+	/**
+	 * Retrieves data from the graph to be used in the simulation
+	 */
 	public void retrieveState()
 	{
 		totalMessageList = selectedAlgorithm.getCompleteMessageList();
@@ -220,10 +240,16 @@ public class Simulation {
 		this.totalMessages = totalMessages;
 	}
 
+	/**
+	 * @param frequency Frequency to run simulation with
+	 */
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
 
+	/**
+	 * @param algorithm The algorithm the simulation would be set to
+	 */
 	public void setAlgorithm(ALGORITHM algorithm) 
 	{
 		this.algorithm = algorithm;
@@ -278,7 +304,7 @@ public class Simulation {
 		simulation.createNodes(nodeIDs);
 		
 		// Add edges to all nodes in simulation
-		simulation.addNeighbors(simulation.simulationNodes, edgeIDs);
+		simulation.addNeighbors(edgeIDs);
 
 		// Run specified algorithm
 		ALGORITHM userAlgorithm = controller.getAlgorithm();
