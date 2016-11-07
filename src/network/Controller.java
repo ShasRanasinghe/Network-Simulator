@@ -24,6 +24,8 @@ public class Controller {
 	private int frequency;
 	private boolean testing;
 	
+	private ALGORITHM algorithm;
+	
 	/**
 	 * The constructor initializes the lists and scanner needed for the controller
 	 */
@@ -72,7 +74,8 @@ public class Controller {
 	/**
 	 * @return user-setable rate
 	 */
-	public int getFrequency() {
+	public int getFrequency() 
+	{
 		return frequency;
 	}
 	
@@ -143,8 +146,14 @@ public class Controller {
 				}
 			}
 		}
-		System.out.println("You Have Initialized The Network");
-		System.out.println("Algorithm Being Used: RANDOM");
+		System.out.println("You Have Initialized The Network!");
+		
+		// Tell the simulation what algorithm to use
+		System.out.println("Please enter (in all caps) the algorithm you would like to use");
+		System.out.println("Current Options: RANDOM");
+		
+		inputLine = inputLine(in.nextLine());
+		algorithm = ALGORITHM.valueOf(inputLine);
 	}
 	
 	/**
@@ -179,6 +188,13 @@ public class Controller {
 		return links;
 	}
 	
+	/**
+	 * @return the algorithm
+	 */
+	public ALGORITHM getAlgorithm() {
+		return algorithm;
+	}
+
 	public boolean isTesting() {
 		return testing;
 	}

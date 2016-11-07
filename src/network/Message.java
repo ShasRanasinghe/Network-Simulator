@@ -10,9 +10,15 @@ package network;
 public class Message {
 	
 	private Node source; // source node
+	private Node current; // current node of message
 	private Node destination; // destination node
 	
-	private int hopCount; // hop count for message
+	private String name;
+	
+	private boolean running;
+	
+	private int hopCount; // hop count for this message
+	
 
 	/**
 	 * @param source node
@@ -21,35 +27,42 @@ public class Message {
 	 */
 	public Message(Node source, Node destination){
 		this.source = source;
+		this.current = source;
 		this.destination = destination;
+		this.running = true;
+		this.name = "";
 		this.hopCount = 0;
 	}
 
 	/**
 	 * @return The source of the message
 	 */
-	public Node getSource() {
+	public Node getSource() 
+	{
 		return source;
 	}
 
 	/**
 	 * @param source Vertex to be set as the source
 	 */
-	public void setSource(Node source) {
+	public void setSource(Node source) 
+	{
 		this.source = source;
 	}
 
 	/**
 	 * @return The destination of the message
 	 */
-	public Node getDestination() {
+	public Node getDestination() 
+	{
 		return destination;
 	}
 
 	/**
 	 * @param destination Vertex to be set as the destination
 	 */
-	public void setDestination(Node destination) {
+	public void setDestination(Node destination) 
+	{
 		this.destination = destination;
 	}
 	
@@ -57,7 +70,8 @@ public class Message {
 	 * 
 	 * @return the hop count of the message
 	 */
-	public int getHopCount() {
+	public int getHopCount() 
+	{
 		return hopCount;
 	}
 
@@ -65,8 +79,39 @@ public class Message {
 	 * 
 	 * @param hopCount  set the hopCount 
 	 */
-	public void setHopCount(int hopCount) {
+	public void setHopCount(int hopCount) 
+	{
 		this.hopCount = hopCount;
+	}
+	
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Node getCurrentNode() {
+		return current;
+	}
+
+	public void setCurrentNode(Node current) {
+		this.current = current;
+	}
+
+	public void incrumentHopCount()
+	{
+		hopCount++;
 	}
 	
 	
