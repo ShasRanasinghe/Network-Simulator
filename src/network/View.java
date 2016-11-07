@@ -453,7 +453,7 @@ public class View {
 	{
 		if(checkFullInitialization())
 		{
-			createTable();
+			if(network.getPackets() == 0){createTable();}
 			setEnabledOptionsWhenStepping(false);
 			network.runAlgorithm(1);
 			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);}
