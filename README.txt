@@ -1,13 +1,186 @@
-stuff stuff
-sada
-sd
-asd
-as
-d
-asd
-a
-fsg
-sg
-d
-gdf
-gdgsdfsfsd
+Initialize Network:
+_______________________
+
+When 'Milestone2.jar' is executed the user will be prompted to use to the default network (Specified in the Project Requirements)
+
+	1)If the user selects 'Yes', the network will be initialized with following default settings:
+	
+		Routers in simulation: A B C D E
+		
+		Edges in Simulation: A->B A->C A->E B->D B->E C->D
+		
+		Message creation frequency: 1 message / 5 hops
+		
+		Algorithm: Random
+		
+	2)If the user selects 'No', it will be up to the user to initialize their own Routing Network
+	
+	NOTE:Once the simulation of the network has been started (IE: the user presses the 'Step' or 'Run" button) the manipulation of the network
+	
+		will be limited.
+
+
+
+User Interaction with Network Graphic:
+________________________________________
+
+- Any node(Router)/edge created in the network will be displayed in the GUI
+
+- The user may click and drag nodes to move them around the GUI
+
+	- The position of the nodes in the network does not affect the functionality of
+	
+		the network. (Purely Aesthetic)
+	
+		
+NOTE: If a node is selected(Surrounded by rectangle), and if the user tries to use any
+ 
+		of the following functionalities, the behavior will be applied to the selected
+		
+		node (without prompting the user, Be Careful!!!)
+
+
+
+Functionality of User Interface:
+__________________________________
+
+After the Network GUI has been initialized, the user can use the following functionality to manipulate the Network:
+
+	1) BUTTONS:	
+	  _________
+	  
+			'New Node' - prompts the user to provide an 'id' for the Router being added to the network
+			__________
+			
+			'New Edge' - prompts the user for two 'Router ids' to connect with the edge
+			__________
+			
+			'Set Frequency' - prompts the user to set the 'Message Creation Frequency' of the simulation
+			_______________
+			
+				[NOTE: when selecting frequency the user must highlight the integer field in order
+				
+					for the frequency to be set. Refer to STATUS bar at bottom of GUI to 
+					
+					ensure frequency is set properly. (Bug will be fixed in next milestone)]
+					
+					
+			'Set Algorithm' - prompts the user to select the desired algorithm to be applied to the 
+			_______________
+								network.
+						
+						
+			'Delete Node' - IF NO NODE IS SELECTED - the user will be prompted to provided an id of the
+			_____________
+							Router to be deleted from the network
+							
+						
+				      	  - IF NODE IS SELECTED - the currently selected Router will be deleted from 
+				      	  
+							the network
+							
+							
+				[NOTE: Deleting a Router, deletes any and all edges connected to it.]
+				
+				
+			'Delete Edge' - prompts the user to specify the Source/Destination Routers to identify
+			_____________
+							which edge will be deleted
+							
+							
+			'Run' - Runs the currently configured network simulation, and displays each step of
+			______
+					the simulation until it terminates. Each 'Hop' taken by each message is shown
+					
+					in the generated table (above the graph). Each message created in the simulation
+					
+					is displayed in a list (right of the graph). Each message in the list is clickable
+					
+					to see its Source and Destination. If the message is highlighted in GREEN, the
+					
+					message is still transferred in the network. If the message is highlighted in
+					
+					RED, the message has reached its Destination and has terminated.
+					
+					
+			'Next' - Simulates one 'Hop' in the simulation, and returns the new state of the Simulation to
+			______
+					the GUI.
+					
+					
+	2) MENUS:
+	  _______
+	  
+			'Network' - 'New Network' - Initializes an empty network, that will require
+			_________
+										the user to create their own network to be 
+										
+										simulated.
+										
+										
+					  - 'Default Network' - Initializes a default network (as specified
+					  
+					  						in the project requirements).
+					  						
+					  						
+					  - 'Quit' - Allows the user to exit the program and close the GUI.
+					  
+					  
+			'Edit' - 'Set Algorithm' - Same functionality outlined for button (above).
+			______
+					 
+					 'Set Frequency' - Same functionality outlined for button (above).
+					 
+					 
+					 'New Node' - Same functionality outlined for button (above).
+					 
+					 
+					 'Edit Node' - Allows the user to manipulate the 'id' of a specified
+					 
+					 				node.
+					 				
+					 
+					 'Delete Node' - Same functionality outlined for button (above).
+					 
+					 
+					 'New Edge' - Same functionality outlined for button (above).
+					 
+					 
+					 'Edit Edge' - Allows the user to manipulate the destination of 
+					 
+					 				a specified edge.
+					 				
+					 
+					 'Delete Edge' - Same functionality outlined for button (above).
+					 
+					 
+			'Tools' - 'Run' - Same functionality outlined for button (above).
+			________
+			
+					  'Next' - Same functionality outlined for button (above).
+					  
+					  
+			'Help' - 'README' - Displays instructions on how to properly use the UI 
+			______
+								created for this project, and defines functionality
+								
+								of any user interactible items.
+								
+								
+				   - 'About' - Displays a short summary of the creators of this project
+				   
+				   
+				   - 'Javadoc' - Displays the generated Javadoc of the classes contained
+				   
+				   				within the program's src folder.
+				   				
+				   				
+				   - 'UML Diagram' - Displays the created UML diagram for all classes
+				   
+				   					contained within the program's src folder.
+				   					
+				   					
+				   - 'Test Cases' - Displays the created Test Cases used to test the
+				   
+				   					functionality of the program.
+				   					
