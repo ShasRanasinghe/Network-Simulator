@@ -55,23 +55,7 @@ public class Simulation {
 			Node temp = new Node(nodeId);
 			simulationNodes.add(temp);
 		}
-		/*
-		if(simulationNodes.isEmpty())
-		{
-			Node newNode = new Node(nodeIDs.get(0));
-			simulationNodes.add(newNode);
-		}
-		else
-		{
-			int i = 0;
-			for(String nodeID : nodeIDs)
-			{
-				if(!simulationNodes.get(i).getID().equals(nodeID))
-				{
-					
-				}
-			}
-		} */
+
 	}
 
     /**
@@ -81,8 +65,8 @@ public class Simulation {
 	 */
 	public void createLink(String A, String B)
 	{
-		Node node1 = getNodeGivenID(simulationNodes, A);
-		Node node2 = getNodeGivenID(simulationNodes, B);
+		Node node1 = getNodeGivenID(A);
+		Node node2 = getNodeGivenID(B);
 		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
 		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
 		node1.addNeighbor(e);
@@ -95,8 +79,8 @@ public class Simulation {
 	 * Removes the links between nodes in the nodes
 	 */
 	public void removeLink(String A, String B){
-		Node node1 = getNodeGivenID(simulationNodes, A);
-		Node node2 = getNodeGivenID(simulationNodes, B);
+		Node node1 = getNodeGivenID(A);
+		Node node2 = getNodeGivenID(B);
 		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
 		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
 		node1.removeNeighbor(e);
@@ -105,14 +89,13 @@ public class Simulation {
 
 	/**
 	 * 
-	 * @param nodes List of nodes to traverse
 	 * @param id ID of node
 	 * @return Node object if an ID matches
 	 */
-	public Node getNodeGivenID(ArrayList<Node> nodes, String id) 
+	public Node getNodeGivenID(String id) 
 	{
 	
-		for(Node node : nodes){
+		for(Node node : simulationNodes){
 			if(node.getID().equals(id)){
 			//Returns the node when found
 			return node;
@@ -153,20 +136,13 @@ public class Simulation {
 			// ERROR: invalid message creation frequency
 			System.out.println("ERROR: invalid message creation frequency (please select a frequency not equal to 0 or 1)");
 		}
-		selectedAlgorithm.run(stepSize);
-		retrieveState();
+		else
+		{
+			selectedAlgorithm.run(stepSize);
+			retrieveState();
+		}
 	}
 	
-	/*public void runFullAlgorithm()
-	{
-		
-		while(selectedAlgorithm.getNumberOfCurrentMessages() != 0)
-		{
-			runAlgorithm(1);
-		}
-		
-		retrieveState();
-	}*/
 	
 	/**
 	 * Retrieves data from the graph to be used in the simulation
@@ -200,7 +176,7 @@ public class Simulation {
 	public void setSimulationNodes(ArrayList<Node> simulationNodes) {
 		this.simulationNodes = simulationNodes;
 	}
-
+	
 	/**
 	 * @return The average number of hops each message goes through from start to end
 	 */
@@ -239,12 +215,28 @@ public class Simulation {
 	public void setTotalMessages(int totalMessages) {
 		this.totalMessages = totalMessages;
 	}
+	
+	/**
+	 * @return the total messages in the simulation
+	 */
+	public int getTotalMessages()
+	{
+		return totalMessages;
+	}
 
 	/**
 	 * @param frequency Frequency to run simulation with
 	 */
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
+	}
+	
+	/**
+	 * @return frequency for simulation
+	 */
+	public int getFrequency()
+	{
+		return frequency;
 	}
 
 	/**
@@ -266,6 +258,14 @@ public class Simulation {
 					 break;
 		}			
 	}
+	
+	/**
+	 * @return the algorithm choosen
+	 */
+	public ALGORITHM getAlgorithm()
+	{
+		return algorithm;
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		MAIN METHOD FOR ENTIRE NETWORK!!!!																	 //
@@ -273,7 +273,7 @@ public class Simulation {
 	/**
 	 * @param args Main method input
 	 */
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		
 		//Initialize Simulation
 		Simulation simulation = new Simulation();
@@ -330,5 +330,5 @@ public class Simulation {
 		controller.printTotalPackets(simulation.getPackets());
 		System.out.println("total number of messages created: " + simulation.totalMessages);
 		//graph.printTable();
-	}
+	}*/
 }

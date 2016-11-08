@@ -12,11 +12,8 @@ public class Message {
 	private Node source; // source node
 	private Node current; // current node of message
 	private Node destination; // destination node
-	
 	private String name;
-	
 	private boolean running;
-	
 	private int hopCount; // hop count for this message
 	
 
@@ -33,6 +30,20 @@ public class Message {
 		this.name = "";
 		this.hopCount = 0;
 	}
+	
+	/**
+	 * @param message
+	 * constructor for testing purposes
+	 */
+	public Message(Message message)
+	{
+		this.source = message.getSource();
+		this.destination = message.getDestination();
+		this.hopCount = message.getHopCount();
+		this.current = message.getCurrent();
+		this.running = message.isRunning();
+		this.name = message.toString();
+	}
 
 	/**
 	 * @return The source of the message
@@ -40,6 +51,20 @@ public class Message {
 	public Node getSource() 
 	{
 		return source;
+	}
+	
+	/**
+	 * @return the current node
+	 */
+	public Node getCurrent() {
+		return current;
+	}
+
+	/**
+	 * @param current sets the current node
+	 */
+	public void setCurrent(Node current) {
+		this.current = current;
 	}
 
 	/**
@@ -130,6 +155,20 @@ public class Message {
 	public void incrumentHopCount()
 	{
 		hopCount++;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Message message = (Message)obj;
+		if(this.getSource().equals(message.getSource()) 
+				&& this.getDestination().equals(message.getDestination()) 
+				&& this.getHopCount() == message.getHopCount()
+				&& this.getCurrentNode().equals(message.getCurrentNode())
+				&& this.isRunning() == message.isRunning())
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	

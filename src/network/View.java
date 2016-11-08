@@ -124,7 +124,7 @@ public class View {
 		edges = new ArrayList<String>();
 		
 		frequencyList = new String[30];
-		for (int i = 1; i < frequencyList.length; i++) {
+		for (int i = 2; i < frequencyList.length; i++) {
 			frequencyList[i] = Integer.toString(i);
 		}
 		
@@ -456,7 +456,7 @@ public class View {
 			if(network.getPackets() == 0){createTable();}
 			setEnabledOptionsWhenStepping(false);
 			network.runAlgorithm(1);
-			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);}
+			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
 			addMessagesToChart();
 			addMessagesToTable();
 			updateMetrics();
@@ -781,10 +781,13 @@ public class View {
 		        frequencyList[0]); // Initial choice
 	    if(frequency == null){
 	    	setStatus("Frequency Not Set");
-	    }else{
+	    }
+	    else
+	    {
 	    	setStatus("Frequency set to: " + frequency);
 	    	frequencyMetric.setText("" + frequency);
 			this.frequency = Integer.parseInt(frequency);
+			network.setFrequency(this.frequency);
 	    }
 	}
 
@@ -802,6 +805,7 @@ public class View {
 	    }else{
 	    	setStatus("Algortihm set to: " + algorithm);
 	    	this.algorithm = ALGORITHM.getEnum(algorithm);
+	    	network.setAlgorithm(this.algorithm);
 	    }
 	}
 
@@ -889,6 +893,7 @@ public class View {
 		run.setEnabled(true);
 		updateMetrics();
 		tableBar.setVisible(false);
+		defaultNetworkMenu.setEnabled(false);
 		
 	}
 
@@ -917,6 +922,7 @@ public class View {
 		run.setEnabled(true);
 		updateMetrics();
 		tableBar.setVisible(false);
+		defaultNetworkMenu.setEnabled(false);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

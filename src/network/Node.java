@@ -29,6 +29,16 @@ public class Node
 		this.thehood = new ArrayList<Edge>();
 	}
 	
+	/**
+	 * @param node
+	 * constructor used for testing purposes
+	 */
+	public Node(Node node)
+	{
+		this.id = node.getID();
+		this.thehood = node.getNeighbors();
+	}
+	
 	
 	/**
 	 * @param edge This method adds an edge to a Vertex
@@ -102,6 +112,14 @@ public class Node
 	public String toString()
 	{
 		return id;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Node node = (Node)obj;
+		if(this.id.equals(node.getID()) 
+				&& this.thehood.equals(node.getNeighbors())){ return true;}
+		return false;
 	}
 	
 }
