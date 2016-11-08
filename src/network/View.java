@@ -867,6 +867,7 @@ public class View {
 	 */
 	private void defaultNetwork() 
 	{		
+		newNetwork();
 		frequency = 5;
 		algorithm = ALGORITHM.RANDOM;
 		nodes.add("A");nodes.add("B");nodes.add("C");nodes.add("D");nodes.add("E");
@@ -1019,7 +1020,7 @@ public class View {
 		}
 		else
 		{
-			if(algorithm != null)
+			if(algorithm == null)
 			{
 				JOptionPane.showMessageDialog(frame,
 						"Algorithm not specified, Please set and try again.",
@@ -1029,7 +1030,7 @@ public class View {
 			if(frequency == 0)
 			{
 				JOptionPane.showMessageDialog(frame,
-						"Frequency is invalid, Please set to a number greater then zero.",
+						"Frequency not specified, Please set to a number greater then 1.",
 			    	    "WARNING",
 			    	    JOptionPane.ERROR_MESSAGE);
 			}
