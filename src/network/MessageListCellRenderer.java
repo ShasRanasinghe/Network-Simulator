@@ -7,6 +7,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+/**
+ * @author Shasthra Ranasinghe
+ * 
+ *Class used to set the color of the Jlist of messages,
+ *to show if the message is running or completed
+ */
 @SuppressWarnings("serial")
 public class MessageListCellRenderer extends JLabel implements ListCellRenderer<Object>{
 
@@ -24,12 +30,12 @@ public class MessageListCellRenderer extends JLabel implements ListCellRenderer<
 		setText(((Message) value).toString());
 		if(!isSelected){
 			if(((Message) value).isRunning()){
-				setBackground(RUNNING_HIGHLIGHT_COLOR);
+				setBackground(RUNNING_HIGHLIGHT_COLOR); //if the message is still running set highlight to GREEN
 			}else{
-				setBackground(COMPLETE_HIGHLIGHT_COLOR);
+				setBackground(COMPLETE_HIGHLIGHT_COLOR); //if the message is no longer running set highlight to RED
 			}
 		}else{
-			setBackground(SELECTION_HIGHLIGHT_COLOR);
+			setBackground(SELECTION_HIGHLIGHT_COLOR); //if message is selected, highlight it BLUE
 		}
 		return this;
 	}

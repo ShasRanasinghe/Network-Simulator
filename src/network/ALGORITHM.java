@@ -6,16 +6,26 @@ public enum ALGORITHM {
 
     private String algString;
 
-    //Create modes from string
+    
+    /**
+     * @param alg Assign a string to an Enum
+     */
     ALGORITHM(final String alg) {
         algString = alg;
     }
 
-    //return as string
+    
+    /**
+     * @return The string representation of the ALGORITHM Enum
+     */
     public String getALGString() {
         return algString;
     }
   
+    /**
+     * @param str string representation of the Enum
+     * @return The ALGORITM Enum corresponding to the given string. Returns RANDOM if string doesn't exist
+     */
     public static ALGORITHM getEnum(String str)
     {
     	for(ALGORITHM alg: ALGORITHM.values())

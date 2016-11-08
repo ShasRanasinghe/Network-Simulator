@@ -17,10 +17,17 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * @author Shasthra Ranasinghe, Alex Hoecht, Andrew Ward, Mohamed Dahrouj
+ * 
+ * This class creates the GUI for the simulation
+ * It also contains all the methods used in the GUI 
+ *
+ */
 public class View {
 	
-	//Model
-	Simulation model;
+	//Simulation
+	private Simulation network;
 	
 	//constants
 	private final String ABOUT = "SYSC 3110 Group Project: Network Routing Simulator\n"
@@ -45,18 +52,19 @@ public class View {
 	private final String JAVADOC2 = "doc\\network\\Simulation.html";
 	private final String COUTLD_NOT_OPEN_FILE = "Could not open file properly";
 	private final String FILE_DOES_NOT_EXIST = "Could Not Find Files Required";
+	
+	//Store Network information
+	private int frequency;
+	private ArrayList<String> nodes;
+	private ArrayList<String> edges;
+	private ALGORITHM algorithm;
+	
+	//Variables used to create the GUI
 	private List<String> algorithms = new ArrayList<>();
 	private String frequencyList[];
 	private DefaultListModel<Message> messageList;
 	private JList<Message> list;
 	private DefaultTableModel tableModel;
-	
-	//Store Network information
-	private Simulation network;
-	private int frequency;
-	private ArrayList<String> nodes;
-	private ArrayList<String> edges;
-	private ALGORITHM algorithm;
 	
 	//Metrics
 	JTextField totalMessagesMetric = new JTextField(18);
@@ -83,6 +91,7 @@ public class View {
 	private JButton stepNext;
 	private JButton stepBack;
 	private JTable table;
+	private JPanel tableBar;
 	
 	//Edit Menu Items
 	private JMenuItem setAlgorithmMenu;
@@ -96,17 +105,6 @@ public class View {
 	private JMenuItem newNetworkMenu;
 	private JMenuItem defaultNetworkMenu;
 	private JMenuItem quitMenu;
-		
-	
-	/**
-	 * 
-	 * @param MAIN FUNCTION OF GUI
-	 */
-	public static void main(String[] arg0)
-	{
-		Simulation sim = new Simulation();
-		new View(sim);
-	}
 	
 	/**
 	 * MAIN CONSTRUCTOR OF GUI
@@ -118,12 +116,15 @@ public class View {
 		makeFrame();
 	}
 	
+	/**
+	 * Initializes all the required variables to create the frame
+	 */
 	private void initialize(){
 		nodes = new ArrayList<String>();
 		edges = new ArrayList<String>();
 		
 		frequencyList = new String[30];
-		for (int i = 1; i < frequencyList.length; i++) {
+		for (int i = 2; i < frequencyList.length; i++) {
 			frequencyList[i] = Integer.toString(i);
 		}
 		
@@ -135,22 +136,23 @@ public class View {
 		
 		tableModel = new DefaultTableModel();
 		
-		//TODO
 		messageList = new DefaultListModel<>();
 	}
 	
+	/**
+	 * Creates the frame and adds layouts
+	 */
 	private void makeFrame(){
 		frame = new JFrame("Network Simulator");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		JPanel contentPane = (JPanel)frame.getContentPane();
 		//set border here
 		
-		makeMenu(frame);
+		makeMenu();
 		
 		contentPane.setLayout(new BorderLayout());
 		
 		//tool bar
-		
 		toolBar = new JPanel();
 		toolBar.setLayout(new GridLayout(0,1,0,20));
 		
@@ -266,11 +268,8 @@ public class View {
 		center.add(scrollPaneList,BorderLayout.EAST);
 		
 		//set table bar
-		JPanel north = new JPanel();
-		north.setLayout(new FlowLayout(FlowLayout.CENTER));
-		JPanel tableBar = new JPanel();
+		tableBar = new JPanel();
 		tableBar.setLayout(new GridLayout(0,1));
-		north.add(tableBar);
 		table = new JTable(tableModel);
 		table.setEnabled(false);
 		scrollPaneTable = new JScrollPane(table);
@@ -278,6 +277,7 @@ public class View {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tableBar.add(scrollPaneTable);
 		center.add(tableBar,BorderLayout.NORTH);
+		tableBar.setVisible(false);
 		
 		//Finish it off
 		frame.pack();
@@ -289,9 +289,14 @@ public class View {
 		
 		defaultOption();
 		updateMetrics();
+		
 	}
 	
 
+	/**
+	 * @param str Message to be written in the status bar
+	 * Updates the status bar and repaints the GUI needed
+	 */
 	private void setStatus(String str) {
 		statusLabel.setText(str);
 		if(!str.equals("")){
@@ -299,6 +304,9 @@ public class View {
 		}
 	}
 
+	/**
+	 * Ask the user at start up if they would like to use the default network or not
+	 */
 	private void defaultOption() {
 		int response = JOptionPane.showConfirmDialog(null,"Would you like to use the Default Network?","Default",
 				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
@@ -312,10 +320,9 @@ public class View {
 	}
 
 	/**
-	 * 
-	 * @param frame
+	 * Creates the menu bar and all its items
 	 */
-	private void makeMenu(JFrame frame){
+	private void makeMenu(){
 		final int SHORTCUT_MASK =
 	            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		
@@ -325,6 +332,7 @@ public class View {
 		JMenu menu;
 		JMenuItem item;
 		
+		//NETWORK menu
 		menu = new JMenu("Network");
 		menuBar.add(menu);
 		
@@ -342,7 +350,7 @@ public class View {
 		quitMenu.addActionListener(e -> quit());
 		menu.add(quitMenu);
 		
-		
+		//EDIT menu
 		menu = new JMenu("Edit");
 		menuBar.add(menu);
 		
@@ -382,7 +390,7 @@ public class View {
 		deleteEdgeMenu.addActionListener(e -> deleteEdge());
 		menu.add(deleteEdgeMenu);
 		
-		
+		//TOOLS menu
 		menu = new JMenu("Tools");
 		menuBar.add(menu);
 		
@@ -403,6 +411,7 @@ public class View {
 		item.setEnabled(false);
 		item.setToolTipText("Not Implemented Yet");
 		
+		//HELP menu
 		menu = new JMenu("Help");
 		menuBar.add(menu);
 		
@@ -425,24 +434,29 @@ public class View {
 		item = new JMenuItem("Test Cases");
 		item.addActionListener(e -> showTestCases());
 		menu.add(item);
-		item.setEnabled(false);
 		item.setToolTipText("Not Implemented Yet");
 	}
 
+	/**
+	 * Steps back to a precious state
+	 */
 	private void stepBack() 
 	{
 		// ALGORITHMS CURRENTLY DO NOT SUPPORT BACK STEPS!!!!!!!!!!!!!!!!!!!!!
 		// WILL BE IMPLEMENTED LATER!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 
+	/**
+	 * Step through the network one step at a time
+	 */
 	private void stepForward() 
 	{
-	
 		if(checkFullInitialization())
 		{
+			if(network.getPackets() == 0){createTable();}
 			setEnabledOptionsWhenStepping(false);
 			network.runAlgorithm(1);
-			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);}
+			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
 			addMessagesToChart();
 			addMessagesToTable();
 			updateMetrics();
@@ -450,10 +464,14 @@ public class View {
 		}
 	}
 
+	/**
+	 * Run the full simulation to completion
+	 */
 	private void run() 
 	{
 		if(checkFullInitialization())
 		{
+			createTable();
 			setEnabledOptionsWhenStepping(false);
 			while(network.currentMessageList.size() != 0)
 			{
@@ -463,11 +481,17 @@ public class View {
 				updateMetrics();
 				table.changeSelection(table.getRowCount() - 1, 0, false, false);
 			}
+			run.setEnabled(false);
+			stepNext.setEnabled(false);
 		}
 	}
 
+	/**
+	 * Delete an existing edge
+	 */
 	private void deleteEdge() {
-		String edge = "";
+		String edge1 = "";
+		String edge2 = "";
 		JTextField startNode = new JTextField(5);
 		JTextField endNode = new JTextField(5);
 
@@ -481,16 +505,16 @@ public class View {
 					"Remove Edge", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
 				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
-					edge = startNode.getText() + "->" + endNode.getText();
-					if(edges.contains(edge)){
+					edge1 = startNode.getText() + "->" + endNode.getText();
+					edge2 = endNode.getText() + "->" + startNode.getText();
+					if(edges.contains(edge1) && edges.contains(edge2)){
 						//Remove graphic edge from graphic panel
-						for(GraphicEdge ge: gp.graphicEdges){
-							if(ge.getEdgeID().equals(edge)){
-								gp.removeGraphicEdge(edge);
-							}
-						}
-						edges.remove(edge);
-						setStatus("Edge " + edge + " Removed");
+						gp.removeGraphicEdge(edge1);
+						gp.removeGraphicEdge(edge2);
+						edges.remove(edge1);
+						edges.remove(edge2);
+						network.removeLink(startNode.getText(), endNode.getText());
+						setStatus("Edge " + edge1 + " Removed");
 						break;
 					}else{
 						JOptionPane.showMessageDialog(frame,
@@ -511,9 +535,14 @@ public class View {
 		}
 	}
 
+	/**
+	 * Edit an existing edge between two nodes
+	 */
 	private void editEdge() {
-		String edge = "";
-		String newEdge = "";
+		String edge1 = "";
+		String edge2 = "";
+		String newEdge1 = "";
+		String newEdge2 = "";
 		JTextField startNode = new JTextField(5);
 		JTextField endNode = new JTextField(5);
 
@@ -527,17 +556,29 @@ public class View {
 					"Edit Existing Edge", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
 				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
-					edge = startNode.getText() + "->" + endNode.getText();
-					if(edges.contains(edge)){
-						String nodeID = JOptionPane.showInputDialog(frame,"Enter New End NodeID:","Edit Edge",JOptionPane.QUESTION_MESSAGE);
-						if(nodeID == null){
+					edge1 = startNode.getText() + "->" + endNode.getText();
+					edge2 = endNode.getText() + "->" + startNode.getText();
+					if(edges.contains(edge1) && edges.contains(edge2)){
+						String newEndNodeID = JOptionPane.showInputDialog(frame,"Enter New End NodeID:","Edit Edge",JOptionPane.QUESTION_MESSAGE);
+						if(newEndNodeID == null){
 							setStatus("No Edges Changed");
 							break;
 						}else{
-							if(nodes.contains(nodeID)){
-								newEdge = startNode.getText() + "->" + nodeID;
-								edges.set(edges.indexOf(edge), newEdge);
-								setStatus("Edge " + edge + " Changes to " + newEdge);
+							if(nodes.contains(newEndNodeID)){
+								//remove/replace
+								gp.removeGraphicEdge(edge1);
+								gp.removeGraphicEdge(edge2);
+								newEdge1 = startNode.getText() + "->" + newEndNodeID;
+								newEdge2 = newEndNodeID + "->" + startNode.getText();
+								edges.set(edges.indexOf(edge1), newEdge1);
+								edges.set(edges.indexOf(edge2), newEdge2);
+								network.removeLink(startNode.getText(), endNode.getText());
+								
+								//add
+								gp.ConnectAction(startNode.getText(), newEndNodeID);
+								network.createLink(startNode.getText(), newEndNodeID);
+								//set status
+								setStatus("Edge " + edge1 + " Changes to " + newEdge1);
 								break;
 							}else{
 								JOptionPane.showMessageDialog(frame,
@@ -565,8 +606,12 @@ public class View {
 		}
 	}
 
+	/**
+	 * Create a new edge
+	 */
 	private void newEdge() {
-		String edge = "";
+		String edge1 = "";
+		String edge2 = "";
 		JTextField startNode = new JTextField(5);
 		JTextField endNode = new JTextField(5);
 
@@ -582,16 +627,16 @@ public class View {
 				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
 					String startNodeID = startNode.getText();
 					String endNodeID = endNode.getText();
-					edge = startNodeID + "->" + endNodeID;
-					if(!edges.contains(edge)){
-						edges.add(edge);
+					edge1 = startNodeID + "->" + endNodeID;
+					edge2 = endNodeID + "->" + startNodeID;
+					if(!edges.contains(edge1) || !edges.contains(edge2)){
+						edges.add(edge1);
+						edges.add(edge2);
 						
-						Node temp1 = network.getNodeGivenID(network.getSimulationNodes(), startNodeID);
-						Node temp2 = network.getNodeGivenID(network.getSimulationNodes(), endNodeID);
-						network.createLink(temp1, temp2);
+						network.createLink(startNodeID, endNodeID);
 						
 						gp.ConnectAction(startNodeID, endNodeID);
-						setStatus("Edge " + edge + " Created");
+						setStatus("Edge " + edge1 + " Created");
 						break;
 					}else{
 						JOptionPane.showMessageDialog(frame,
@@ -612,6 +657,9 @@ public class View {
 		}
 	}
 
+	/**
+	 * Delete an existing node
+	 */
 	private void deleteNode() {
 		for(;;){
 			
@@ -637,7 +685,6 @@ public class View {
 			}else{
 				if(nodes.contains(nodeID)){
 					nodes.remove(nodeID);
-					tableModel.fireTableStructureChanged();
 					gp.removeGraphicNode(nodeID);
 					setStatus("Node " + nodeID + " Removed");
 					break;	
@@ -651,6 +698,10 @@ public class View {
 		}
 	}
 
+	/**
+	 * Edit a current nodes ID
+	 * doesn't let you edit a non existent node
+	 */
 	private void editNode() {
 		JTextField nodeID = new JTextField(5);
 		JTextField newNodeID = new JTextField(5);
@@ -681,6 +732,10 @@ public class View {
 		}
 	}
 
+	/**
+	 * Create a new node
+	 * Doesn't let you create a node that already exists
+	 */
 	private void newNode() {
 		for(;;){
 			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Create New Node",JOptionPane.QUESTION_MESSAGE);
@@ -691,7 +746,6 @@ public class View {
 				if(!nodes.contains(nodeID)){
 					nodes.add(nodeID);
 					network.createNodes(nodes);
-					tableModel.addColumn(nodeID);
 		            gp.NewNodeAction(nodeID);
 		            
 					setStatus("Node " + nodeID + " Created");
@@ -705,7 +759,21 @@ public class View {
 			}
 		}
 	}
+	
+	/**
+	 * Creates the table with the nodes list
+	 */
+	private void createTable(){
+		for(String node: nodes){
+			tableModel.addColumn(node);
+		}
+		tableBar.setVisible(true);
+		frame.repaint();
+	}
 
+	/**
+	 * Set the frequency
+	 */
 	private void setFrequency() {
 	    String frequency = (String) JOptionPane.showInputDialog(frame, "Pick a Frequency",
 		        "Set Frequency", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -713,13 +781,19 @@ public class View {
 		        frequencyList[0]); // Initial choice
 	    if(frequency == null){
 	    	setStatus("Frequency Not Set");
-	    }else{
+	    }
+	    else
+	    {
 	    	setStatus("Frequency set to: " + frequency);
 	    	frequencyMetric.setText("" + frequency);
 			this.frequency = Integer.parseInt(frequency);
+			network.setFrequency(this.frequency);
 	    }
 	}
 
+	/**
+	 * Set the algorithm 
+	 */
 	private void setAlgorithm() {
 		String[] choices = algorithms.toArray(new String[0]);
 	    String algorithm = (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
@@ -730,10 +804,15 @@ public class View {
 	    	setStatus("Algortihm Not Set");
 	    }else{
 	    	setStatus("Algortihm set to: " + algorithm);
-	    	this.algorithm = ALGORITHM.getEnum(algorithm); //TODO
+	    	this.algorithm = ALGORITHM.getEnum(algorithm);
+	    	network.setAlgorithm(this.algorithm);
 	    }
 	}
 
+	/**
+	 * Ask the user if they are sure they want to quit,
+	 * quit if yes
+	 */
 	private void quit() {
 		int response = JOptionPane.showConfirmDialog(null,"Are you sure?","Network Simulator",
 				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
@@ -742,6 +821,11 @@ public class View {
 		}
 	}
 	
+	/**
+	 * @param bool true if buttons should be enabled, false otherwise
+	 * Disables buttons and menu items when the algorithm is running
+	 * So that the user cannot edit the simulation while its running
+	 */
 	private void setEnabledOptionsWhenStepping(boolean bool){
 		algorithmButton.setEnabled(bool);
 		freqButton.setEnabled(bool);
@@ -778,8 +862,12 @@ public class View {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//						WILL BE CHANGED DEPENDING ON GRAPHIC IMPLEMENTATION!!!!!!!!!!!
 	//
+	/**
+	 * Creates a default network to be use used for testing or as a basis to start on
+	 */
 	private void defaultNetwork() 
 	{		
+		newNetwork();
 		frequency = 5;
 		algorithm = ALGORITHM.RANDOM;
 		nodes.add("A");nodes.add("B");nodes.add("C");nodes.add("D");nodes.add("E");
@@ -797,16 +885,22 @@ public class View {
 		gp.ConnectAction("B","E");
 		gp.ConnectAction("C","D");
 		
-		addNodesToTable(nodes);
-		
 		network.createNodes(nodes);
-		network.addNeighbors(network.getSimulationNodes(), edges);
+		network.addNeighbors(edges);
 		network.setFrequency(frequency);
 		network.setAlgorithm(ALGORITHM.RANDOM);
+		defaultNetworkMenu.setEnabled(false);
+		stepNext.setEnabled(true);
+		run.setEnabled(true);
+		updateMetrics();
+		tableBar.setVisible(false);
 		defaultNetworkMenu.setEnabled(false);
 		
 	}
 
+	/**
+	 * Create a new network and reset all information
+	 */
 	private void newNetwork() 
 	{
 		messageList.clear();
@@ -826,23 +920,48 @@ public class View {
 		defaultNetworkMenu.setEnabled(true);
 		setEnabledOptionsWhenStepping(true);
 		stepNext.setEnabled(true);
+		run.setEnabled(true);
+		updateMetrics();
+		tableBar.setVisible(false);
+		defaultNetworkMenu.setEnabled(false);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public ALGORITHM getAlgorithm() {
+	/**
+	 * @return ALGIRITHM enum set by user
+	 */
+	@SuppressWarnings("unused")
+	private ALGORITHM getAlgorithm() {
 		return algorithm;
 	}
 
-	public int getFrequency(){
+	/**
+	 * @return frequency set by user
+	 */
+	@SuppressWarnings("unused")
+	private int getFrequency(){
 		return frequency;
 	}
 	
+	/**
+	 * @param e List Selection Event
+	 * Creates a pop up when a message is selected in the chart
+	 * Pop up shows details of the message
+	 */
 	protected void createPopup(ListSelectionEvent e) 
 	{
 		Message message = (Message)list.getSelectedValue();
 		if(list.getSelectedIndex() != -1)
 		{
-			int response = JOptionPane.showConfirmDialog(null,message.getSource() + " -> " + message.getDestination(),message.toString(),
+			String info = message.getSource() + " -> " + message.getDestination() + "\n"
+					+ "Hop Count: " + message.getHopCount() + "\n"
+							+ "Current Node: ";
+			if(!message.isRunning()){
+				info += message.getDestination();
+			}else{
+				info += message.getCurrentNode();
+			}
+			int response = JOptionPane.showConfirmDialog(null,info,message.toString(),
 														JOptionPane.PLAIN_MESSAGE,
 														JOptionPane.CLOSED_OPTION);
 			if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) 
@@ -852,16 +971,10 @@ public class View {
 		}
 	}
 	
-	public void addNodesToTable(ArrayList<String> list)
-	{
-		for(int i = 0; i < list.size(); i++)
-		{
-			String node = list.get(i);
-			tableModel.addColumn(node);
-		}
-	}
-	
-	public void addMessagesToChart()
+	/**
+	 * Adds a message to the JList of messages to be displayed in the chart
+	 */
+	private void addMessagesToChart()
 	{
 		for(Message m : network.totalMessageList)
 		{
@@ -872,7 +985,10 @@ public class View {
 		}
 	}
 	
-	public void addMessagesToTable()
+	/**
+	 * Adds a row to the table showing the current location of all the messages in all the nodes
+	 */
+	private void addMessagesToTable()
 	{
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
 		for(String n : nodes)
@@ -892,7 +1008,10 @@ public class View {
 	}
 	
 	
-	public boolean checkFullInitialization()
+	/**
+	 * @return true if all the information needed to run the simulation was provided by the user, false otherwise
+	 */
+	private boolean checkFullInitialization()
 	{
 		Integer tempF = frequency;
 		if((frequency != 0 && tempF != null) && algorithm != null)
@@ -901,7 +1020,7 @@ public class View {
 		}
 		else
 		{
-			if(algorithm != null)
+			if(algorithm == null)
 			{
 				JOptionPane.showMessageDialog(frame,
 						"Algorithm not specified, Please set and try again.",
@@ -911,7 +1030,7 @@ public class View {
 			if(frequency == 0)
 			{
 				JOptionPane.showMessageDialog(frame,
-						"Frequency is invalid, Please set to a number greater then zero.",
+						"Frequency not specified, Please set to a number greater then 1.",
 			    	    "WARNING",
 			    	    JOptionPane.ERROR_MESSAGE);
 			}
@@ -919,18 +1038,28 @@ public class View {
 		}
 	}
 	
-	public void updateMetrics()
+	/**
+	 * Update the metrics in the view
+	 */
+	private void updateMetrics()
 	{
 		totalMessagesMetric.setText("" + network.totalMessageList.size());
 		averageHopsMetric.setText("" + network.getAverageHops());
 		frequencyMetric.setText("" + frequency);
 	}
 
+	/**
+	 * Not implemented yet
+	 * Shows the test cases performed on the simulation
+	 */
 	private void showTestCases() {
 		JOptionPane.showMessageDialog(frame, TEST_CASES);
 		setStatus("");
 	}
 
+	/**
+	 * Open the UML diagram for the project
+	 */
 	private void showUML() {
 		File file = new File(UML);
 		if(file.exists()){
@@ -951,6 +1080,9 @@ public class View {
 		setStatus("");
 	}
 
+	/**
+	 * Open javadocs in the default browser
+	 */
 	private void showJavadoc() {
 		File index = new File(JAVADOC1);
 		File classes = new File(JAVADOC2);
@@ -973,11 +1105,17 @@ public class View {
 		setStatus("");
 	}
 
+	/**
+	 * SHow details of the project and authors
+	 */
 	private void showAbout() {
 		JOptionPane.showMessageDialog(frame, ABOUT);
 		setStatus("");
 	}
 
+	/**
+	 * Shows the README.txt file with instructions
+	 */
 	private void showREADME() {
 		File file = new File(README);
 		if(file.exists()){

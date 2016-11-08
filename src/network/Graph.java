@@ -85,10 +85,16 @@ public abstract class Graph {
 		return temp;
 	}
 	
+	/**
+	 * @return Arraylist of all the messages created during the simulation
+	 */
 	public ArrayList<Message> getCompleteMessageList()
 	{
 		return completeMessageList;
 	}
+	/**
+	 * @return Arraylist of messages still in the network
+	 */
 	public ArrayList<Message> getCurrentMessageList()
 	{
 		return messageQueue;
