@@ -12,7 +12,9 @@ import java.util.ArrayList;
 
 public class Node 
 {
-	
+	///////////////////////////////////////////////////////////////////////////////////
+	//			NOTE: POSSIBLE OTHER IMPLEMENTAION COULD HAVE THE HOOD FILLED WITH OTHER NODES
+	//////////////////////////////////////////////////////////////////////////////////
 	private ArrayList<Edge> thehood; // an ArrayList of routes
 	private String id; // the "ID" for the vertex
 	
@@ -25,6 +27,16 @@ public class Node
 	{
 		this.id = id;
 		this.thehood = new ArrayList<Edge>();
+	}
+	
+	/**
+	 * @param node
+	 * constructor used for testing purposes
+	 */
+	public Node(Node node)
+	{
+		this.id = node.getID();
+		this.thehood = node.getNeighbors();
 	}
 	
 	
@@ -94,6 +106,20 @@ public class Node
 	public ArrayList<Edge> getNeighbors()
 	{
 		return thehood;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return id;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Node node = (Node)obj;
+		if(this.id.equals(node.getID()) 
+				&& this.thehood.equals(node.getNeighbors())){ return true;}
+		return false;
 	}
 	
 }

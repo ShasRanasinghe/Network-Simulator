@@ -6,6 +6,10 @@ package network;
  * 
  * Class Edge implements a "Link" between two nodes consisting of a source and destination
  */
+/**
+ * @author shast
+ *
+ */
 public class Edge 
 {
 	private String id; // String id for an edge
@@ -24,6 +28,17 @@ public class Edge
         this.source = s;
         this.destination = d;
   
+	}
+
+	/**
+	 * @param edge
+	 *  constructor for testing purposes
+	 */
+	public Edge(Edge edge)
+	{
+		this.id = edge.getId();
+		this.source = edge.getSource();
+		this.destination = edge.getDestination();
 	}
 	
 	
@@ -44,14 +59,33 @@ public class Edge
 	}
 
 
+	/**
+	 * @return ID of the Edge
+	 */
 	public String getId() {
 		return id;
 	}
 
 
+	/**
+	 * @param id set the ID of the Edge
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Edge edge = (Edge)obj;
+		if(this.id.equals(edge.getId()) 
+				&& this.getSource().equals(edge.getSource()) 
+				&& this.getDestination().equals(edge.getDestination()))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	
 
 

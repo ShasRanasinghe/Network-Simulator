@@ -1,6 +1,7 @@
 package network;
 
 import java.util.*;
+import java.lang.Integer;
 
 /**
  * 
@@ -16,104 +17,262 @@ public class Simulation {
 	//Maybe I should have total hops too
 	private int averageHops;
 	private int packets;
+	private int totalMessages;
+	private int frequency;
+	
+	private ALGORITHM algorithm;
+	private Graph selectedAlgorithm;
+	
+	// Nodes of the simulation
+	private ArrayList<Node> simulationNodes;
+	
+	// Message instance of the simulation (returned after the algorithm finishes a set amount of steps)
+	public ArrayList<Message> totalMessageList;
+	public ArrayList<Message> currentMessageList;
 	
 	/**
 	 * Constructor initializes the simulation
      */
-	public Simulation(){
+	public Simulation()
+	{
 		averageHops = 0;
 		packets = 0;
+		totalMessages = 0;
+		frequency = 0;
+		simulationNodes = new ArrayList<Node>();
+		totalMessageList = new ArrayList<Message>();
+	}
+	
+	/**
+	 * @param nodeIDs Array list of node IDs
+	 */
+	public void createNodes(ArrayList<String> nodeIDs) 
+	{
+		simulationNodes.clear();
+	
+		for(String nodeId : nodeIDs)
+		{
+			Node temp = new Node(nodeId);
+			simulationNodes.add(temp);
+		}
+
+	}
+
+    /**
+	 * @param A Node 
+	 * @param B Node
+	 * Creates a link between the two nodes. IE adds an edge to each nodes "hood" (ArrayList)
+	 */
+	public void createLink(String A, String B)
+	{
+		Node node1 = getNodeGivenID(A);
+		Node node2 = getNodeGivenID(B);
+		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
+		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
+		node1.addNeighbor(e);
+		node2.addNeighbor(e2);
+	}
+	
+	/**
+	 * @param A Node
+	 * @param B Node
+	 * Removes the links between nodes in the nodes
+	 */
+	public void removeLink(String A, String B){
+		Node node1 = getNodeGivenID(A);
+		Node node2 = getNodeGivenID(B);
+		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
+		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
+		node1.removeNeighbor(e);
+		node2.removeNeighbor(e2);
 	}
 
 	/**
+	 * 
+	 * @param id ID of node
+	 * @return Node object if an ID matches
+	 */
+	public Node getNodeGivenID(String id) 
+	{
+	
+		for(Node node : simulationNodes){
+			if(node.getID().equals(id)){
+			//Returns the node when found
+			return node;
+		    	}
+	    	}
+	    	//Returns an empty node if not found
+	    	return new Node("");
+	}
+
+	/**
+     * @param edgeIDs Array list of edge IDs
+	 */
+	public void addNeighbors(ArrayList<String> edgeIDs) 
+	{
+		//Edges already validated when passed in
+		for(String edgeID : edgeIDs)
+		{
+		    String[] splitEdge = edgeID.split("->");
+		    String nodeOneID = splitEdge[0]; 
+		    String nodeTwoID = splitEdge[1];
+		    //Node nodeOne = getNodeGivenID(simulationNodes, nodeOneID);
+		    //Node nodeTwo = getNodeGivenID(simulationNodes, nodeTwoID);
+
+		    //Add neighbors
+			createLink(nodeOneID, nodeTwoID);
+		}
+	}
+	
+	/**
+	 * @param stepSize The size of each step when run algorithm is called
+	 */
+	public void runAlgorithm(int stepSize)
+	{
+		Integer tempF = frequency;
+		if(frequency == 0 || frequency == 1 && tempF != null)
+		{
+			// ERROR: invalid message creation frequency
+			System.out.println("ERROR: invalid message creation frequency (please select a frequency not equal to 0 or 1)");
+		}
+		else
+		{
+			selectedAlgorithm.run(stepSize);
+			retrieveState();
+		}
+	}
+	
+	
+	/**
+	 * Retrieves data from the graph to be used in the simulation
+	 */
+	public void retrieveState()
+	{
+		totalMessageList = selectedAlgorithm.getCompleteMessageList();
+		currentMessageList = selectedAlgorithm.getCurrentMessageList();
+		
+		setPackets(selectedAlgorithm.getTotalHops());
+		setTotalMessages(totalMessageList.size());
+		
+		setAverageHops(packets/totalMessages);
+	}
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		GETTERS AND SETTERS																					 //
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * @return the simulationNodes
+	 */
+	public ArrayList<Node> getSimulationNodes() {
+		return simulationNodes;
+	}
+
+	/**
+	 * @param simulationNodes the simulationNodes to set
+	 */
+	public void setSimulationNodes(ArrayList<Node> simulationNodes) {
+		this.simulationNodes = simulationNodes;
+	}
+	
+	/**
 	 * @return The average number of hops each message goes through from start to end
 	 */
-	public int getAverageHops() {
+	public int getAverageHops() 
+	{
 		return averageHops;
 	}
 
 	/**
 	 * @param averageHops Set the number of hops of a message
 	 */
-	public void setAverageHops(int averageHops) {
+	public void setAverageHops(int averageHops) 
+	{
 		this.averageHops = averageHops;
 	}
 
 	/**
 	 * @return Total number of packets transmitted
 	 */
-	public int getPackets() {
+	public int getPackets() 
+	{
 		return packets;
 	}
 
 	/**
 	 * @param packets Set the number of packets transmitted
 	 */
-	public void setPackets(int packets) {
+	public void setPackets(int packets) 
+	{
 		this.packets = packets;
 	}
 
 	/**
-	 * 
-	 * @param nodes List of nodes to traverse
-	 * @param id ID of node
-	 * @return Node object if an ID matches
+	 * @param totalMessages the totalMessages to set
 	 */
-	public Node getNodeGivenID(ArrayList<Node> nodes, String id) {
-
-		for(Node node : nodes){
-			if(node.getID().equals(id)){
-			//Returns the node when found
-			return node;
-		    	}
-        	}
-        	//Returns an empty node if not found
-        	return new Node("");
-    }
+	public void setTotalMessages(int totalMessages) {
+		this.totalMessages = totalMessages;
+	}
 	
 	/**
-	 * @param nodeIDs Array list of node IDs
-	 * @return Array list of nodes
+	 * @return the total messages in the simulation
 	 */
-	public ArrayList<Node> createNodes(ArrayList<String> nodeIDs) {
-		ArrayList<Node> nodes = new ArrayList<>();
-		for(String nodeID : nodeIDs){
-			nodes.add(new Node(nodeID));
-		}
-        return nodes;
+	public int getTotalMessages()
+	{
+		return totalMessages;
 	}
 
-    /**
-     * @param allNodes Array list of nodes
-     * @param edgeIDs Array list of edge IDs
-     * @return Array list of nodes with neighbors
+	/**
+	 * @param frequency Frequency to run simulation with
 	 */
-	public Graph createGraph(ArrayList<Node> allNodes, ArrayList<String> edgeIDs) {
-		
-		//Initialize graph
-		Graph graph = new Graph(allNodes);
-
-		//Edges already validated when passed in
-		for(String edgeID : edgeIDs){
-		    String[] splitEdge = edgeID.split("->");
-		    String nodeOneID = splitEdge[0]; 
-		    String nodeTwoID = splitEdge[1];
-		    Node nodeOne = getNodeGivenID(allNodes, nodeOneID);
-		    Node nodeTwo = getNodeGivenID(allNodes, nodeTwoID);
-
-		    //Add neighbors
-		    if(!nodeOne.getID().isEmpty() && !nodeTwo.getID().isEmpty()){
-			graph.createLink(nodeOne, nodeTwo);
-		    }
-		}
-
-		return graph;
+	public void setFrequency(int frequency) {
+		this.frequency = frequency;
 	}
 	
+	/**
+	 * @return frequency for simulation
+	 */
+	public int getFrequency()
+	{
+		return frequency;
+	}
+
+	/**
+	 * @param algorithm The algorithm the simulation would be set to
+	 */
+	public void setAlgorithm(ALGORITHM algorithm) 
+	{
+		this.algorithm = algorithm;
+		switch(this.algorithm)
+		{
+			case FLOODING: break;// No Flooding Algorithm implemented yet
+				
+			case SHORTESTPATH:	break;// No Shortest Path Algorithm implemented yet
+				
+			case CUSTOM:	break;// No Custom Algorithm implemented yet
+				
+			default: selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
+					 currentMessageList = selectedAlgorithm.messageQueue;
+					 break;
+		}			
+	}
+	
+	/**
+	 * @return the algorithm choosen
+	 */
+	public ALGORITHM getAlgorithm()
+	{
+		return algorithm;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		MAIN METHOD FOR ENTIRE NETWORK!!!!																	 //
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @param args Main method input
 	 */
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		
 		//Initialize Simulation
 		Simulation simulation = new Simulation();
@@ -131,39 +290,44 @@ public class Simulation {
 			nodeIDs = controller.getNodes();
 			edgeIDs = controller.getEdges();
 		}
-		
 		//Used to test network
-		if(controller.isTesting()){
+		else
+		{
 			frequency = 5;
 			nodeIDs.add("A");nodeIDs.add("B");nodeIDs.add("C");nodeIDs.add("D");nodeIDs.add("E");
 			edgeIDs.add("A->B");edgeIDs.add("A->C");edgeIDs.add("A->E");edgeIDs.add("C->D");edgeIDs.add("D->B");
 			edgeIDs.add("B->E");
 		}
 		
-		//Handle the nodes
-		ArrayList<Node> nodes = simulation.createNodes(nodeIDs);
-		//Handle the edges
-		Graph graph = simulation.createGraph(nodes, edgeIDs);
+		// Create nodes in the simulation
+		simulation.createNodes(nodeIDs);
 		
-		graph.createMessage();
+		// Add edges to all nodes in simulation
+		simulation.addNeighbors(edgeIDs);
 
-		//Algorithm  runs
-		controller.runAlgorithm();
-		graph.runAlgorithm(frequency, ALGORITHM.RANDOM);
-
-		//Metrics
-		int totalMessages = graph.getTotalMessages();
+		// Run specified algorithm
+		ALGORITHM userAlgorithm = controller.getAlgorithm();
 		
-		//IS THIS THE TOTAL FOR EACH MESSAGE OR IS IT THE RUNNING TOTAL???
-		int totalHops = graph.getTotalHops();
+		// If the user wants to run the random algorithm
+		if(userAlgorithm == ALGORITHM.RANDOM)
+		{
+			RandomAlgorithm randomAlgorithm = new RandomAlgorithm(simulation.simulationNodes, frequency);
+			
+			// USER MUST INPUT THE STEP SIZE!!!!!!!!!!!!!!!!!!!!!!!!!!
+			randomAlgorithm.run(50);
+			
+			//Metrics
+			simulation.setTotalMessages(randomAlgorithm.completeMessageList.size());
+			//IS THIS THE RUNNING TOTAL!!!!
+			simulation.setPackets(randomAlgorithm.getTotalHops());
+		}
 
-		//Set simulation metrics
-		simulation.setPackets(totalHops);
-		simulation.setAverageHops(totalHops/totalMessages);
+		// Calculate the average
+		simulation.setAverageHops(simulation.packets/simulation.totalMessages);
 
 		//Print metrics
 		controller.printTotalPackets(simulation.getPackets());
-		System.out.println("total number of messages created: " + totalMessages);
+		System.out.println("total number of messages created: " + simulation.totalMessages);
 		//graph.printTable();
-	}
+	}*/
 }

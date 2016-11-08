@@ -2,168 +2,125 @@ package network;
 
 import java.util.*;
 
+
 /**
  * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
  * @version 1.0
  * 
  * Graph implements the "Network" consisting of Nodes that are linked together by edges
  */
+public abstract class Graph {
+	
+	// VARIABLES TO BE SHARED BY ALL ALGORITHMS
 
-public class Graph implements RoutingAlgorithms
-{
+	// List of Nodes within the graph
+	protected ArrayList<Node> graphNodes;
+	// List of ALL messages created during the simulation
+	protected ArrayList<Message> completeMessageList;
+	// List of messages currently in the network
+	protected ArrayList<Message> messageQueue;
 	
-	private ArrayList<Node> vertices; // ArrayList of Nodes for testing purposes
-	private ArrayList<Table> table; // Table used to record the route
-	private ArrayList<Message> messageList; // Messages
+	protected int creationFrequency;
 	
-	private int totalHops; // total amount of hops
-	private int totalmessages; // total amount of messages
+	protected int messageCount = 0;
+	protected String message = "Message";
 	
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		METHODS WITH SET BEHAVIOR TO BE SHARED BY ALL ALGORITHMS											 //
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 *Graph constructor creates a network
+	 * While the algorithms are running, every time the amount of hops equals the user set frequency
+	 * a new message is created and added to the network
 	 */
-	public Graph()
+	public void createNewMessage()
 	{
-
-		this.table = new ArrayList<Table>();
-		this.vertices = new ArrayList<Node>();
-		this.messageList = new ArrayList<Message>();
-		totalHops = 0;
-		totalmessages = 0;
+		messageCount++;
+		String messageName = message + messageCount;
 		
+		// The message's source and destination are set randomly
+		Random random = new Random();
+		Node tempS = graphNodes.get(random.nextInt(graphNodes.size()));
+		Node tempD = graphNodes.get(random.nextInt(graphNodes.size()));
 		
-	}
-
-	/**
-	 * @param vertices Array List of verticies
-	 * Graph constructor accepts an ArrayList<Node> to create the network
-	 */
-	public Graph(ArrayList<Node> vertices)
-	{
-		this.vertices = new ArrayList<Node>();
-		this.table = new ArrayList<Table>();
-		this.messageList = new ArrayList<Message>();
-		
-		totalHops = 0;
-		totalmessages = 0;
-		
-		for(Node v: vertices)
+		// The destination CAN NOT be the same node as the source
+		while(tempS.equals(tempD))
 		{
-			this.vertices.add(v);
+			// If it is, get a new destination
+			tempD = graphNodes.get(random.nextInt(graphNodes.size()));
 		}
+		
+		// Form the message and add it to the message queue and total 
+		Message message = new Message(tempS,tempD);
+		message.setName(messageName);
+		messageQueue.add(message);
+		completeMessageList.add(message);
 	}
 	
-	
 	/**
-	 * @param m the message to be removed from the List of messages
+	 * @param message The message to be removed from the queue when it has reached its destination
 	 */
-	public void removeMessage(Message m)
+	public void removeMessage(Message message)
 	{
-		for(int i = 0; i<messageList.size(); i++)
+		// Iterate over the message queue
+		for(int i = 0; i < messageQueue.size(); i++)
 		{
-			if(messageList.get(i).equals(m))
+			// Find the message that has reached its destination
+			if(messageQueue.get(i).equals(message))
 			{
-				messageList.remove(i);
+				// Remove
+				messageQueue.get(i).setRunning(false);
+				messageQueue.remove(i);
 			}
 		}
 	}
 	
 	/**
-	 * @return a message at index 0
+	 * @return the next Message in the queue to be serviced
 	 */
 	public Message getMessage()
 	{
-		Message temp = messageList.get(0);
-		messageList.remove(0);
+		Message temp = messageQueue.get(0);
+		messageQueue.remove(0);
 		return temp;
 	}
 	
 	/**
-	 * Generates a random message to be injected into the network 
+	 * @return Arraylist of all the messages created during the simulation
 	 */
-	public void createMessage()
+	public ArrayList<Message> getCompleteMessageList()
 	{
-		Random random = new Random();
-		Node tempS = vertices.get(random.nextInt(vertices.size()));
-		Node tempD = vertices.get(random.nextInt(vertices.size()));
-		while(tempS.equals(tempD))
-		{
-			tempD = vertices.get(random.nextInt(vertices.size()));
-		}
-		Message message = new Message(tempS,tempD);
-		messageList.add(message);
-		
-		totalmessages++;
-		//return message;
+		return completeMessageList;
+	}
+	/**
+	 * @return Arraylist of messages still in the network
+	 */
+	public ArrayList<Message> getCurrentMessageList()
+	{
+		return messageQueue;
 	}
 	
 	/**
 	 * 
-	 * @param c - The Current node of the pair being added
-	 * @param n - The Next node of the pair being added
+	 * @param message The current message the algorithm is handling 
 	 */
-	public void addToTable(Node c, Node n)
+	protected void checkFrequency(Message message)
 	{
-		// Creating a pair to add to the table
-		Table currentHop = new Table(c,n);
-		table.add(currentHop);
-	}
-	
-	/**
-	 * Prints the table of the route for testing purposes and MILESTONE 1 
-	 */
-	public void printTable()
-	{
-		for(Table t: table)
+		// Retrieve the amount of hops the current message has completed
+		int currentHops = message.getHopCount();
+		
+		// If the amount of hops is a multiple of the creationFrequency
+		if((currentHops % creationFrequency) == 0)
 		{
-			System.out.println(t.makeString());
+			createNewMessage();
 		}
 	}
-
-	/**
-	 * @return the total number of hops
-	 */
-	public int getTotalHops()
-	{
-		return totalHops;
-	}
 	
-	/**
-	 * @param i increment the total hops
-	 */
-	public void setTotalHops(int i)
-	{
-		totalHops =+ i;
-	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		METHODS THAT HAVE SPECIFIC BEHAVIOR DEPENDING ON THE ALGORITHM										 //
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	abstract void run(int stepSize);
+	abstract int getTotalHops();
+	abstract int getNumberOfCurrentMessages();
 	
-	/**
-	 * @param A Node 
-	 * @param B Node
-	 * Creates a link between the two nodes. IE adds an edge to each nodes "hood" (ArrayList)
-	 */
-	public void createLink(Node A, Node B)
-	{
-		Edge e = new Edge(A.getID() + "->" + B.getID(),A,B);
-		Edge e2 = new Edge(B.getID() + "->" + A.getID(),B,A);
-		A.addNeighbor(e);
-		B.addNeighbor(e2);
-	}
-	
-	/**
-	 * @return the message arrayList
-	 */
-	public ArrayList<Message> getMessageList()
-	{
-		return messageList;
-	}
-	
-	/**
-	 * @return the total amount of messages
-	 */
-	public int getTotalMessages()
-	{
-		return totalmessages;
-	}
-
 }
