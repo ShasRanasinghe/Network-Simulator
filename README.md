@@ -35,7 +35,7 @@ The project is divided into 4 iterations, each of which correspond to a mileston
    
 4) Type the following into the command propmt to begin executing the program: **java -jar milestone2.jar**
 
-5) For any further help with the program, refer to 'Help'->'README' in the GUI.
+5) For any further help with the program, refer to 'Help'->'User Manual' in the GUI.
 
 
 ###Notes
