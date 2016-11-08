@@ -27,6 +27,10 @@ public class RandomAlgorithm extends Graph{
 	// ALL OTHER INSTANCE VARIABLES INHERITED FROM GRAPH!!!!
 	
 	
+	/**
+	 * @param nodes list of nodes in the network
+	 * @param frequency The frequency at which new messages are injected
+	 */
 	public RandomAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
 		// INHERITED FROM GRAPH!!!!!
@@ -48,6 +52,9 @@ public class RandomAlgorithm extends Graph{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see network.Graph#run(int)
+	 */
 	public void run(int stepSize)
 	{
 		// Step 1) Loop n times, where n is = to the stepSize
@@ -113,6 +120,9 @@ public class RandomAlgorithm extends Graph{
 		return totalRandomHops;
 	}
 	
+	/* (non-Javadoc)
+	 * @see network.Graph#getNumberOfCurrentMessages()
+	 */
 	public int getNumberOfCurrentMessages()
 	{
 		return messageQueue.size();
