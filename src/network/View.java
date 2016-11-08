@@ -39,15 +39,16 @@ public class View {
 			+ "* Random\n"
 			+ "* Flooding\n"
 			+ "* Shortest path\n"
-			+ "* Custom method";
+			+ "* Custom method\n\n"
+			+ "Version: Milestone 2";
 	private final String TEST_CASES = "Test 1: \n"
 			+ "Test 2: \n"
 			+ "Test 3: \n"
 			+ "Test 4: \n"
 			+ "Test 5: \n"
 			+ "Test 6: \n";
-	private final String README = "README.txt";
-	private final String UML = "Milestone2_UML.jpg";
+	private final String README = "UserManual.txt";
+	private final String UML = "Milestone2_UML.pdf";
 	private final String JAVADOC1 = "doc\\index.html";
 	private final String JAVADOC2 = "doc\\network\\Simulation.html";
 	private final String COUTLD_NOT_OPEN_FILE = "Could not open file properly";
@@ -108,6 +109,7 @@ public class View {
 	
 	/**
 	 * MAIN CONSTRUCTOR OF GUI
+	 * @param sim Associated simulation with the View
 	 */
 	public View(Simulation sim)
 	{
@@ -415,7 +417,7 @@ public class View {
 		menu = new JMenu("Help");
 		menuBar.add(menu);
 		
-		item = new JMenuItem("README");
+		item = new JMenuItem("User Manual");
 		item.addActionListener(e -> showREADME());
 		menu.add(item);
 		
@@ -435,6 +437,7 @@ public class View {
 		item.addActionListener(e -> showTestCases());
 		menu.add(item);
 		item.setToolTipText("Not Implemented Yet");
+		item.setEnabled(false);
 	}
 
 	/**
@@ -453,7 +456,7 @@ public class View {
 	{
 		if(checkFullInitialization())
 		{
-			if(network.getPackets() == 0){createTable();}
+			if(!tableBar.isVisible()){createTable();}
 			setEnabledOptionsWhenStepping(false);
 			network.runAlgorithm(1);
 			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
@@ -471,7 +474,7 @@ public class View {
 	{
 		if(checkFullInitialization())
 		{
-			createTable();
+			if(!tableBar.isVisible()){createTable();}
 			setEnabledOptionsWhenStepping(false);
 			while(network.currentMessageList.size() != 0)
 			{
@@ -923,7 +926,7 @@ public class View {
 		run.setEnabled(true);
 		updateMetrics();
 		tableBar.setVisible(false);
-		defaultNetworkMenu.setEnabled(false);
+		defaultNetworkMenu.setEnabled(true);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

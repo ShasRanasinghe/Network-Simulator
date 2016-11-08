@@ -106,7 +106,6 @@ public class Simulation {
 	}
 
 	/**
-     * @param allNodes Array list of nodes
      * @param edgeIDs Array list of edge IDs
 	 */
 	public void addNeighbors(ArrayList<String> edgeIDs) 
