@@ -54,7 +54,7 @@ public class GraphicNode {
     }
 
     /**
-     * Draw this node.
+     * @param g Graphics object
      */
     public void draw(Graphics g) {
     	//Draw Oval
@@ -74,41 +74,44 @@ public class GraphicNode {
     }
 
     /**
-     * Return this node's ID.
+     * @return the node ID
      */
     public String getNodeID() {
         return nodeID;
     }
-    
+
     /**
-     * Return this node's location.
+     * @return the node location
      */
     public Point getLocation() {
         return p;
     }
 
     /**
-     * Return true if this node contains p.
+     * @param p the location of the node
+     * @return true of contains, false otherwise
      */
     public boolean contains(Point p) {
         return b.contains(p);
     }
 
     /**
-     * Return true if this node is selected.
+     * @return true if selected, false otherwise
      */
     public boolean isSelected() {
         return selected;
     }
 
     /**
-     * Mark this node as selected.
+     * @param selected if selected or not
      */
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
 
     /**
+     * @param list list of graphic nodes
+     * @param selected list of selected nodes
      * Collected all the selected nodes in list.
      */
     public static void getSelected(List<GraphicNode> list, List<GraphicNode> selected) {
@@ -121,7 +124,7 @@ public class GraphicNode {
     }
 
     /**
-     * Select no nodes.
+     * @param list list of graphic nodes
      */
     public static void selectNone(List<GraphicNode> list) {
         for (GraphicNode n : list) {
@@ -130,7 +133,10 @@ public class GraphicNode {
     }
 
     /**
-     * Select a single node; return true if not already selected.
+     * @param list list of graphic nodes
+     * @param p the point selected
+     * @return true if not already selected
+     * Select a single node and returns true if not already selected.
      */
     public static boolean selectOne(List<GraphicNode> list, Point p) {
         for (GraphicNode n : list) {
@@ -146,6 +152,8 @@ public class GraphicNode {
     }
 
     /**
+     * @param list list of grpahic nodes
+     * @param r rectable of selected area
      * Select each node in r.
      */
     public static void selectRect(List<GraphicNode> list, Rectangle r) {
@@ -155,6 +163,8 @@ public class GraphicNode {
     }
 
     /**
+     * @param list list of graphic nodes
+     * @param p the point selected
      * Toggle selected state of each node containing p.
      */
     public static void selectToggle(List<GraphicNode> list, Point p) {
@@ -166,6 +176,8 @@ public class GraphicNode {
     }
 
     /**
+     * @param list list of graphic nodes
+     * @param d positing being updated to
      * Update each node's position by d (delta).
      */
     public static void updatePosition(List<GraphicNode> list, Point d) {

@@ -34,11 +34,7 @@ public class GraphicPanel extends JComponent {
     public List<GraphicNode> selected;
     public List<GraphicEdge> graphicEdges;
 
-    /**
-     * Runs the GraphicPanel
-     * @param args Arguments for main method
-     * @throws Exception when error is found
-     */
+    /*
     public static void main(String[] args) throws Exception {
         EventQueue.invokeLater(new Runnable() {
 
@@ -52,7 +48,7 @@ public class GraphicPanel extends JComponent {
                 f.setVisible(true);
             }
         });
-    }
+    }*/
 
     
     /**
@@ -146,8 +142,9 @@ public class GraphicPanel extends JComponent {
     }
     
     /**
+     * @param nodeID Node id to be created
+     * 
      * Controller for New Node Action that adds a node
-     *
      */
     public void NewNodeAction(String nodeID){
 	
@@ -186,8 +183,10 @@ public class GraphicPanel extends JComponent {
     }
     
     /**
+     * @param n1ID node id of the first node
+     * @param n2ID node id of the second node
+     * 
      * Controller for Connect Action that connects two nodes
-     *
      */
     public void ConnectAction(String n1ID, String n2ID) {
 
@@ -203,7 +202,6 @@ public class GraphicPanel extends JComponent {
     
 	/**
 	 * 
-	 * @param graphicNodes List of nodes to traverse
 	 * @param id ID of node
 	 * @return GraphicNode object if an ID matches
 	 */
@@ -301,8 +299,10 @@ public class GraphicPanel extends JComponent {
         nodeCount = 0;
     }
     
+
     /**
-     * 
+     * @return Point of the location
+     * Offsets the location when creating a new node
      */
     public Point offsetP()
     {
@@ -333,15 +333,15 @@ public class GraphicPanel extends JComponent {
     }
     
     /**
-     * Returns the list of selected nodes
+     * @return list of selected nodes
+     * 
      */
     public List<GraphicNode> getSelectedNodesList(){
     	return selected;
     }
-    
-    
+
     /**
-     * Returns the number of nodes that are selected
+     * @return the number of nodes that are selected
      */
     public int numberOfSelectedNodes(){
     	return selected.size();

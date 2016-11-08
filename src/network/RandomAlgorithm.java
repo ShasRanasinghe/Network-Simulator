@@ -52,6 +52,9 @@ public class RandomAlgorithm extends Graph{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see network.Graph#run(int)
+	 */
 	public void run(int stepSize)
 	{
 		// Step 1) Loop n times, where n is = to the stepSize
@@ -117,6 +120,9 @@ public class RandomAlgorithm extends Graph{
 		return totalRandomHops;
 	}
 	
+	/* (non-Javadoc)
+	 * @see network.Graph#getNumberOfCurrentMessages()
+	 */
 	public int getNumberOfCurrentMessages()
 	{
 		return messageQueue.size();
