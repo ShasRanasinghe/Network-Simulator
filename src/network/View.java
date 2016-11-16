@@ -499,11 +499,14 @@ public class View {
 		JTextField endNode = new JTextField(5);
 
 		JPanel panel = new JPanel();
-		panel.add(new JLabel("Enter Start NodeID:")); panel.add(startNode);
+		panel.add(new JLabel("Enter Start NodeID:")); 
+		panel.add(startNode);
 		panel.add(Box.createHorizontalStrut(15)); // a spacer
-		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
+		panel.add(new JLabel("Enter End NodeID:")); 
+		panel.add(endNode);
 		
 		for(;;){
+			startNode.addHierarchyListener(new RequestFocusListener());
 			int result = JOptionPane.showConfirmDialog(null, panel, 
 					"Remove Edge", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
@@ -555,6 +558,7 @@ public class View {
 		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
 		
 		for(;;){
+			startNode.addHierarchyListener(new RequestFocusListener());
 			int result = JOptionPane.showConfirmDialog(null, panel, 
 					"Edit Existing Edge", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
@@ -624,6 +628,7 @@ public class View {
 		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
 		
 		for(;;){
+			startNode.addHierarchyListener(new RequestFocusListener());
 			int result = JOptionPane.showConfirmDialog(null, panel, 
 					"Create New Edge", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
@@ -715,6 +720,7 @@ public class View {
 		panel.add(new JLabel("Enter New NodeID:")); panel.add(newNodeID);
 		
 		for(;;){
+			nodeID.addHierarchyListener(new RequestFocusListener());
 			int result = JOptionPane.showConfirmDialog(null, panel, 
 					"Edit Node", JOptionPane.OK_CANCEL_OPTION);
 			if (result == JOptionPane.OK_OPTION) {
