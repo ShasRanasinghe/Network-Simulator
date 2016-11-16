@@ -63,7 +63,7 @@ public class View {
 	//Variables used to create the GUI
 	private List<String> algorithms = new ArrayList<>();
 	private String frequencyList[];
-	private DefaultListModel<Message> messageList;
+	private MessageListModel<Message> messageList;
 	private JList<Message> list;
 	private DefaultTableModel tableModel;
 	private int rowCount = 0;
@@ -140,7 +140,7 @@ public class View {
 		
 		tableModel = new DefaultTableModel();
 		
-		messageList = new DefaultListModel<>();
+		messageList = new MessageListModel<>();
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class View {
 		west.add(toolBar);
 		
 		
-		//scroll bar
+		//graph panel
 		
 		JPanel center = new JPanel();
 		center.setLayout(new BorderLayout());
@@ -265,27 +265,23 @@ public class View {
 		
 		//set list bar
 		
-		JPanel east = new JPanel();
-		east.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JPanel listBar = new JPanel();
 		listBar.setLayout(new GridLayout(0,1));
-		east.add(listBar);
 		
 		list =  new JList<>(messageList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(e -> createPopup(e));
-		listBar.add(list);
+		//listBar.add(list);
+		list.setBackground(center.getBackground());
 		list.setCellRenderer(new MessageListCellRenderer());
-		east.setPreferredSize(new Dimension(100,0));
-		scrollPaneList = new JScrollPane(east);		
-		contentPane.add(scrollPaneList,BorderLayout.EAST);
+		listBar.setPreferredSize(new Dimension(100,0));
+		scrollPaneList = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listBar.add(scrollPaneList);
 		
 		//set list renderer
-		list.setCellRenderer(new MessageListCellRenderer());
-		
-		scrollPaneList = new JScrollPane(east,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
-		center.add(scrollPaneList,BorderLayout.EAST);
+		list.setCellRenderer(new MessageListCellRenderer());		
+		center.add(listBar,BorderLayout.EAST);
 		
 		//set table bar
 		tableBar = new JPanel();
@@ -478,8 +474,9 @@ public class View {
 			setEnabledOptionsWhenStepping(false);
 			network.runAlgorithm(1);
 			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
-			addMessagesToChart();
+			addMessagesToList();
 			addMessagesToTable();
+			updateListRender();
 			updateMetrics();
 			table.changeSelection(table.getRowCount() - 1, 0, false, false);
 		}
@@ -497,13 +494,15 @@ public class View {
 			while(network.currentMessageList.size() != 0)
 			{
 				network.runAlgorithm(1);
-				addMessagesToChart();
+				addMessagesToList();
 				addMessagesToTable();
+				updateListRender();
 				updateMetrics();
 				table.changeSelection(table.getRowCount() - 1, 0, false, false);
 			}
 			run.setEnabled(false);
 			stepNext.setEnabled(false);
+			defaultNetworkMenu.setEnabled(true);
 		}
 	}
 
@@ -929,9 +928,7 @@ public class View {
 		stepNext.setEnabled(true);
 		run.setEnabled(true);
 		updateMetrics();
-		tableBar.setVisible(false);
-		defaultNetworkMenu.setEnabled(false);
-		
+		tableBar.setVisible(false);		
 	}
 
 	/**
@@ -1011,14 +1008,22 @@ public class View {
 	/**
 	 * Adds a message to the JList of messages to be displayed in the chart
 	 */
-	private void addMessagesToChart()
+	private void addMessagesToList()
 	{
 		for(Message m : network.totalMessageList)
 		{
 			if(!messageList.contains(m))
 			{
 				messageList.addElement(m);
+				messageList.update(messageList.indexOf(m));
 			}
+		}
+	}
+	
+	private void updateListRender(){
+		for(Message m : network.totalMessageList)
+		{
+			messageList.update(messageList.indexOf(m));
 		}
 	}
 	
