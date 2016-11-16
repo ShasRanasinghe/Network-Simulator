@@ -27,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
  *
  */
 public class View {
-	
+
 	//Simulation
 	private Simulation network;
 	
@@ -43,13 +43,13 @@ public class View {
 	private MessageListModel<Message> messageList;
 	private JList<Message> list;
 	private DefaultTableModel tableModel;
-	private int rowCount = 0;
+	private int rowCount;
 	
 	//Metrics
-	JTextField totalMessagesMetric = new JTextField(5);
-	JTextField averageHopsMetric = new JTextField(5);
-	JTextField frequencyMetric = new JTextField(5);
-	JTextField algorithmMetric = new JTextField(15);
+	JTextField totalMessagesMetric;
+	JTextField averageHopsMetric;
+	JTextField frequencyMetric;
+	JTextField algorithmMetric;
 	
 	
 	//GUI
@@ -104,11 +104,13 @@ public class View {
 		nodes = new ArrayList<String>();
 		edges = new ArrayList<String>();
 		
-		frequencyList = new String[30];
-		for (int i = 2; i < frequencyList.length; i++) {
-			frequencyList[i-2] = Integer.toString(i);
+		//Initialize frequency list
+		frequencyList = new String[FREQUENCY_OPTIONS_MAX];
+		for (int i = FREQUENCY_OPTIONS_MIN; i < frequencyList.length; i++) {
+			frequencyList[i-FREQUENCY_OPTIONS_MIN] = Integer.toString(i);
 		}
 		
+		//Initialize array of Algorithms available
 		ALGORITHM[] algorithms;
 		algorithms = ALGORITHM.values();
 		for(ALGORITHM alg: algorithms){
@@ -116,6 +118,7 @@ public class View {
 		}
 		
 		tableModel = new DefaultTableModel();
+		rowCount = INITIAL_ROW_COUNT;
 		
 		messageList = new MessageListModel<>();
 	}
@@ -127,79 +130,92 @@ public class View {
 		frame = new JFrame("Network Simulator");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		JPanel contentPane = (JPanel)frame.getContentPane();
-		//set border here
 		
 		makeMenu();
 		
 		contentPane.setLayout(new BorderLayout());
 		
-		//tool bar
-		toolBar = new JPanel();
-		toolBar.setLayout(new GridLayout(0,1,0,20));
+		makeToolBar(contentPane);
 		
-		newNode = new JButton("New Node");
-		newNode.addActionListener(e -> newNode());
-		toolBar.add(newNode);
+		JPanel center = makeGraphPanel(contentPane);
 		
-		newEdge = new JButton("New Edge");
-		newEdge.addActionListener(e -> newEdge());
-		toolBar.add(newEdge);
+		makeOutputBar(contentPane);
 		
-		freqButton = new JButton("Set Frequency");
-		freqButton.addActionListener(e -> setFrequency());
-		toolBar.add(freqButton);
+		makeMessageListBar(center);
 		
-		algorithmButton = new JButton("Set Algorithm");
-		algorithmButton.addActionListener(e -> setAlgorithm());
-		toolBar.add(algorithmButton);
+		makeTableBar(center);
 		
-		deleteNodeButton = new JButton("Delete Node");
-		deleteNodeButton.addActionListener(e -> deleteNode());
-		toolBar.add(deleteNodeButton);
+		//Finish it off
+		frame.pack();
+		frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		frame.setLocation(SCREEN_DIMENTIONS.width/2 - frame.getWidth()/2,SCREEN_DIMENTIONS.height/2 - frame.getHeight()/2);
 		
-		deleteEdgeButton = new JButton("Delete Edge");
-		deleteEdgeButton.addActionListener(e -> deleteEdge());
-		toolBar.add(deleteEdgeButton);
+		frame.setVisible(true);
 		
-		JPanel west = new JPanel();
-		west.setLayout(new FlowLayout(FlowLayout.CENTER));
-		west.add(toolBar);
+		defaultOption();
+		updateMetrics();
 		
+	}
+
+	/**
+	 * Creates the north panel with the table
+	 * @param center
+	 */
+	private void makeTableBar(JPanel center) {
+		//set table bar
+		tableBar = new JPanel();
+		tableBar.setLayout(new GridLayout(0,1));
+		table = new JTable(tableModel);
+		table.setEnabled(false);
+		scrollPaneTable = new JScrollPane(table);
+		scrollPaneTable.setPreferredSize(new Dimension(frame.getWidth(),100));
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableBar.add(scrollPaneTable);
+		center.add(tableBar,BorderLayout.NORTH);
+		tableBar.setVisible(false);
+	}
+
+	/**
+	 * Creates the panel on the right with the list of messages
+	 * @param center
+	 */
+	private void makeMessageListBar(JPanel center) {
+		//set list bar
+		JPanel listBar = new JPanel();
+		listBar.setLayout(new GridLayout(0,1));
 		
-		//graph panel
+		list =  new JList<>(messageList);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.addListSelectionListener(e -> createPopup(e));
+		//listBar.add(list);
+		list.setBackground(center.getBackground());
+		list.setCellRenderer(new MessageListCellRenderer());
+		listBar.setPreferredSize(new Dimension(100,0));
+		scrollPaneList = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listBar.add(scrollPaneList);
 		
-		JPanel center = new JPanel();
-		center.setLayout(new BorderLayout());
-		gp = new GraphicPanel();
-		center.add(new JScrollPane(gp), BorderLayout.CENTER);
-		center.add(west,BorderLayout.WEST);
-		
-		playPanel = new JPanel();
-		center.add(playPanel,BorderLayout.SOUTH);
-		
-		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER,100,0));
-		stepBack = new JButton("Back");
-		stepBack.addActionListener(e -> stepBack());
-		stepBack.setEnabled(false);
-		stepBack.setToolTipText("Not Implemented yet");
-		run = new JButton("Run");
-		run.addActionListener(e -> run());
-		stepNext = new JButton("Next");
-		stepNext.addActionListener(e -> stepForward());
-		
-		playPanel.add(stepBack);
-		playPanel.add(run);
-		playPanel.add(stepNext);	
-		
-		contentPane.add(center,BorderLayout.CENTER);
-		
+		//set list renderer
+		list.setCellRenderer(new MessageListCellRenderer());		
+		center.add(listBar,BorderLayout.EAST);
+	}
+
+	/**
+	 * The south bar with the metrics and status bar
+	 * @param contentPane
+	 */
+	private void makeOutputBar(JPanel contentPane) {
 		//output bar
-		
 		JPanel south = new JPanel();
 		//south
 		south.setLayout(new BorderLayout());
 		outputsPanel = new JPanel();
 		outputsPanel.setLayout(new FlowLayout(FlowLayout.CENTER,20,0));
+		
+		totalMessagesMetric = new JTextField(METRIC_FIELD_SIZE);
+		averageHopsMetric = new JTextField(METRIC_FIELD_SIZE);
+		frequencyMetric = new JTextField(METRIC_FIELD_SIZE);
+		algorithmMetric = new JTextField(ALGORITHM_METRIC_FIEL_SIZE);
 		
 		//Metric block
 		JPanel panel = new JPanel();
@@ -239,79 +255,81 @@ public class View {
 		//status label block ends
 		
 		contentPane.add(south,BorderLayout.SOUTH);
+	}
+
+	/**
+	 * Created the Center where the Graph panel goes
+	 * @param contentPane
+	 * @return the graphpanel
+	 */
+	private JPanel makeGraphPanel(JPanel contentPane) {
+		//graph panel
+		JPanel center = new JPanel();
+		center.setLayout(new BorderLayout());
+		gp = new GraphicPanel();
+		center.add(new JScrollPane(gp), BorderLayout.CENTER);
 		
-		//set list bar
 		
-		JPanel listBar = new JPanel();
-		listBar.setLayout(new GridLayout(0,1));
+		playPanel = new JPanel();
+		center.add(playPanel,BorderLayout.SOUTH);
 		
-		list =  new JList<>(messageList);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.addListSelectionListener(e -> createPopup(e));
-		//listBar.add(list);
-		list.setBackground(center.getBackground());
-		list.setCellRenderer(new MessageListCellRenderer());
-		listBar.setPreferredSize(new Dimension(100,0));
-		scrollPaneList = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		listBar.add(scrollPaneList);
+		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER,100,0));
+		stepBack = new JButton("Back");
+		stepBack.addActionListener(e -> stepBack());
+		stepBack.setEnabled(false);
+		stepBack.setToolTipText("Not Implemented yet");
+		run = new JButton("Run");
+		run.addActionListener(e -> run());
+		stepNext = new JButton("Next");
+		stepNext.addActionListener(e -> stepForward());
 		
-		//set list renderer
-		list.setCellRenderer(new MessageListCellRenderer());		
-		center.add(listBar,BorderLayout.EAST);
+		playPanel.add(stepBack);
+		playPanel.add(run);
+		playPanel.add(stepNext);	
 		
-		//set table bar
-		tableBar = new JPanel();
-		tableBar.setLayout(new GridLayout(0,1));
-		table = new JTable(tableModel);
-		table.setEnabled(false);
-		scrollPaneTable = new JScrollPane(table);
-		scrollPaneTable.setPreferredSize(new Dimension(frame.getWidth(),100));
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tableBar.add(scrollPaneTable);
-		center.add(tableBar,BorderLayout.NORTH);
-		tableBar.setVisible(false);
+		contentPane.add(center,BorderLayout.CENTER);
+		return center;
+	}
+
+	/**
+	 * Created the tool bar of button on the west of the GUI
+	 * @param contentPane
+	 */
+	private void makeToolBar(JPanel contentPane) {
+		//tool bar
+		toolBar = new JPanel();
+		toolBar.setLayout(new GridLayout(0,1,0,20));
 		
-		//Finish it off
-		frame.pack();
-		frame.setSize(new Dimension(1000,600));
-		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setLocation(d.width/2 - frame.getWidth()/2,d.height/2 - frame.getHeight()/2);
+		newNode = new JButton("New Node");
+		newNode.addActionListener(e -> newNode());
+		toolBar.add(newNode);
 		
-		frame.setVisible(true);
+		newEdge = new JButton("New Edge");
+		newEdge.addActionListener(e -> newEdge());
+		toolBar.add(newEdge);
 		
-		defaultOption();
-		updateMetrics();
+		freqButton = new JButton("Set Frequency");
+		freqButton.addActionListener(e -> setFrequency());
+		toolBar.add(freqButton);
 		
+		algorithmButton = new JButton("Set Algorithm");
+		algorithmButton.addActionListener(e -> setAlgorithm());
+		toolBar.add(algorithmButton);
+		
+		deleteNodeButton = new JButton("Delete Node");
+		deleteNodeButton.addActionListener(e -> deleteNode());
+		toolBar.add(deleteNodeButton);
+		
+		deleteEdgeButton = new JButton("Delete Edge");
+		deleteEdgeButton.addActionListener(e -> deleteEdge());
+		toolBar.add(deleteEdgeButton);
+		
+		JPanel west = new JPanel();
+		west.setLayout(new FlowLayout(FlowLayout.CENTER));
+		west.add(toolBar);
+		contentPane.add(west, BorderLayout.WEST);
 	}
 	
-
-	/**
-	 * @param str Message to be written in the status bar
-	 * Updates the status bar and repaints the GUI needed
-	 */
-	private void setStatus(String str) {
-		statusLabel.setText(str);
-		if(!str.equals("")){
-			frame.repaint();
-		}
-	}
-
-	/**
-	 * Ask the user at start up if they would like to use the default network or not
-	 */
-	private void defaultOption() {
-		int response = JOptionPane.showConfirmDialog(null,"Would you like to use the Default Network?","Default",
-				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
-		if (response == JOptionPane.NO_OPTION ||response == JOptionPane.CLOSED_OPTION) {
-		      newNetwork();
-		      setStatus("New Network");
-		    } else if (response == JOptionPane.YES_OPTION) {
-		      defaultNetwork();
-		      setStatus("Default Network");
-		    }
-	}
-
 	/**
 	 * Creates the menu bar and all its items
 	 */
@@ -426,6 +444,34 @@ public class View {
 	}
 
 	/**
+	 * @param str Message to be written in the status bar
+	 * Updates the status bar and repaints the GUI needed
+	 */
+	private void setStatus(String str) {
+		if(!str.equals("")){
+			statusLabel.setText(" ");
+			frame.repaint();
+		}else{
+			statusLabel.setText(str);
+		}
+	}
+
+	/**
+	 * Ask the user at start up if they would like to use the default network or not
+	 */
+	private void defaultOption() {
+		int response = JOptionPane.showConfirmDialog(null,"Would you like to use the Default Network?","Default",
+				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
+		if (response == JOptionPane.NO_OPTION ||response == JOptionPane.CLOSED_OPTION) {
+		      newNetwork();
+		      setStatus("New Network");
+		    } else if (response == JOptionPane.YES_OPTION) {
+		      defaultNetwork();
+		      setStatus("Default Network");
+		    }
+	}
+
+	/**
 	 * Steps back to a precious state
 	 */
 	private void stepBack() 
@@ -511,16 +557,10 @@ public class View {
 						setStatus("Edge " + edge1 + " Removed");
 						break;
 					}else{
-						JOptionPane.showMessageDialog(frame,
-								"Edge Doesnt Exist",
-								"WARNING",
-								JOptionPane.ERROR_MESSAGE);
+						errorMessageDialog(EDGE_DOESNT_EXIST);
 					}
 				}else{
-					JOptionPane.showMessageDialog(frame,
-							"Node(s) Specified Does not Exist",
-							"WARNING",
-							JOptionPane.ERROR_MESSAGE);
+					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
 				}
 			}else{
 				setStatus("No Edges Removed");
@@ -578,29 +618,17 @@ public class View {
 									setStatus("Edge " + edge1 + " Changes to " + newEdge1);
 									break;
 								}else{
-									JOptionPane.showMessageDialog(frame,
-											"Edge Already Exists",
-											"WARNING",
-											JOptionPane.ERROR_MESSAGE);
+									errorMessageDialog(EDGE_ALREADY_EXISTS);
 								}
 							}else{
-								JOptionPane.showMessageDialog(frame,
-										"Node Doesnt Exist",
-										"WARNING",
-										JOptionPane.ERROR_MESSAGE);
+								errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
 							}
 						}
 					}else{
-						JOptionPane.showMessageDialog(frame,
-								"Edge Doesnt Exist",
-								"WARNING",
-								JOptionPane.ERROR_MESSAGE);
+						errorMessageDialog(EDGE_DOESNT_EXIST);
 					}
 				}else{
-					JOptionPane.showMessageDialog(frame,
-							"Node(s) Specified Does not Exist",
-							"WARNING",
-							JOptionPane.ERROR_MESSAGE);
+					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
 				}
 			}else{
 				setStatus("No Edges Changed");
@@ -643,16 +671,10 @@ public class View {
 						setStatus("Edge " + edge1 + " Created");
 						break;
 					}else{
-						JOptionPane.showMessageDialog(frame,
-								"Edge Already Exists",
-								"WARNING",
-								JOptionPane.ERROR_MESSAGE);
+						errorMessageDialog(EDGE_ALREADY_EXISTS);
 					}
 				}else{
-					JOptionPane.showMessageDialog(frame,
-							"Node(s) Specified Does not Exist",
-							"WARNING",
-							JOptionPane.ERROR_MESSAGE);
+					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
 				}
 			}else{
 				setStatus("No New Edges Created");
@@ -692,10 +714,7 @@ public class View {
 					setStatus("Node " + nodeID + " Removed");
 					break;	
 				}else{
-					JOptionPane.showMessageDialog(frame,
-							"Node Doesnt Exist",
-							"WARNING",
-							JOptionPane.ERROR_MESSAGE);
+					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
 				}
 			}
 		}
@@ -724,10 +743,7 @@ public class View {
 					setStatus("Node " + nodeID.getText() +" Changed to " + newNodeID.getText());
 					break;
 				}else{
-					JOptionPane.showMessageDialog(frame,
-							"Node Doesnt Exist",
-							"WARNING",
-							JOptionPane.ERROR_MESSAGE);
+					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
 				}
 			}else{
 				setStatus("No Nodes Were Changed");
@@ -755,10 +771,7 @@ public class View {
 					setStatus("Node " + nodeID + " Created");
 					break;
 				}else{
-					JOptionPane.showMessageDialog(frame,
-							"Node Already Exists",
-							"WARNING",
-							JOptionPane.ERROR_MESSAGE);
+					errorMessageDialog(NODE_ALREADY_EXISTS);
 				}
 			}
 		}
@@ -1042,17 +1055,11 @@ public class View {
 		{
 			if(algorithm == null)
 			{
-				JOptionPane.showMessageDialog(frame,
-						"Algorithm not specified, Please set and try again.",
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
+				errorMessageDialog(ALGORITHM_NOT_SPECIFIED);
 			}
 			if(frequency == 0)
 			{
-				JOptionPane.showMessageDialog(frame,
-						"Frequency not specified, Please set to a number greater then 1.",
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
+				errorMessageDialog(FREQUENCY_NOT_SPECIFIED);
 			}
 			return false;
 		}
@@ -1082,16 +1089,10 @@ public class View {
 			try {
 				Desktop.getDesktop().open(file);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame,
-						COUTLD_NOT_OPEN_FILE,
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
+				errorMessageDialog(COUTLD_NOT_OPEN_FILE);
 			}
 		}else{
-			JOptionPane.showMessageDialog(frame,
-					FILE_DOES_NOT_EXIST,
-		    	    "WARNING",
-		    	    JOptionPane.ERROR_MESSAGE);
+			errorMessageDialog(FILE_DOES_NOT_EXIST);
 		}
 		setStatus("");
 	}
@@ -1107,16 +1108,10 @@ public class View {
 				Desktop.getDesktop().open(index);
 				Desktop.getDesktop().open(classes);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame,
-			    	    COUTLD_NOT_OPEN_FILE,
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
+				errorMessageDialog(COUTLD_NOT_OPEN_FILE);
 			}
 		}else{
-			JOptionPane.showMessageDialog(frame,
-					FILE_DOES_NOT_EXIST,
-		    	    "WARNING",
-		    	    JOptionPane.ERROR_MESSAGE);
+			errorMessageDialog(FILE_DOES_NOT_EXIST);
 		}
 		setStatus("");
 	}
@@ -1138,17 +1133,21 @@ public class View {
 			try {
 				Desktop.getDesktop().open(file);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(frame,
-			    	    COUTLD_NOT_OPEN_FILE,
-			    	    "WARNING",
-			    	    JOptionPane.ERROR_MESSAGE);
+				errorMessageDialog(COUTLD_NOT_OPEN_FILE);
 			}
 		}else{
-			JOptionPane.showMessageDialog(frame,
-					FILE_DOES_NOT_EXIST,
-		    	    "WARNING",
-		    	    JOptionPane.ERROR_MESSAGE);
+			errorMessageDialog(FILE_DOES_NOT_EXIST);
 		}
 		setStatus("");
+	}
+
+	/**
+	 * 
+	 */
+	public void errorMessageDialog(String message) {
+		JOptionPane.showMessageDialog(frame,
+				message,
+			    WARNING,
+			    JOptionPane.ERROR_MESSAGE);
 	}
 }
