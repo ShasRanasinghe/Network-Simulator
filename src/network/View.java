@@ -68,9 +68,10 @@ public class View {
 	private DefaultTableModel tableModel;
 	
 	//Metrics
-	JTextField totalMessagesMetric = new JTextField(18);
-	JTextField averageHopsMetric = new JTextField(18);
-	JTextField frequencyMetric = new JTextField(18);
+	JTextField totalMessagesMetric = new JTextField(5);
+	JTextField averageHopsMetric = new JTextField(5);
+	JTextField frequencyMetric = new JTextField(5);
+	JTextField algorithmMetric = new JTextField(15);
 	
 	
 	//GUI
@@ -220,17 +221,33 @@ public class View {
 		//south
 		south.setLayout(new BorderLayout());
 		outputsPanel = new JPanel();
+		outputsPanel.setLayout(new FlowLayout(FlowLayout.CENTER,20,0));
 		
 		//Metric block
-		outputsPanel.add(new JLabel("Total Messages:"));
-		outputsPanel.add(totalMessagesMetric);
-		outputsPanel.add(new JLabel("Average amount of Hops:"));
-		outputsPanel.add(averageHopsMetric);
-		outputsPanel.add(new JLabel("Frequency"));
-		outputsPanel.add(frequencyMetric);
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("Total Messages:"));
+		panel.add(totalMessagesMetric);
+		outputsPanel.add(panel);
+		
+		panel = new JPanel();
+		panel.add(new JLabel("Average amount of Hops:"));
+		panel.add(averageHopsMetric);
+		outputsPanel.add(panel);
+		
+		panel = new JPanel();
+		panel.add(new JLabel("Frequency"));
+		panel.add(frequencyMetric);
+		outputsPanel.add(panel);
+
+		panel = new JPanel();
+		panel.add(new JLabel("Algorithm"));
+		panel.add(algorithmMetric);
+		outputsPanel.add(panel);
+
 		totalMessagesMetric.setEditable(false);
 		averageHopsMetric.setEditable(false);
 		frequencyMetric.setEditable(false);
+		algorithmMetric.setEditable(false);
 		//Metric Block Ends
 		
 		//status label
@@ -815,6 +832,7 @@ public class View {
 	    	setStatus("Algortihm set to: " + algorithm);
 	    	this.algorithm = ALGORITHM.getEnum(algorithm);
 	    	network.setAlgorithm(this.algorithm);
+	    	updateMetrics();
 	    }
 	}
 
@@ -1055,6 +1073,11 @@ public class View {
 		totalMessagesMetric.setText("" + network.totalMessageList.size());
 		averageHopsMetric.setText("" + network.getAverageHops());
 		frequencyMetric.setText("" + frequency);
+		if(algorithm == null){
+			algorithmMetric.setText("Not set");
+		}else{
+			algorithmMetric.setText(algorithm.getALGString());
+		}
 	}
 
 	/**
