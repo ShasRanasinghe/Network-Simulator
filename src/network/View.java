@@ -1,5 +1,7 @@
 package network;
 
+import static constants.Constants.*;
+
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -28,31 +30,6 @@ public class View {
 	
 	//Simulation
 	private Simulation network;
-	
-	//constants
-	private final String ABOUT = "SYSC 3110 Group Project: Network Routing Simulator\n"
-			+ "Group Members: Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe\n\n"
-			+ "Summary:\n"
-			+ "----------------------------------------------\n"
-			+ "The goal of this team project is to build a simulator to evaluate the performance of various routing\n"
-			+ "algorithms. This project will implement the following routing algorithms:\n"
-			+ "* Random\n"
-			+ "* Flooding\n"
-			+ "* Shortest path\n"
-			+ "* Custom method\n\n"
-			+ "Version: Milestone 2";
-	private final String TEST_CASES = "Test 1: \n"
-			+ "Test 2: \n"
-			+ "Test 3: \n"
-			+ "Test 4: \n"
-			+ "Test 5: \n"
-			+ "Test 6: \n";
-	private final String README = "UserManual.txt";
-	private final String UML = "Milestone2_UML.pdf";
-	private final String JAVADOC1 = "doc\\index.html";
-	private final String JAVADOC2 = "doc\\network\\Simulation.html";
-	private final String COUTLD_NOT_OPEN_FILE = "Could not open file properly";
-	private final String FILE_DOES_NOT_EXIST = "Could Not Find Files Required";
 	
 	//Store Network information
 	private int frequency;
@@ -446,12 +423,6 @@ public class View {
 		item = new JMenuItem("UML Diagram");
 		item.addActionListener(e -> showUML());
 		menu.add(item);
-		
-		item = new JMenuItem("Test Cases");
-		item.addActionListener(e -> showTestCases());
-		menu.add(item);
-		item.setToolTipText("Not Implemented Yet");
-		item.setEnabled(false);
 	}
 
 	/**
@@ -1100,15 +1071,6 @@ public class View {
 		}else{
 			algorithmMetric.setText(algorithm.getALGString());
 		}
-	}
-
-	/**
-	 * Not implemented yet
-	 * Shows the test cases performed on the simulation
-	 */
-	private void showTestCases() {
-		JOptionPane.showMessageDialog(frame, TEST_CASES);
-		setStatus("");
 	}
 
 	/**
