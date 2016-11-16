@@ -962,7 +962,7 @@ public class View {
 			if(!message.isRunning()){
 				info += message.getDestination();
 			}else{
-				info += message.getCurrentNode();
+				info += message.getCurrent();
 			}
 			int response = JOptionPane.showConfirmDialog(null,info,message.toString(),
 														JOptionPane.PLAIN_MESSAGE,
@@ -993,6 +993,8 @@ public class View {
 	 */
 	private void addMessagesToTable()
 	{
+		int i = 0;
+		
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
 		for(String n : nodes)
 		{
@@ -1000,9 +1002,12 @@ public class View {
 			
 			for(Message m : network.currentMessageList)
 			{
-				if(m.getCurrentNode().toString().equals(n))
+				for(i = 0; i < m.getCurrent().size(); i++)
 				{
-					nodeMessages.add(m.toString());
+					if(m.getCurrent().get(i).toString().equals(n))
+					{
+						nodeMessages.add(m.getName());
+					}
 				}
 			}
 			allMessages.add(nodes.indexOf(n), nodeMessages);

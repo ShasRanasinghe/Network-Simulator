@@ -1,4 +1,7 @@
 package network;
+
+import java.util.ArrayList;
+
 /**  
  * 
  * This class represents a message that travels through a Graph
@@ -10,10 +13,11 @@ package network;
 public class Message {
 	
 	private Node source; // source node
-	private Node current; // current node of message
+	private ArrayList<Node> current; // current nodes of message
+	private Node previous; // previous node of message
 	private Node destination; // destination node
-	private String name;
-	private boolean running;
+	private String name;	// string id of the message
+	private boolean running;	// is the message still in the network?
 	private int hopCount; // hop count for this message
 	
 
@@ -22,13 +26,18 @@ public class Message {
 	 * @param destination node
 	 * creates a message to be injected into the network 
 	 */
-	public Message(Node source, Node destination){
+	public Message(Node source, Node destination)
+	{
 		this.source = source;
-		this.current = source;
 		this.destination = destination;
-		this.running = true;
-		this.name = "";
-		this.hopCount = 0;
+		
+		current = new ArrayList<Node>();
+		current.add(source);
+		
+		previous = null;
+		running = true;
+		name = "";
+		hopCount = 0;
 	}
 	
 	/**
@@ -37,14 +46,35 @@ public class Message {
 	 */
 	public Message(Message message)
 	{
-		this.source = message.getSource();
-		this.destination = message.getDestination();
-		this.hopCount = message.getHopCount();
-		this.current = message.getCurrent();
-		this.running = message.isRunning();
-		this.name = message.toString();
+		source = message.getSource();
+		destination = message.getDestination();
+		hopCount = message.getHopCount();
+		current = message.getCurrent();
+		running = message.isRunning();
+		name = message.getName();
+		
+		previous = null;
 	}
 
+	/**
+	 * 
+	 * @return The name id of the message
+	 */
+	public String getName()
+	{
+		return name;
+	}
+	
+	/**
+	 * 
+	 * @return The name id of the message
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+	
 	/**
 	 * @return The source of the message
 	 */
@@ -56,15 +86,43 @@ public class Message {
 	/**
 	 * @return the current node
 	 */
-	public Node getCurrent() {
+	public ArrayList<Node> getCurrent() 
+	{
 		return current;
+	}
+	
+	/**
+	 * 
+	 * @return the previous node
+	 */
+	public Node getPrevious() 
+	{
+		return previous;
 	}
 
 	/**
-	 * @param current sets the current node
+	 * @return The destination of the message
 	 */
-	public void setCurrent(Node current) {
-		this.current = current;
+	public Node getDestination() 
+	{
+		return destination;
+	}
+
+	/**
+	 * 
+	 * @return the hop count of the message
+	 */
+	public int getHopCount() 
+	{
+		return hopCount;
+	}
+
+	/**
+	 * @param name name of the message eg. "Message 1"
+	 */
+	public void setName(String name) 
+	{
+		this.name = name;
 	}
 
 	/**
@@ -76,11 +134,16 @@ public class Message {
 	}
 
 	/**
-	 * @return The destination of the message
+	 * @param current sets the current node
 	 */
-	public Node getDestination() 
+	public void setCurrent(ArrayList<Node> current) 
 	{
-		return destination;
+		this.current = current;
+	}
+
+	public void setPrevious(Node previous)
+	{
+		this.previous = previous;
 	}
 
 	/**
@@ -93,15 +156,6 @@ public class Message {
 	
 	/**
 	 * 
-	 * @return the hop count of the message
-	 */
-	public int getHopCount() 
-	{
-		return hopCount;
-	}
-
-	/**
-	 * 
 	 * @param hopCount  set the hopCount 
 	 */
 	public void setHopCount(int hopCount) 
@@ -110,43 +164,19 @@ public class Message {
 	}
 	
 	/**
-	 * @return true id message is running, false if message has reached its destination
-	 */
-	public boolean isRunning() {
-		return running;
-	}
-
-	/**
 	 * @param running true if running, false if message has reached its destination
 	 */
-	public void setRunning(boolean running) {
+	public void setRunning(boolean running) 
+	{
 		this.running = running;
 	}
 
-	@Override
-	public String toString() {
-		return name;
-	}
-
 	/**
-	 * @param name name of the message eg. "Message 1"
+	 * @return true id message is running, false if message has reached its destination
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return Current Node the message is in
-	 */
-	public Node getCurrentNode() {
-		return current;
-	}
-
-	/**
-	 * @param current The current node the message is in
-	 */
-	public void setCurrentNode(Node current) {
-		this.current = current;
+	public boolean isRunning() 
+	{
+		return running;
 	}
 
 	/**
@@ -157,13 +187,16 @@ public class Message {
 		hopCount++;
 	}
 	
+	/**
+	 * Test to compare the full object of Message
+	 */
 	@Override
 	public boolean equals(Object obj){
 		Message message = (Message)obj;
 		if(this.getSource().equals(message.getSource()) 
 				&& this.getDestination().equals(message.getDestination()) 
 				&& this.getHopCount() == message.getHopCount()
-				&& this.getCurrentNode().equals(message.getCurrentNode())
+				&& this.getCurrent().equals(message.getCurrent())
 				&& this.isRunning() == message.isRunning())
 		{
 			return true;

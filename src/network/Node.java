@@ -15,7 +15,7 @@ public class Node
 	///////////////////////////////////////////////////////////////////////////////////
 	//			NOTE: POSSIBLE OTHER IMPLEMENTAION COULD HAVE THE HOOD FILLED WITH OTHER NODES
 	//////////////////////////////////////////////////////////////////////////////////
-	private ArrayList<Edge> thehood; // an ArrayList of routes
+	private ArrayList<Node> thehood; // an ArrayList of routes
 	private String id; // the "ID" for the vertex
 	
 	
@@ -26,7 +26,7 @@ public class Node
 	public Node(String id)
 	{
 		this.id = id;
-		this.thehood = new ArrayList<Edge>();
+		this.thehood = new ArrayList<Node>();
 	}
 	
 	/**
@@ -43,15 +43,15 @@ public class Node
 	/**
 	 * @param edge This method adds an edge to a Vertex
 	 */
-	public void addNeighbor(Edge edge)
+	public void addNeighbor(Node neighbor)
 	{
 		// if the edge object is already in the neighborhood return
-		if(thehood.contains(edge))
+		if(thehood.contains(neighbor))
 		{
 			return;
 		}
 		//otherwise add the edge to the arrayList of neighbors 
-		thehood.add(edge);
+		thehood.add(neighbor);
 	}
 	
 	/**
@@ -59,28 +59,28 @@ public class Node
 	 * the edge for which the algorithm will use to search
 	 * @return Returns true if edge exists for Node else false
 	 */
-	public boolean containsNeighbor(Edge edge)
+	public boolean containsNeighbor(Node neighbor)
 	{
-		return thehood.contains(edge);
+		return thehood.contains(neighbor);
 	}
 	
 	/**
 	 * @param index
-	 * returns the edge(neighbor route) at the specified index
-	 * @return The edge given index
+	 * returns the node(neighbor) at the specified index
+	 * @return The node given index
 	 */
-	public Edge getNeighbor(int index)
+	public Node getNeighbor(int index)
 	{
 		return thehood.get(index);
 	}
 	
 	
 	/**
-	 * @param e remove a specified edge
+	 * @param e remove a specified node
 	 */
-	public void removeNeighbor(Edge e)
+	public void removeNeighbor(Node n)
 	{
-		thehood.remove(e);
+		thehood.remove(n);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class Node
 	/**
 	 * @return returns a copy of all the neighbors for the vertex
 	 */
-	public ArrayList<Edge> getNeighbors()
+	public ArrayList<Node> getNeighbors()
 	{
 		return thehood;
 	}
