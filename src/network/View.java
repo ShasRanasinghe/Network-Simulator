@@ -66,6 +66,7 @@ public class View {
 	private DefaultListModel<Message> messageList;
 	private JList<Message> list;
 	private DefaultTableModel tableModel;
+	private int rowCount = 0;
 	
 	//Metrics
 	JTextField totalMessagesMetric = new JTextField(5);
@@ -589,21 +590,29 @@ public class View {
 							break;
 						}else{
 							if(nodes.contains(newEndNodeID)){
-								//remove/replace
-								gp.removeGraphicEdge(edge1);
-								gp.removeGraphicEdge(edge2);
-								newEdge1 = startNode.getText() + "->" + newEndNodeID;
-								newEdge2 = newEndNodeID + "->" + startNode.getText();
-								edges.set(edges.indexOf(edge1), newEdge1);
-								edges.set(edges.indexOf(edge2), newEdge2);
-								network.removeLink(startNode.getText(), endNode.getText());
-								
-								//add
-								gp.ConnectAction(startNode.getText(), newEndNodeID);
-								network.createLink(startNode.getText(), newEndNodeID);
-								//set status
-								setStatus("Edge " + edge1 + " Changes to " + newEdge1);
-								break;
+								if(!edges.contains(startNode.getText() + "->" + newEndNodeID)
+										||!edges.contains(newEndNodeID + "->" + startNode.getText())){
+									//remove/replace
+									gp.removeGraphicEdge(edge1);
+									gp.removeGraphicEdge(edge2);
+									newEdge1 = startNode.getText() + "->" + newEndNodeID;
+									newEdge2 = newEndNodeID + "->" + startNode.getText();
+									edges.set(edges.indexOf(edge1), newEdge1);
+									edges.set(edges.indexOf(edge2), newEdge2);
+									network.removeLink(startNode.getText(), endNode.getText());
+
+									//add
+									gp.ConnectAction(startNode.getText(), newEndNodeID);
+									network.createLink(startNode.getText(), newEndNodeID);
+									//set status
+									setStatus("Edge " + edge1 + " Changes to " + newEdge1);
+									break;
+								}else{
+									JOptionPane.showMessageDialog(frame,
+											"Edge Already Exists",
+											"WARNING",
+											JOptionPane.ERROR_MESSAGE);
+								}
 							}else{
 								JOptionPane.showMessageDialog(frame,
 										"Node Doesnt Exist",
@@ -696,7 +705,6 @@ public class View {
 					String nodeID = gn.getNodeID();
 					if(nodes.contains(nodeID)){
 						nodes.remove(nodeID);
-						tableModel.fireTableStructureChanged();
 						setStatus("Node " + nodeID + " Removed");
 					}
 				}
@@ -790,6 +798,7 @@ public class View {
 	 * Creates the table with the nodes list
 	 */
 	private void createTable(){
+		tableModel.addColumn("Step");
 		for(String node: nodes){
 			tableModel.addColumn(node);
 		}
@@ -938,6 +947,7 @@ public class View {
 		nodes.clear();
 		edges.clear();
 		algorithm = null;
+		rowCount = 0;
 		
 		this.network = new Simulation();
 		
@@ -1017,7 +1027,14 @@ public class View {
 	 */
 	private void addMessagesToTable()
 	{
+		rowCount++;
+		
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
+		
+		ArrayList<String> rowColumn = new ArrayList<>();
+		rowColumn.add(Integer.toString(rowCount));
+		allMessages.add(0,rowColumn);
+		
 		for(String n : nodes)
 		{
 			ArrayList<String> nodeMessages = new ArrayList<>();
@@ -1029,7 +1046,7 @@ public class View {
 					nodeMessages.add(m.toString());
 				}
 			}
-			allMessages.add(nodes.indexOf(n), nodeMessages);
+			allMessages.add(nodes.indexOf(n)+1, nodeMessages);
 		}
 		tableModel.addRow(allMessages.toArray());
 	}
