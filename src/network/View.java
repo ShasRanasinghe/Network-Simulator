@@ -1,6 +1,6 @@
 package network;
 
-import static constants.Constants.*;
+import static network.Constants.*;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
