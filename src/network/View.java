@@ -127,7 +127,7 @@ public class View {
 		
 		frequencyList = new String[30];
 		for (int i = 2; i < frequencyList.length; i++) {
-			frequencyList[i] = Integer.toString(i);
+			frequencyList[i-2] = Integer.toString(i);
 		}
 		
 		ALGORITHM[] algorithms;
