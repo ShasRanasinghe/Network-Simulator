@@ -123,6 +123,10 @@ public class View {
 		messageList = new MessageListModel<>();
 	}
 	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////GUI SETUP BEGINS AT THIS POINT./////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Creates the frame and adds layouts
 	 */
@@ -186,7 +190,7 @@ public class View {
 		
 		list =  new JList<>(messageList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.addListSelectionListener(e -> createPopup(e));
+		list.addListSelectionListener(e -> createPopup());
 		//listBar.add(list);
 		list.setBackground(center.getBackground());
 		list.setCellRenderer(new MessageListCellRenderer());
@@ -442,34 +446,10 @@ public class View {
 		item.addActionListener(e -> showUML());
 		menu.add(item);
 	}
-
-	/**
-	 * @param str Message to be written in the status bar
-	 * Updates the status bar and repaints the GUI needed
-	 */
-	private void setStatus(String str) {
-		if(!str.equals("")){
-			statusLabel.setText(" ");
-			frame.repaint();
-		}else{
-			statusLabel.setText(str);
-		}
-	}
-
-	/**
-	 * Ask the user at start up if they would like to use the default network or not
-	 */
-	private void defaultOption() {
-		int response = JOptionPane.showConfirmDialog(null,"Would you like to use the Default Network?","Default",
-				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
-		if (response == JOptionPane.NO_OPTION ||response == JOptionPane.CLOSED_OPTION) {
-		      newNetwork();
-		      setStatus("New Network");
-		    } else if (response == JOptionPane.YES_OPTION) {
-		      defaultNetwork();
-		      setStatus("Default Network");
-		    }
-	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////GUI SETUP COMPLETE. NO GUI SET UP PAST THIS POINT.///////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Steps back to a precious state
@@ -785,6 +765,7 @@ public class View {
 		for(String node: nodes){
 			tableModel.addColumn(node);
 		}
+		table.getColumnModel().getColumn(0).setPreferredWidth(50);
 		tableBar.setVisible(true);
 		frame.repaint();
 	}
@@ -806,6 +787,7 @@ public class View {
 	    	frequencyMetric.setText("" + frequency);
 			this.frequency = Integer.parseInt(frequency);
 			network.setFrequency(this.frequency);
+			updateFrequencyMetric(this.frequency);
 	    }
 	}
 
@@ -824,63 +806,10 @@ public class View {
 	    	setStatus("Algortihm set to: " + algorithm);
 	    	this.algorithm = ALGORITHM.getEnum(algorithm);
 	    	network.setAlgorithm(this.algorithm);
-	    	updateMetrics();
+	    	updateAlgorithmMetric(this.algorithm);
 	    }
 	}
-
-	/**
-	 * Ask the user if they are sure they want to quit,
-	 * quit if yes
-	 */
-	private void quit() {
-		int response = JOptionPane.showConfirmDialog(null,"Are you sure?","Network Simulator",
-				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
-		if (response == JOptionPane.YES_OPTION) {
-		      System.exit(0);
-		}
-	}
 	
-	/**
-	 * @param bool true if buttons should be enabled, false otherwise
-	 * Disables buttons and menu items when the algorithm is running
-	 * So that the user cannot edit the simulation while its running
-	 */
-	private void setEnabledOptionsWhenStepping(boolean bool){
-		algorithmButton.setEnabled(bool);
-		freqButton.setEnabled(bool);
-		newEdge.setEnabled(bool);
-		newNode.setEnabled(bool);
-		setAlgorithmMenu.setEnabled(bool);
-		setFrequencyMenu.setEnabled(bool);
-		newNodeMenu.setEnabled(bool);
-		editNodeMenu.setEnabled(bool);
-		deleteNodeMenu.setEnabled(bool);
-		newEdgeMenu.setEnabled(bool);
-		editEdgeMenu.setEnabled(bool);
-		deleteEdgeMenu.setEnabled(bool);
-		deleteEdgeButton.setEnabled(bool);
-		deleteNodeButton.setEnabled(bool);
-		if(!bool){
-			algorithmButton.setToolTipText("Disabled When Stepping");
-			freqButton.setToolTipText("Disabled When Stepping");
-			newEdge.setToolTipText("Disabled When Stepping");
-			newNode.setToolTipText("Disabled When Stepping");
-			setAlgorithmMenu.setToolTipText("Disabled When Stepping");
-			setFrequencyMenu.setToolTipText("Disabled When Stepping");
-			newNodeMenu.setToolTipText("Disabled When Stepping");
-			editNodeMenu.setToolTipText("Disabled When Stepping");
-			deleteNodeMenu.setToolTipText("Disabled When Stepping");
-			newEdgeMenu.setToolTipText("Disabled When Stepping");
-			editEdgeMenu.setToolTipText("Disabled When Stepping");
-			deleteEdgeMenu.setToolTipText("Disabled When Stepping");
-			deleteEdgeButton.setToolTipText("Disabled When Stepping");
-			deleteNodeButton.setToolTipText("Disabled When Stepping");;
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//						WILL BE CHANGED DEPENDING ON GRAPHIC IMPLEMENTATION!!!!!!!!!!!
-	//
 	/**
 	 * Creates a default network to be use used for testing or as a basis to start on
 	 */
@@ -946,27 +875,11 @@ public class View {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * @return ALGIRITHM enum set by user
-	 */
-	@SuppressWarnings("unused")
-	private ALGORITHM getAlgorithm() {
-		return algorithm;
-	}
-
-	/**
-	 * @return frequency set by user
-	 */
-	@SuppressWarnings("unused")
-	private int getFrequency(){
-		return frequency;
-	}
-	
-	/**
 	 * @param e List Selection Event
 	 * Creates a pop up when a message is selected in the chart
 	 * Pop up shows details of the message
 	 */
-	protected void createPopup(ListSelectionEvent e) 
+	protected void createPopup() 
 	{
 		Message message = (Message)list.getSelectedValue();
 		if(list.getSelectedIndex() != -1)
@@ -999,15 +912,7 @@ public class View {
 			if(!messageList.contains(m))
 			{
 				messageList.addElement(m);
-				messageList.update(messageList.indexOf(m));
 			}
-		}
-	}
-	
-	private void updateListRender(){
-		for(Message m : network.totalMessageList)
-		{
-			messageList.update(messageList.indexOf(m));
 		}
 	}
 	
@@ -1044,7 +949,7 @@ public class View {
 	/**
 	 * @return true if all the information needed to run the simulation was provided by the user, false otherwise
 	 */
-	private boolean checkFullInitialization()
+	private boolean checkFullInitialization() //TODO
 	{
 		Integer tempF = frequency;
 		if((frequency != 0 && tempF != null) && algorithm != null)
@@ -1068,17 +973,121 @@ public class View {
 	/**
 	 * Update the metrics in the view
 	 */
-	private void updateMetrics()
+	public void updateMetrics()
 	{
 		totalMessagesMetric.setText("" + network.totalMessageList.size());
 		averageHopsMetric.setText("" + network.getAverageHops());
-		frequencyMetric.setText("" + frequency);
+		updateFrequencyMetric(frequency);
+		updateAlgorithmMetric(algorithm);
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////VIEW MANIPULATION METHODS////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Updates the Algorithm metric
+	 * @param algorithm
+	 */
+	public void updateAlgorithmMetric(ALGORITHM algorithm) {
 		if(algorithm == null){
 			algorithmMetric.setText("Not set");
 		}else{
 			algorithmMetric.setText(algorithm.getALGString());
 		}
 	}
+
+	/**
+	 * Updates the Frequency Metric
+	 * @param frequency
+	 */
+	public void updateFrequencyMetric(int frequency) {
+		frequencyMetric.setText("" + frequency);
+	}
+	
+	
+	public void errorMessageDialog(String message) {
+		JOptionPane.showMessageDialog(frame,
+				message,
+			    WARNING,
+			    JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * @param str Message to be written in the status bar
+	 * Updates the status bar and repaints the GUI needed
+	 */
+	public void setStatus(String str) {
+		statusLabel.setText(str);
+		frame.repaint();
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////VIEW HELPER METHODS//////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Ask the user at start up if they would like to use the default network or not
+	 */
+	private void defaultOption() {
+		int response = JOptionPane.showConfirmDialog(null,"Would you like to use the Default Network?","Default",
+				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
+		if (response == JOptionPane.NO_OPTION ||response == JOptionPane.CLOSED_OPTION) {
+		      newNetwork();
+		      setStatus("New Network");
+		    } else if (response == JOptionPane.YES_OPTION) {
+		      defaultNetwork();
+		      setStatus("Default Network");
+		    }
+	}
+	
+	private void updateListRender(){
+		for(Message m : network.totalMessageList)
+		{
+			messageList.update(messageList.indexOf(m));
+		}
+	}
+	
+	/**
+	 * @param bool true if buttons should be enabled, false otherwise
+	 * Disables buttons and menu items when the algorithm is running
+	 * So that the user cannot edit the simulation while its running
+	 */
+	private void setEnabledOptionsWhenStepping(boolean bool){
+		algorithmButton.setEnabled(bool);
+		freqButton.setEnabled(bool);
+		newEdge.setEnabled(bool);
+		newNode.setEnabled(bool);
+		setAlgorithmMenu.setEnabled(bool);
+		setFrequencyMenu.setEnabled(bool);
+		newNodeMenu.setEnabled(bool);
+		editNodeMenu.setEnabled(bool);
+		deleteNodeMenu.setEnabled(bool);
+		newEdgeMenu.setEnabled(bool);
+		editEdgeMenu.setEnabled(bool);
+		deleteEdgeMenu.setEnabled(bool);
+		deleteEdgeButton.setEnabled(bool);
+		deleteNodeButton.setEnabled(bool);
+		if(!bool){
+			algorithmButton.setToolTipText("Disabled When Stepping");
+			freqButton.setToolTipText("Disabled When Stepping");
+			newEdge.setToolTipText("Disabled When Stepping");
+			newNode.setToolTipText("Disabled When Stepping");
+			setAlgorithmMenu.setToolTipText("Disabled When Stepping");
+			setFrequencyMenu.setToolTipText("Disabled When Stepping");
+			newNodeMenu.setToolTipText("Disabled When Stepping");
+			editNodeMenu.setToolTipText("Disabled When Stepping");
+			deleteNodeMenu.setToolTipText("Disabled When Stepping");
+			newEdgeMenu.setToolTipText("Disabled When Stepping");
+			editEdgeMenu.setToolTipText("Disabled When Stepping");
+			deleteEdgeMenu.setToolTipText("Disabled When Stepping");
+			deleteEdgeButton.setToolTipText("Disabled When Stepping");
+			deleteNodeButton.setToolTipText("Disabled When Stepping");;
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////VIEW DEFINED OPTION METHODS////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Open the UML diagram for the project
@@ -1094,7 +1103,7 @@ public class View {
 		}else{
 			errorMessageDialog(FILE_DOES_NOT_EXIST);
 		}
-		setStatus("");
+		setStatus(" ");
 	}
 
 	/**
@@ -1113,15 +1122,15 @@ public class View {
 		}else{
 			errorMessageDialog(FILE_DOES_NOT_EXIST);
 		}
-		setStatus("");
+		setStatus(" ");
 	}
 
 	/**
 	 * SHow details of the project and authors
 	 */
 	private void showAbout() {
-		JOptionPane.showMessageDialog(frame, ABOUT);
-		setStatus("");
+		JOptionPane.showMessageDialog(frame, ABOUT,"About",JOptionPane.INFORMATION_MESSAGE);
+		setStatus(" ");
 	}
 
 	/**
@@ -1138,16 +1147,18 @@ public class View {
 		}else{
 			errorMessageDialog(FILE_DOES_NOT_EXIST);
 		}
-		setStatus("");
+		setStatus(" ");
 	}
-
+	
 	/**
-	 * 
+	 * Ask the user if they are sure they want to quit,
+	 * quit if yes
 	 */
-	public void errorMessageDialog(String message) {
-		JOptionPane.showMessageDialog(frame,
-				message,
-			    WARNING,
-			    JOptionPane.ERROR_MESSAGE);
+	private void quit() {
+		int response = JOptionPane.showConfirmDialog(null,"Are you sure?","Network Simulator",
+				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
+		if (response == JOptionPane.YES_OPTION) {
+		      System.exit(0);
+		}
 	}
 }
