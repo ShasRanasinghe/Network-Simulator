@@ -11,7 +11,11 @@ public class NetworkRunner {
 	public static void main(String args[])
 	{
 		Simulation networkSimulation = new Simulation();
-		new View(networkSimulation);
+		View view = new View(networkSimulation);
+		
+		Controller controller = new Controller(networkSimulation, view);
+		
+		view.setController(controller);
 	}
 
 }

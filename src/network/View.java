@@ -16,7 +16,6 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -61,15 +60,15 @@ public class View {
 	private JLabel statusLabel;
 	private JScrollPane scrollPaneList;
 	private JScrollPane scrollPaneTable;
-	private JButton newNode;
-	private JButton newEdge;
-	private JButton freqButton;
-	private JButton algorithmButton;
+	private JButton newNodeButton;
+	private JButton newEdgeButton;
+	private JButton setFreqButton;
+	private JButton setAlgorithmButton;
 	private JButton deleteNodeButton;
 	private JButton deleteEdgeButton;
-	private JButton run;
-	private JButton stepNext;
-	private JButton stepBack;
+	private JButton runButton;
+	private JButton stepForwardButton;
+	private JButton stepBackButton;
 	private JTable table;
 	private JPanel tableBar;
 	
@@ -85,6 +84,9 @@ public class View {
 	private JMenuItem newNetworkMenu;
 	private JMenuItem defaultNetworkMenu;
 	private JMenuItem quitMenu;
+	private JMenuItem runMenuItem;
+	private JMenuItem stepForwardMenuItem;
+	private JMenuItem stepBackMenuItem;
 	
 	/**
 	 * MAIN CONSTRUCTOR OF GUI
@@ -121,6 +123,74 @@ public class View {
 		rowCount = INITIAL_ROW_COUNT;
 		
 		messageList = new MessageListModel<>();
+	}
+	
+	public void setController(Controller controller) {
+		stepBackButton.addActionListener(controller);
+		stepBackButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_BACK);
+		
+		runButton.addActionListener(controller);
+		runButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.RUN);
+		
+		stepForwardButton.addActionListener(controller);
+		stepForwardButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_FORWARD);
+		
+		newNodeButton.addActionListener(controller);
+		newNodeButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_NODE);
+		
+		newEdgeButton.addActionListener(controller);
+		newEdgeButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_EDGE);
+		
+		deleteNodeButton.addActionListener(controller);
+		deleteNodeButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.DELETE_NODE);
+		
+		deleteEdgeButton.addActionListener(controller);
+		deleteEdgeButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.DELETE_EDGE);
+		
+		setFreqButton.addActionListener(controller);
+		setFreqButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.SET_FREQUENCY);
+		
+		setAlgorithmButton.addActionListener(controller);
+		setAlgorithmButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.SET_ALGORITHM);
+		
+		newNetworkMenu.addActionListener(controller);
+		newNetworkMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_NETWORK);
+		
+		defaultNetworkMenu.addActionListener(controller);
+		defaultNetworkMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.DEFAULT_NETWORK);
+		
+		newNodeMenu.addActionListener(controller);
+		newNodeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_NODE);
+		
+		newEdgeMenu.addActionListener(controller);
+		newEdgeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_EDGE);
+		
+		editNodeMenu.addActionListener(controller);
+		editNodeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.EDIT_NODE);
+		
+		editEdgeMenu.addActionListener(controller);
+		editEdgeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.EDIT_EDGE);
+		
+		deleteNodeMenu.addActionListener(controller);
+		deleteNodeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.DELETE_NODE);
+		
+		deleteEdgeMenu.addActionListener(controller);
+		deleteEdgeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.DELETE_EDGE);
+		
+		setFrequencyMenu.addActionListener(controller);
+		setFrequencyMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.SET_FREQUENCY);
+		
+		setAlgorithmMenu.addActionListener(controller);
+		setAlgorithmMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.SET_ALGORITHM);
+		
+		runMenuItem.addActionListener(controller);
+		runMenuItem.putClientProperty(METHOD_SEARCH_STRING, METHODS.RUN);
+		
+		stepForwardMenuItem.addActionListener(controller);
+		stepForwardMenuItem.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_FORWARD);
+		
+		stepBackMenuItem.addActionListener(controller);
+		stepBackMenuItem.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_BACK);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +260,7 @@ public class View {
 		
 		list =  new JList<>(messageList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.addListSelectionListener(e -> createPopup());
+		list.addListSelectionListener(e -> createPopup());//TODO
 		//listBar.add(list);
 		list.setBackground(center.getBackground());
 		list.setCellRenderer(new MessageListCellRenderer());
@@ -278,18 +348,15 @@ public class View {
 		center.add(playPanel,BorderLayout.SOUTH);
 		
 		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER,100,0));
-		stepBack = new JButton("Back");
-		stepBack.addActionListener(e -> stepBack());
-		stepBack.setEnabled(false);
-		stepBack.setToolTipText("Not Implemented yet");
-		run = new JButton("Run");
-		run.addActionListener(e -> run());
-		stepNext = new JButton("Next");
-		stepNext.addActionListener(e -> stepForward());
+		stepBackButton = new JButton("Back");
+		stepBackButton.setEnabled(false);
+		stepBackButton.setToolTipText("Not Implemented yet");
+		runButton = new JButton("Run");
+		stepForwardButton = new JButton("Next");
 		
-		playPanel.add(stepBack);
-		playPanel.add(run);
-		playPanel.add(stepNext);	
+		playPanel.add(stepBackButton);
+		playPanel.add(runButton);
+		playPanel.add(stepForwardButton);	
 		
 		contentPane.add(center,BorderLayout.CENTER);
 		return center;
@@ -304,28 +371,22 @@ public class View {
 		toolBar = new JPanel();
 		toolBar.setLayout(new GridLayout(0,1,0,20));
 		
-		newNode = new JButton("New Node");
-		newNode.addActionListener(e -> newNode());
-		toolBar.add(newNode);
+		newNodeButton = new JButton("New Node");
+		toolBar.add(newNodeButton);
 		
-		newEdge = new JButton("New Edge");
-		newEdge.addActionListener(e -> newEdge());
-		toolBar.add(newEdge);
+		newEdgeButton = new JButton("New Edge");
+		toolBar.add(newEdgeButton);
 		
-		freqButton = new JButton("Set Frequency");
-		freqButton.addActionListener(e -> setFrequency());
-		toolBar.add(freqButton);
+		setFreqButton = new JButton("Set Frequency");
+		toolBar.add(setFreqButton);
 		
-		algorithmButton = new JButton("Set Algorithm");
-		algorithmButton.addActionListener(e -> setAlgorithm());
-		toolBar.add(algorithmButton);
+		setAlgorithmButton = new JButton("Set Algorithm");
+		toolBar.add(setAlgorithmButton);
 		
 		deleteNodeButton = new JButton("Delete Node");
-		deleteNodeButton.addActionListener(e -> deleteNode());
 		toolBar.add(deleteNodeButton);
 		
 		deleteEdgeButton = new JButton("Delete Edge");
-		deleteEdgeButton.addActionListener(e -> deleteEdge());
 		toolBar.add(deleteEdgeButton);
 		
 		JPanel west = new JPanel();
@@ -353,11 +414,9 @@ public class View {
 		
 		newNetworkMenu = new JMenuItem("New Network");
 		newNetworkMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,SHORTCUT_MASK));
-		newNetworkMenu.addActionListener(e -> newNetwork());
 		menu.add(newNetworkMenu);
 		
 		defaultNetworkMenu = new JMenuItem("Default Network");
-		defaultNetworkMenu.addActionListener(e -> defaultNetwork());
 		menu.add(defaultNetworkMenu);
 		
 		quitMenu = new JMenuItem("Quit");
@@ -371,60 +430,49 @@ public class View {
 		
 		setAlgorithmMenu = new JMenuItem("Set Algorithm");
 		setAlgorithmMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,SHORTCUT_MASK));
-		setAlgorithmMenu.addActionListener(e -> setAlgorithm());
 		menu.add(setAlgorithmMenu);
 		
 		setFrequencyMenu = new JMenuItem("Set Frequency");
 		setFrequencyMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,SHORTCUT_MASK));
-		setFrequencyMenu.addActionListener(e -> setFrequency());
 		menu.add(setFrequencyMenu);
 		
 		newNodeMenu = new JMenuItem("New Node");
 		newNodeMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,SHORTCUT_MASK));
-		newNodeMenu.addActionListener(e -> newNode());
 		menu.add(newNodeMenu);
 		
 		editNodeMenu = new JMenuItem("Edit Node");
-		editNodeMenu.addActionListener(e -> editNode());
 		menu.add(editNodeMenu);
 		
 		deleteNodeMenu = new JMenuItem("Delete Node");
-		deleteNodeMenu.addActionListener(e -> deleteNode());
 		menu.add(deleteNodeMenu);
 
 		newEdgeMenu = new JMenuItem("New Edge");
 		newEdgeMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,SHORTCUT_MASK));
-		newEdgeMenu.addActionListener(e -> newEdge());
 		menu.add(newEdgeMenu);
 		
 		editEdgeMenu = new JMenuItem("Edit Edge");
-		editEdgeMenu.addActionListener(e -> editEdge());
 		menu.add(editEdgeMenu);
 		
 		deleteEdgeMenu = new JMenuItem("Delete Edge");
-		deleteEdgeMenu.addActionListener(e -> deleteEdge());
 		menu.add(deleteEdgeMenu);
 		
 		//TOOLS menu
 		menu = new JMenu("Tools");
 		menuBar.add(menu);
 		
-		item = new JMenuItem("Run");
-		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,SHORTCUT_MASK));
-		item.addActionListener(e -> run());
-		menu.add(item);
+		runMenuItem = new JMenuItem("Run");
+		runMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,SHORTCUT_MASK));
+		menu.add(runMenuItem);
 		
-		item = new JMenuItem("Step Forward");
-		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_KP_RIGHT,SHORTCUT_MASK));
-		item.addActionListener(e -> stepForward());
-		menu.add(item);
+		stepForwardMenuItem = new JMenuItem("Step Forward");
+		stepForwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_KP_RIGHT,SHORTCUT_MASK));
+		menu.add(stepForwardMenuItem);
 		
-		item = new JMenuItem("Step Back");
-		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_KP_LEFT,SHORTCUT_MASK));
-		item.addActionListener(e -> stepBack());
-		menu.add(item);
-		item.setEnabled(false);
-		item.setToolTipText("Not Implemented Yet");
+		stepBackMenuItem = new JMenuItem("Step Back");
+		stepBackMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_KP_LEFT,SHORTCUT_MASK));
+		menu.add(stepBackMenuItem);
+		stepBackMenuItem.setEnabled(false);
+		stepBackMenuItem.setToolTipText("Not Implemented Yet");
 		
 		//HELP menu
 		menu = new JMenu("Help");
@@ -470,7 +518,7 @@ public class View {
 			if(!tableBar.isVisible()){createTable();}
 			setEnabledOptionsWhenStepping(false);
 			network.runAlgorithm(1);
-			if(network.currentMessageList.size() == 0){stepNext.setEnabled(false);run.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
+			if(network.currentMessageList.size() == 0){stepForwardButton.setEnabled(false);runButton.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
 			addMessagesToList();
 			addMessagesToTable();
 			updateListRender();
@@ -497,8 +545,8 @@ public class View {
 				updateMetrics();
 				table.changeSelection(table.getRowCount() - 1, 0, false, false);
 			}
-			run.setEnabled(false);
-			stepNext.setEnabled(false);
+			runButton.setEnabled(false);
+			stepForwardButton.setEnabled(false);
 			defaultNetworkMenu.setEnabled(true);
 		}
 	}
@@ -805,7 +853,7 @@ public class View {
 	    }else{
 	    	setStatus("Algortihm set to: " + algorithm);
 	    	this.algorithm = ALGORITHM.getEnum(algorithm);
-	    	network.setAlgorithm(this.algorithm);
+	    	network.setAlgorithm(ALGORITHM.getEnum(algorithm));
 	    	updateAlgorithmMetric(this.algorithm);
 	    }
 	}
@@ -838,8 +886,8 @@ public class View {
 		network.setFrequency(frequency);
 		network.setAlgorithm(ALGORITHM.RANDOM);
 		defaultNetworkMenu.setEnabled(false);
-		stepNext.setEnabled(true);
-		run.setEnabled(true);
+		stepForwardButton.setEnabled(true);
+		runButton.setEnabled(true);
 		updateMetrics();
 		tableBar.setVisible(false);		
 	}
@@ -849,25 +897,19 @@ public class View {
 	 */
 	private void newNetwork() 
 	{
-		messageList.clear();
-		tableModel.setNumRows(0);
-		tableModel.setColumnCount(0);
-		table.revalidate();
+		clearInstance();
 		frequency = 0;
 		nodes.clear();
 		edges.clear();
 		algorithm = null;
-		rowCount = 0;
 		
 		this.network = new Simulation();
-		
-		gp.ClearAction();
 		
 		setStatus("Creating a new Network");
 		defaultNetworkMenu.setEnabled(true);
 		setEnabledOptionsWhenStepping(true);
-		stepNext.setEnabled(true);
-		run.setEnabled(true);
+		stepForwardButton.setEnabled(true);
+		runButton.setEnabled(true);
 		updateMetrics();
 		tableBar.setVisible(false);
 		defaultNetworkMenu.setEnabled(true);
@@ -1012,6 +1054,15 @@ public class View {
 			    JOptionPane.ERROR_MESSAGE);
 	}
 	
+	public void clearInstance(){
+		messageList.clear();
+		tableModel.setNumRows(0);
+		tableModel.setColumnCount(0);
+		table.revalidate();
+		rowCount = 0;
+		gp.ClearAction();
+	}
+	
 	/**
 	 * @param str Message to be written in the status bar
 	 * Updates the status bar and repaints the GUI needed
@@ -1053,10 +1104,10 @@ public class View {
 	 * So that the user cannot edit the simulation while its running
 	 */
 	private void setEnabledOptionsWhenStepping(boolean bool){
-		algorithmButton.setEnabled(bool);
-		freqButton.setEnabled(bool);
-		newEdge.setEnabled(bool);
-		newNode.setEnabled(bool);
+		setAlgorithmButton.setEnabled(bool);
+		setFreqButton.setEnabled(bool);
+		newEdgeButton.setEnabled(bool);
+		newNodeButton.setEnabled(bool);
 		setAlgorithmMenu.setEnabled(bool);
 		setFrequencyMenu.setEnabled(bool);
 		newNodeMenu.setEnabled(bool);
@@ -1068,10 +1119,10 @@ public class View {
 		deleteEdgeButton.setEnabled(bool);
 		deleteNodeButton.setEnabled(bool);
 		if(!bool){
-			algorithmButton.setToolTipText("Disabled When Stepping");
-			freqButton.setToolTipText("Disabled When Stepping");
-			newEdge.setToolTipText("Disabled When Stepping");
-			newNode.setToolTipText("Disabled When Stepping");
+			setAlgorithmButton.setToolTipText("Disabled When Stepping");
+			setFreqButton.setToolTipText("Disabled When Stepping");
+			newEdgeButton.setToolTipText("Disabled When Stepping");
+			newNodeButton.setToolTipText("Disabled When Stepping");
 			setAlgorithmMenu.setToolTipText("Disabled When Stepping");
 			setFrequencyMenu.setToolTipText("Disabled When Stepping");
 			newNodeMenu.setToolTipText("Disabled When Stepping");

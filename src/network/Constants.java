@@ -65,4 +65,6 @@ final class Constants {
 	
 	protected static final Dimension SCREEN_DIMENTIONS  = Toolkit.getDefaultToolkit().getScreenSize();
 	
+	protected static final String METHOD_SEARCH_STRING = "METHOD";
+	
 }
