@@ -14,7 +14,7 @@ public class Message {
 	
 	private Node source; // source node
 	private ArrayList<Node> current; // current nodes of message
-	private Node previous; // previous node of message
+	private ArrayList<Node> previous; // previous node of message
 	private Node destination; // destination node
 	private String name;	// string id of the message
 	private boolean running;	// is the message still in the network?
@@ -32,9 +32,11 @@ public class Message {
 		this.destination = destination;
 		
 		current = new ArrayList<Node>();
+		previous = new ArrayList<Node>();
+		
 		current.add(source);
 		
-		previous = null;
+		
 		running = true;
 		name = "";
 		hopCount = 0;
@@ -53,7 +55,7 @@ public class Message {
 		running = message.isRunning();
 		name = message.getName();
 		
-		previous = null;
+		previous = new ArrayList<Node>();
 	}
 
 	/**
@@ -95,7 +97,7 @@ public class Message {
 	 * 
 	 * @return the previous node
 	 */
-	public Node getPrevious() 
+	public ArrayList<Node> getPrevious() 
 	{
 		return previous;
 	}
@@ -141,7 +143,7 @@ public class Message {
 		this.current = current;
 	}
 
-	public void setPrevious(Node previous)
+	public void setPrevious(ArrayList<Node> previous)
 	{
 		this.previous = previous;
 	}
