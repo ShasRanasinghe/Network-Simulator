@@ -1,7 +1,11 @@
 package network;
 
+import static network.Constants.NODE_ALREADY_EXISTS;
+import static network.Constants.NODE_S_SPECIFIED_DOES_NOT_EXIST;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JComponent;
 
@@ -91,7 +95,21 @@ public class Controller implements ActionListener {
 	}
 
 	private void newNode() {
-		view.newNode();
+		for(;;){
+			String nodeID = view.openSingleInputQuestionDialog("Create New Node","Enter NodeID:");
+			if(nodeID == null){
+				view.setStatus("No Nodes Created");
+				break;
+			}else{
+				if(simulation.addNewNode(nodeID)){
+					view.addNewNode(nodeID);
+					break;
+				}else{
+					view.errorMessageDialog(NODE_ALREADY_EXISTS);
+				}
+			}
+			
+		}
 	}
 
 	private void newNetwork() {
@@ -103,7 +121,31 @@ public class Controller implements ActionListener {
 	}
 
 	private void editNode() {
-		view.editNode();
+		List<String> nodes = view.getSelectedNodes();
+		if(nodes.size()>0){
+			if(nodes.size() == 1){
+				String prevNodeID = nodes.get(0);
+				for(;;){
+					String newNodeID = view.openSingleInputQuestionDialog("Edit Node","Enter New NodeID:");
+					if(newNodeID == null){
+						view.setStatus("No Nodes Edited");
+						break;
+					}else{
+						if(!simulation.isNode(newNodeID)){
+							view.editNodeID(prevNodeID, newNodeID);
+							simulation.editNodeID(prevNodeID, newNodeID);
+							break;
+						}else{
+							view.errorMessageDialog(NODE_ALREADY_EXISTS);
+						}
+					}
+				}
+			}else{
+				view.errorMessageDialog("Too Many Nodes Selected, Select One Please");
+			}
+		}else{
+			view.errorMessageDialog("You Have Not Selected Anything\nPlease Select a Single Node And Try Again.");
+		}
 	}
 
 	private void editEdge() {
@@ -111,7 +153,14 @@ public class Controller implements ActionListener {
 	}
 
 	private void deleteNode() {
-		view.deleteNode();
+		List<String> nodes = view.getSelectedNodes();
+		if(!nodes.isEmpty()){
+			for(String nodeID: nodes){
+				simulation.removeNode(nodeID);
+			}
+		}else{
+			view.errorMessageDialog("You Have Not Selected Anything\nPlease Select Node(s) And Try Again.");
+		}
 	}
 
 	private void deleteEdge() {

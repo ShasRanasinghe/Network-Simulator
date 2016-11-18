@@ -711,98 +711,39 @@ public class View {
 		}
 	}
 
-	/**
-	 * Delete an existing node
-	 */
-	public void deleteNode() {
-		for(;;){
-			
-			//Remove graphic node from graphic panel
-			gp.populateSelectedNodesList();
-			if(gp.numberOfSelectedNodes()>0){
-				gp.DeleteAction();
-				for(GraphicNode gn: gp.getSelectedNodesList()){
-					String nodeID = gn.getNodeID();
-					if(nodes.contains(nodeID)){
-						nodes.remove(nodeID);
-						setStatus("Node " + nodeID + " Removed");
-					}
-				}
-				break;
-			}
-			
-			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Delete Node",JOptionPane.QUESTION_MESSAGE);
-			if(nodeID == null){
-				setStatus("No Nodes Deleted");
-				break;
-			}else{
-				if(nodes.contains(nodeID)){
-					nodes.remove(nodeID);
-					gp.removeGraphicNode(nodeID);
-					setStatus("Node " + nodeID + " Removed");
-					break;	
-				}else{
-					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
-				}
-			}
+	public void removeNode(String nodeID){
+		gp.removeGraphicNode(nodeID);
+		if(gp.numberOfSelectedNodes() > 1){
+			setStatus("Multiple Nodes Removed");
+		}else{
+			setStatus("Node " + nodeID + " Removed");
+		}
+	}
+	
+	public List<String> getSelectedNodes(){
+		gp.populateSelectedNodesList();
+		List<String> nodes = new ArrayList<>();
+		for(GraphicNode gn: gp.getSelectedNodesList()){
+			nodes.add(gn.getNodeID());
+		}
+		return nodes;
+	}
+	
+	public void editNodeID(String prevNodeID, String newNodeID){
+		for(GraphicNode gn: gp.getSelectedNodesList()){
+			if(gn.getNodeID().equals(prevNodeID)){gn.setNodeID(newNodeID);}
+			gp.repaint();
+			break;
 		}
 	}
 
-	/**
-	 * Edit a current nodes ID
-	 * doesn't let you edit a non existent node
-	 */
-	public void editNode() {
-		JTextField nodeID = new JTextField(5);
-		JTextField newNodeID = new JTextField(5);
-
-		JPanel panel = new JPanel();
-		panel.add(new JLabel("Enter NodeID:")); panel.add(nodeID);
-		panel.add(Box.createHorizontalStrut(15)); // a spacer
-		panel.add(new JLabel("Enter New NodeID:")); panel.add(newNodeID);
-		
-		for(;;){
-			nodeID.addHierarchyListener(new RequestFocusListener());
-			int result = JOptionPane.showConfirmDialog(null, panel, 
-					"Edit Node", JOptionPane.OK_CANCEL_OPTION);
-			if (result == JOptionPane.OK_OPTION) {
-				if(nodes.contains(nodeID.getText())){
-					nodes.set(nodes.indexOf(nodeID.getText()), newNodeID.getText());
-					setStatus("Node " + nodeID.getText() +" Changed to " + newNodeID.getText());
-					break;
-				}else{
-					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
-				}
-			}else{
-				setStatus("No Nodes Were Changed");
-				break;
-			}
-		}
+	public String openSingleInputQuestionDialog(String title, String inputfieldString){
+		return JOptionPane.showInputDialog(frame,inputfieldString,title,JOptionPane.QUESTION_MESSAGE);
 	}
-
-	/**
-	 * Create a new node
-	 * Doesn't let you create a node that already exists
-	 */
-	public void newNode() {
-		for(;;){
-			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Create New Node",JOptionPane.QUESTION_MESSAGE);
-			if(nodeID == null){
-				setStatus("No Nodes Created");
-				break;
-			}else{
-				if(!nodes.contains(nodeID)){
-					nodes.add(nodeID);
-					network.createNodes(nodes);
-		            gp.NewNodeAction(nodeID);
-		            
-					setStatus("Node " + nodeID + " Created");
-					break;
-				}else{
-					errorMessageDialog(NODE_ALREADY_EXISTS);
-				}
-			}
-		}
+	
+	public void addNewNode(String nodeID){
+		gp.NewNodeAction(nodeID);
+		setStatus("Node " + nodeID + " Created");
 	}
 	
 	/**

@@ -57,6 +57,44 @@ public class Simulation {
 		}
 
 	}
+	
+	public boolean addNewNode(String nodeID){
+		for(Node node: simulationNodes){
+			if(node.getID().equals(nodeID)){
+				return false;
+			}
+		}
+		simulationNodes.add(new Node(nodeID));
+		return true;
+	}
+	
+	public boolean removeNode(String nodeID){
+		for(Node node: simulationNodes){
+			if(node.getID().equals(nodeID)){
+				simulationNodes.remove(node);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isNode(String nodeID){
+		for(Node node: simulationNodes){
+			if(node.getID().equals(nodeID)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void editNodeID(String prevNodeID, String newNodeID){
+		for(Node node: simulationNodes){
+			if(node.getID().equals(prevNodeID)){
+				node.setNodeID(newNodeID);
+				break;
+			}
+		}
+	}
 
     /**
 	 * @param A Node 

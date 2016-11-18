@@ -100,6 +100,10 @@ public class Node
 		return id;
 	}
 	
+	public void setNodeID(String newNodeID) {
+		this.id = newNodeID;
+	}
+	
 	/**
 	 * @return returns a copy of all the neighbors for the vertex
 	 */
