@@ -71,15 +71,16 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	private void stepForward() {
-		view.stepForward();
+	private void defaultNetwork() {
+		simulation.initializeDefaultNetwork();
+		view.initializeDefaultNetwork(simulation.getAlgorithm(),simulation.getFrequency());
 	}
-
-	//Not yet implemented
-	private void stepBack() {
-		view.stepBack();
+	
+	private void newNetwork() {
+		view.initializeNewNetwork();
+		simulation.initializeNewNetwork();
 	}
-
+	
 	private void setFrequeny() {
 		String frequency = view.setFrequency();
 		if(frequency == null){
@@ -100,10 +101,31 @@ public class Controller implements ActionListener {
 		}
 	}
 
+	//Not yet implemented
+	private void stepBack() {
+		view.stepBack();
+	}
+
 	private void runSimulation() {
 		view.run();
 	}
+	
+	private void stepForward() {
+		view.stepForward();
+	}
 
+	private void newEdge() {
+		view.newEdge();
+	}
+	
+	private void editEdge() {
+		view.editEdge();
+	}
+	
+	private void deleteEdge() {
+		view.deleteEdge();
+	}
+	
 	private void newNode() {
 		for(;;){
 			String nodeID = view.openSingleInputQuestionDialog("Create New Node","Enter NodeID:");
@@ -120,15 +142,6 @@ public class Controller implements ActionListener {
 			}
 			
 		}
-	}
-
-	private void newNetwork() {
-		view.initializeNewNetwork();
-		simulation.initializeNewNetwork();
-	}
-
-	private void newEdge() {
-		view.newEdge();
 	}
 
 	private void editNode() {
@@ -159,10 +172,6 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	private void editEdge() {
-		view.editEdge();
-	}
-
 	private void deleteNode() {
 		List<String> nodes = view.getSelectedNodes();
 		if(!nodes.isEmpty()){
@@ -173,14 +182,5 @@ public class Controller implements ActionListener {
 			view.errorMessageDialog("You Have Not Selected Anything\nPlease Select Node(s) And Try Again.");
 		}
 	}
-
-	private void deleteEdge() {
-		view.deleteEdge();
-	}
-
-	private void defaultNetwork() {
-		simulation.initializeDefaultNetwork();
-		view.initializeDefaultNetwork(simulation.getAlgorithm(),simulation.getFrequency());
-	}
-
+	
 }
