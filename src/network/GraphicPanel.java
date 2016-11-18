@@ -270,13 +270,14 @@ public class GraphicPanel extends JComponent {
      * Deletes an edges given edge ID
      * @param edgeID ID of edge to be deleted
      */
-    public void removeGraphicEdge(String edgeID) {
+    public void removeGraphicEdge(String nodeOneID, String nodeTwoID) {
         ListIterator<GraphicEdge> iter = graphicEdges.listIterator();
+        String edge1 = nodeOneID + "->" + nodeTwoID;
+		String edge2 = nodeTwoID + "->" + nodeOneID;
         while (iter.hasNext()) {
             GraphicEdge e = iter.next();
-            if (e.getEdgeID().equals(edgeID)) {
-                iter.remove();
-            }
+            if (e.getEdgeID().equals(edge1)) {iter.remove();}
+            if (e.getEdgeID().equals(edge2)) {iter.remove();}
         }
         repaint();
     }

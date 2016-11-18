@@ -38,9 +38,6 @@ public class Controller implements ActionListener {
 		case DELETE_NODE:
 			deleteNode();
 			break;
-		case EDIT_EDGE:
-			editEdge();
-			break;
 		case EDIT_NODE:
 			editNode();
 			break;
@@ -115,15 +112,37 @@ public class Controller implements ActionListener {
 	}
 
 	private void newEdge() {
-		view.newEdge();
-	}
-	
-	private void editEdge() {
-		view.editEdge();
+		List<String> nodes = view.getSelectedNodes();
+		if(nodes.size()>0){
+			if(nodes.size() == 2){
+				String nodeOneID = nodes.get(0);
+				String nodeTwoID = nodes.get(1);
+				view.addNewEdge(nodeOneID,nodeTwoID);
+				simulation.createLink(nodeOneID, nodeTwoID);
+				
+			}else{
+				view.errorMessageDialog("Please Select Two Nodes And Try Again");
+			}
+		}else{
+			view.errorMessageDialog("Please Select Two Node And Try Again.");
+		}
 	}
 	
 	private void deleteEdge() {
-		view.deleteEdge();
+		List<String> nodes = view.getSelectedNodes();
+		if(nodes.size()>0){
+			if(nodes.size() == 2){
+				String nodeOneID = nodes.get(0);
+				String nodeTwoID = nodes.get(1);
+				view.removeEdge(nodeOneID,nodeTwoID);
+				simulation.removeLink(nodeOneID, nodeTwoID);
+				
+			}else{
+				view.errorMessageDialog("Please Select Two Nodes And Try Again");
+			}
+		}else{
+			view.errorMessageDialog("Please Select Two Node And Try Again.");
+		}
 	}
 	
 	private void newNode() {
@@ -165,10 +184,10 @@ public class Controller implements ActionListener {
 					}
 				}
 			}else{
-				view.errorMessageDialog("Too Many Nodes Selected, Select One Please");
+				view.errorMessageDialog("Please Select a Single Node And Try Again");
 			}
 		}else{
-			view.errorMessageDialog("You Have Not Selected Anything\nPlease Select a Single Node And Try Again.");
+			view.errorMessageDialog("Please Select a Single Node And Try Again");
 		}
 	}
 

@@ -167,10 +167,7 @@ public class View {
 		newEdgeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_EDGE);
 		
 		editNodeMenu.addActionListener(controller);
-		editNodeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.EDIT_NODE);
-		
-		editEdgeMenu.addActionListener(controller);
-		editEdgeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.EDIT_EDGE);
+		editNodeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.EDIT_NODE);;
 		
 		deleteNodeMenu.addActionListener(controller);
 		deleteNodeMenu.putClientProperty(METHOD_SEARCH_STRING, METHODS.DELETE_NODE);
@@ -460,9 +457,6 @@ public class View {
 		newEdgeMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,SHORTCUT_MASK));
 		menu.add(newEdgeMenu);
 		
-		editEdgeMenu = new JMenuItem("Edit Edge");
-		menu.add(editEdgeMenu);
-		
 		deleteEdgeMenu = new JMenuItem("Delete Edge");
 		menu.add(deleteEdgeMenu);
 		
@@ -560,165 +554,15 @@ public class View {
 			defaultNetworkMenu.setEnabled(true);
 		}
 	}
-
-	/**
-	 * Delete an existing edge
-	 */
-	public void deleteEdge() {
-		String edge1 = "";
-		String edge2 = "";
-		JTextField startNode = new JTextField(5);
-		JTextField endNode = new JTextField(5);
-
-		JPanel panel = new JPanel();
-		panel.add(new JLabel("Enter Start NodeID:")); 
-		panel.add(startNode);
-		panel.add(Box.createHorizontalStrut(15)); // a spacer
-		panel.add(new JLabel("Enter End NodeID:")); 
-		panel.add(endNode);
-		
-		for(;;){
-			startNode.addHierarchyListener(new RequestFocusListener());
-			int result = JOptionPane.showConfirmDialog(null, panel, 
-					"Remove Edge", JOptionPane.OK_CANCEL_OPTION);
-			if (result == JOptionPane.OK_OPTION) {
-				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
-					edge1 = startNode.getText() + "->" + endNode.getText();
-					edge2 = endNode.getText() + "->" + startNode.getText();
-					if(edges.contains(edge1) && edges.contains(edge2)){
-						//Remove graphic edge from graphic panel
-						gp.removeGraphicEdge(edge1);
-						gp.removeGraphicEdge(edge2);
-						edges.remove(edge1);
-						edges.remove(edge2);
-						network.removeLink(startNode.getText(), endNode.getText());
-						setStatus("Edge " + edge1 + " Removed");
-						break;
-					}else{
-						errorMessageDialog(EDGE_DOESNT_EXIST);
-					}
-				}else{
-					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
-				}
-			}else{
-				setStatus("No Edges Removed");
-				break;
-			}
-		}
+	
+	public void removeEdge(String startNodeID, String endNodeID){
+		network.removeLink(startNodeID, startNodeID);
+		setStatus("Edge " + startNodeID + "-" + endNodeID + " Removed");
 	}
-
-	/**
-	 * Edit an existing edge between two nodes
-	 */
-	public void editEdge() {
-		String edge1 = "";
-		String edge2 = "";
-		String newEdge1 = "";
-		String newEdge2 = "";
-		JTextField startNode = new JTextField(5);
-		JTextField endNode = new JTextField(5);
-
-		JPanel panel = new JPanel();
-		panel.add(new JLabel("Enter Start NodeID:")); panel.add(startNode);
-		panel.add(Box.createHorizontalStrut(15)); // a spacer
-		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
-		
-		for(;;){
-			startNode.addHierarchyListener(new RequestFocusListener());
-			int result = JOptionPane.showConfirmDialog(null, panel, 
-					"Edit Existing Edge", JOptionPane.OK_CANCEL_OPTION);
-			if (result == JOptionPane.OK_OPTION) {
-				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
-					edge1 = startNode.getText() + "->" + endNode.getText();
-					edge2 = endNode.getText() + "->" + startNode.getText();
-					if(edges.contains(edge1) && edges.contains(edge2)){
-						String newEndNodeID = JOptionPane.showInputDialog(frame,"Enter New End NodeID:","Edit Edge",JOptionPane.QUESTION_MESSAGE);
-						if(newEndNodeID == null){
-							setStatus("No Edges Changed");
-							break;
-						}else{
-							if(nodes.contains(newEndNodeID)){
-								if(!edges.contains(startNode.getText() + "->" + newEndNodeID)
-										||!edges.contains(newEndNodeID + "->" + startNode.getText())){
-									//remove/replace
-									gp.removeGraphicEdge(edge1);
-									gp.removeGraphicEdge(edge2);
-									newEdge1 = startNode.getText() + "->" + newEndNodeID;
-									newEdge2 = newEndNodeID + "->" + startNode.getText();
-									edges.set(edges.indexOf(edge1), newEdge1);
-									edges.set(edges.indexOf(edge2), newEdge2);
-									network.removeLink(startNode.getText(), endNode.getText());
-
-									//add
-									gp.ConnectAction(startNode.getText(), newEndNodeID);
-									network.createLink(startNode.getText(), newEndNodeID);
-									//set status
-									setStatus("Edge " + edge1 + " Changes to " + newEdge1);
-									break;
-								}else{
-									errorMessageDialog(EDGE_ALREADY_EXISTS);
-								}
-							}else{
-								errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
-							}
-						}
-					}else{
-						errorMessageDialog(EDGE_DOESNT_EXIST);
-					}
-				}else{
-					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
-				}
-			}else{
-				setStatus("No Edges Changed");
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Create a new edge
-	 */
-	public void newEdge() {
-		String edge1 = "";
-		String edge2 = "";
-		JTextField startNode = new JTextField(5);
-		JTextField endNode = new JTextField(5);
-
-		JPanel panel = new JPanel();
-		panel.add(new JLabel("Enter Start NodeID:")); panel.add(startNode);
-		panel.add(Box.createHorizontalStrut(15)); // a spacer
-		panel.add(new JLabel("Enter End NodeID:")); panel.add(endNode);
-		
-		for(;;){
-			startNode.addHierarchyListener(new RequestFocusListener());
-			int result = JOptionPane.showConfirmDialog(null, panel, 
-					"Create New Edge", JOptionPane.OK_CANCEL_OPTION);
-			if (result == JOptionPane.OK_OPTION) {
-				if(nodes.contains(startNode.getText()) && nodes.contains(endNode.getText())){
-					String startNodeID = startNode.getText();
-					String endNodeID = endNode.getText();
-					edge1 = startNodeID + "->" + endNodeID;
-					edge2 = endNodeID + "->" + startNodeID;
-					if(!edges.contains(edge1) || !edges.contains(edge2)){
-						edges.add(edge1);
-						edges.add(edge2);
-						
-						network.createLink(startNodeID, endNodeID);
-						
-						gp.ConnectAction(startNodeID, endNodeID);
-						setStatus("Edge " + edge1 + " Created");
-						break;
-					}else{
-						errorMessageDialog(EDGE_ALREADY_EXISTS);
-					}
-				}else{
-					errorMessageDialog(NODE_S_SPECIFIED_DOES_NOT_EXIST);
-				}
-			}else{
-				setStatus("No New Edges Created");
-				break;
-			}
-		}
+	
+	public void addNewEdge(String startNodeID, String endNodeID){
+		gp.ConnectAction(startNodeID, endNodeID);
+		setStatus("Edge " + startNodeID + "-" + endNodeID + " Created");
 	}
 
 	public void removeNode(String nodeID){
