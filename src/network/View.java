@@ -835,25 +835,22 @@ public class View {
 	/**
 	 * Create a new network and reset all information
 	 */
-	public void newNetwork() 
+	public void initializeNewNetwork() 
 	{
 		clearInstance();
-		frequency = 0;
-		nodes.clear();
-		edges.clear();
-		algorithm = null;
-		
-		this.network = new Simulation();
-		
-		setStatus("New Network");
+		frequencyMetric.setText("Not Set");
+		algorithmMetric.setText("Not Set");
+		totalMessagesMetric.setText("0");
+		averageHopsMetric.setText("0");
+
 		defaultNetworkMenu.setEnabled(true);
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
 		runButton.setEnabled(true);
-		updateMetrics();
 		tableBar.setVisible(false);
 		defaultNetworkMenu.setEnabled(true);
 		dialog.setVisible(false);
+		setStatus("New Network");
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -974,11 +971,7 @@ public class View {
 	 * @param algorithm
 	 */
 	public void updateAlgorithmMetric(ALGORITHM algorithm) {
-		if(algorithm == null){
-			algorithmMetric.setText("Not set");
-		}else{
-			algorithmMetric.setText(algorithm.getALGString());
-		}
+		algorithmMetric.setText(algorithm.getALGString());
 	}
 
 	/**
@@ -997,7 +990,7 @@ public class View {
 			    JOptionPane.ERROR_MESSAGE);
 	}
 	
-	public void clearInstance(){
+	private void clearInstance(){
 		messageList.clear();
 		tableModel.setNumRows(0);
 		tableModel.setColumnCount(0);

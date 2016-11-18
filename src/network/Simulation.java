@@ -310,5 +310,17 @@ public class Simulation {
 		createNodes(Constants.DEFAULT_NODES_SET);
 		addNeighbors(Constants.DEFAULT_EDGES_SET);
 	}
+	
+	public void initializeNewNetwork(){
+		this.frequency = 0;
+		this.algorithm = null;
+		averageHops = 0;
+		packets = 0;
+		totalMessages = 0;
+		simulationNodes.clear();
+		totalMessageList.clear();
+		currentMessageList.clear();
+		//selectedAlgorithm.reset();//TODO
+	}
 
 }

@@ -110,7 +110,8 @@ public class Controller implements ActionListener {
 	}
 
 	private void newNetwork() {
-		view.newNetwork();
+		view.initializeNewNetwork();
+		simulation.initializeNewNetwork();
 	}
 
 	private void newEdge() {
