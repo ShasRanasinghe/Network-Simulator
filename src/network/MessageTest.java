@@ -60,7 +60,7 @@ public class MessageTest {
 
 	@Test
 	public void testIncrumentHopCount() {
-		message1.incrumentHopCount();
+		message1.incrementHopCount();
 		assertEquals(1,message1.getHopCount());
 	}
 	

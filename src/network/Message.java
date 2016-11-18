@@ -152,7 +152,7 @@ public class Message {
 	/**
 	 * adds to the hop count the message has taken
 	 */
-	public void incrumentHopCount()
+	public void incrementHopCount()
 	{
 		hopCount++;
 	}
@@ -171,6 +171,18 @@ public class Message {
 		return false;
 	}
 	
-	
+	public String getDetailedString(){
+		String returnString;
+		returnString = source + " -> " + destination + "\n"
+				+ "Hop Count: " + hopCount + "\n"
+				+ "Current Node: ";
+		if(!running){
+			returnString += destination;
+		}else{
+			returnString += current;
+		}
+		
+		return returnString;
+	}
 	
 }

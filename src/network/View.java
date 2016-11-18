@@ -845,15 +845,7 @@ public class View {
 		Message message = (Message)list.getSelectedValue();
 		if(list.getSelectedIndex() != -1)
 		{
-			String info = message.getSource() + " -> " + message.getDestination() + "\n"
-					+ "Hop Count: " + message.getHopCount() + "\n"
-							+ "Current Node: ";
-			if(!message.isRunning()){
-				info += message.getDestination();
-			}else{
-				info += message.getCurrentNode();
-			}
-			int response = JOptionPane.showConfirmDialog(null,info,message.toString(),
+			int response = JOptionPane.showConfirmDialog(null,message.getDetailedString(),message.toString(),
 														JOptionPane.PLAIN_MESSAGE,
 														JOptionPane.CLOSED_OPTION);
 			if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) 
@@ -1023,20 +1015,20 @@ public class View {
 		deleteEdgeButton.setEnabled(bool);
 		deleteNodeButton.setEnabled(bool);
 		if(!bool){
-			setAlgorithmButton.setToolTipText("Disabled When Stepping");
-			setFreqButton.setToolTipText("Disabled When Stepping");
-			newEdgeButton.setToolTipText("Disabled When Stepping");
-			newNodeButton.setToolTipText("Disabled When Stepping");
-			setAlgorithmMenu.setToolTipText("Disabled When Stepping");
-			setFrequencyMenu.setToolTipText("Disabled When Stepping");
-			newNodeMenu.setToolTipText("Disabled When Stepping");
-			editNodeMenu.setToolTipText("Disabled When Stepping");
-			deleteNodeMenu.setToolTipText("Disabled When Stepping");
-			newEdgeMenu.setToolTipText("Disabled When Stepping");
-			editEdgeMenu.setToolTipText("Disabled When Stepping");
-			deleteEdgeMenu.setToolTipText("Disabled When Stepping");
-			deleteEdgeButton.setToolTipText("Disabled When Stepping");
-			deleteNodeButton.setToolTipText("Disabled When Stepping");;
+			setAlgorithmButton.setToolTipText(DISABLED_WHEN_STEPPING);
+			setFreqButton.setToolTipText(DISABLED_WHEN_STEPPING);
+			newEdgeButton.setToolTipText(DISABLED_WHEN_STEPPING);
+			newNodeButton.setToolTipText(DISABLED_WHEN_STEPPING);
+			setAlgorithmMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			setFrequencyMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			newNodeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			editNodeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			deleteNodeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			newEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			editEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			deleteEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
+			deleteEdgeButton.setToolTipText(DISABLED_WHEN_STEPPING);
+			deleteNodeButton.setToolTipText(DISABLED_WHEN_STEPPING);;
 		}
 	}
 	
@@ -1053,7 +1045,7 @@ public class View {
 			try {
 				Desktop.getDesktop().open(file);
 			} catch (IOException e) {
-				errorMessageDialog(COUTLD_NOT_OPEN_FILE);
+				errorMessageDialog(COULD_NOT_OPEN_FILE);
 			}
 		}else{
 			errorMessageDialog(FILE_DOES_NOT_EXIST);
@@ -1072,7 +1064,7 @@ public class View {
 				Desktop.getDesktop().open(index);
 				Desktop.getDesktop().open(classes);
 			} catch (IOException e) {
-				errorMessageDialog(COUTLD_NOT_OPEN_FILE);
+				errorMessageDialog(COULD_NOT_OPEN_FILE);
 			}
 		}else{
 			errorMessageDialog(FILE_DOES_NOT_EXIST);
@@ -1097,7 +1089,7 @@ public class View {
 			try {
 				Desktop.getDesktop().open(file);
 			} catch (IOException e) {
-				errorMessageDialog(COUTLD_NOT_OPEN_FILE);
+				errorMessageDialog(COULD_NOT_OPEN_FILE);
 			}
 		}else{
 			errorMessageDialog(FILE_DOES_NOT_EXIST);

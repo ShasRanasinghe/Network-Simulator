@@ -177,6 +177,7 @@ public class Controller implements ActionListener {
 		if(!nodes.isEmpty()){
 			for(String nodeID: nodes){
 				simulation.removeNode(nodeID);
+				view.removeNode(nodeID);
 			}
 		}else{
 			view.errorMessageDialog("You Have Not Selected Anything\nPlease Select Node(s) And Try Again.");
