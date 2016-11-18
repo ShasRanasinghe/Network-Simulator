@@ -75,16 +75,29 @@ public class Controller implements ActionListener {
 		view.stepForward();
 	}
 
+	//Not yet implemented
 	private void stepBack() {
 		view.stepBack();
 	}
 
 	private void setFrequeny() {
-		view.setFrequency();
+		String frequency = view.setFrequency();
+		if(frequency == null){
+			view.setStatus("Frequency Not Set");
+		}else{
+			simulation.setFrequency(Integer.parseInt(frequency));
+			view.updateFrequencyMetric(Integer.parseInt(frequency));
+		}
 	}
 
 	private void setAlgorithm() {
-		view.setAlgorithm();
+		String algorithm = view.setAlgorithm();
+		if(algorithm == null){
+			view.setStatus("Algortihm Not Set");
+		}else{
+			simulation.setAlgorithm(ALGORITHM.getEnum(algorithm));
+			view.updateAlgorithmMetric(ALGORITHM.getEnum(algorithm));
+		}
 	}
 
 	private void runSimulation() {

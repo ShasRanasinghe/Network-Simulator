@@ -772,41 +772,22 @@ public class View {
 	/**
 	 * Set the frequency
 	 */
-	public void setFrequency() {
-	    String frequency = (String) JOptionPane.showInputDialog(frame, "Pick a Frequency",
+	public String setFrequency() {
+	    return (String) JOptionPane.showInputDialog(frame, "Pick a Frequency",
 		        "Set Frequency", JOptionPane.QUESTION_MESSAGE, null, // Use
 		        frequencyList, // Array of choices
 		        frequencyList[0]); // Initial choice
-	    if(frequency == null){
-	    	setStatus("Frequency Not Set");
-	    }
-	    else
-	    {
-	    	setStatus("Frequency set to: " + frequency);
-	    	frequencyMetric.setText("" + frequency);
-			this.frequency = Integer.parseInt(frequency);
-			network.setFrequency(this.frequency);
-			updateFrequencyMetric(this.frequency);
-	    }
 	}
 
 	/**
 	 * Set the algorithm 
 	 */
-	public void setAlgorithm() {
+	public String setAlgorithm() {
 		String[] choices = algorithms.toArray(new String[0]);
-	    String algorithm = (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
+	    return (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
 	        "Set Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
 	        choices, // Array of choices
 	        choices[0]); // Initial choice
-	    if(algorithm == null){
-	    	setStatus("Algortihm Not Set");
-	    }else{
-	    	setStatus("Algortihm set to: " + algorithm);
-	    	this.algorithm = ALGORITHM.getEnum(algorithm);
-	    	network.setAlgorithm(ALGORITHM.getEnum(algorithm));
-	    	updateAlgorithmMetric(this.algorithm);
-	    }
 	}
 
 	public void initializeDefaultNetwork(ALGORITHM algorithm, int frequency) {
@@ -953,7 +934,7 @@ public class View {
 	/**
 	 * Update the metrics in the view
 	 */
-	public void updateMetrics()
+	public void updateMetrics()//TODO
 	{
 		
 		totalMessagesMetric.setText("" + network.totalMessageList.size());
@@ -972,6 +953,7 @@ public class View {
 	 */
 	public void updateAlgorithmMetric(ALGORITHM algorithm) {
 		algorithmMetric.setText(algorithm.getALGString());
+		setStatus("Algortihm set to: " + algorithm.getALGString());
 	}
 
 	/**
@@ -980,6 +962,7 @@ public class View {
 	 */
 	public void updateFrequencyMetric(int frequency) {
 		frequencyMetric.setText("" + frequency);
+		setStatus("Frequency set to: " + frequency);
 	}
 	
 	
