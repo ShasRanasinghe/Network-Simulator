@@ -13,8 +13,8 @@ public class SimulationTest {
 	Node node2 = null;
 	Simulation simulation1;
 	ArrayList<Node> nodes;
-	ArrayList<String> list;
-	ArrayList<String> edgelist;
+	String[] list;
+	String[] edgelist;
 	
 	@Before
 	public void setUp() 
@@ -28,13 +28,13 @@ public class SimulationTest {
 		simulation1.setSimulationNodes(nodes);
 		
 		
-		list = new ArrayList<String>();
-		list.add("A");
-		list.add("B");
+		list = new String[2];
+		list[0] = "A";
+		list[1] = "B";
 		
-		edgelist = new ArrayList<String>();
-		edgelist.add("A->B");
-		edgelist.add("B->A");
+		edgelist = new String[2];
+		edgelist[0] = "A->B";
+		edgelist[1] = "B->A";
 	}
 	
 	@Test

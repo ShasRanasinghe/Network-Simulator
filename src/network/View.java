@@ -71,6 +71,7 @@ public class View {
 	private JButton stepBackButton;
 	private JTable table;
 	private JPanel tableBar;
+	private DefaultOptionDialog dialog;
 	
 	//Edit Menu Items
 	private JMenuItem setAlgorithmMenu;
@@ -191,6 +192,16 @@ public class View {
 		
 		stepBackMenuItem.addActionListener(controller);
 		stepBackMenuItem.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_BACK);
+		
+		dialog = new DefaultOptionDialog(frame, "Default");
+		
+		//TODO
+		//I DONT LIKE THIS....COME BACK TO THIS
+		//THIS SMALL THING SHOULDNT NEED AN ENTIRE NEW CLASS
+		dialog.addButtonActionListener(controller);
+		dialog.putDefaultClientProperty(METHOD_SEARCH_STRING, METHODS.DEFAULT_NETWORK);
+		dialog.putNewNetworkClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_NETWORK);
+		dialog.setVisible(true);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +237,7 @@ public class View {
 		
 		frame.setVisible(true);
 		
-		defaultOption();
-		updateMetrics();
+		updateMetrics();//TODO
 		
 	}
 
@@ -798,39 +808,28 @@ public class View {
 	    	updateAlgorithmMetric(this.algorithm);
 	    }
 	}
-	
-	/**
-	 * Creates a default network to be use used for testing or as a basis to start on
-	 */
-	public void defaultNetwork() 
-	{		
-		newNetwork();
-		frequency = 5;
-		algorithm = ALGORITHM.RANDOM;
-		nodes.add("A");nodes.add("B");nodes.add("C");nodes.add("D");nodes.add("E");
-		edges.add("A->B");edges.add("A->C");edges.add("A->E");edges.add("B->D");edges.add("B->E");
-		edges.add("C->D");
-		
-		for(String s : nodes)
-		{
-			gp.NewNodeAction(s);
-		}
-		gp.ConnectAction("A","B");
-		gp.ConnectAction("A","C");
-		gp.ConnectAction("A","E");
-		gp.ConnectAction("B","D");
-		gp.ConnectAction("B","E");
-		gp.ConnectAction("C","D");
-		
-		network.createNodes(nodes);
-		network.addNeighbors(edges);
-		network.setFrequency(frequency);
-		network.setAlgorithm(ALGORITHM.RANDOM);
+
+	public void initializeDefaultNetwork(ALGORITHM algorithm, int frequency) {
+		clearInstance();
 		defaultNetworkMenu.setEnabled(false);
 		stepForwardButton.setEnabled(true);
 		runButton.setEnabled(true);
-		updateMetrics();
-		tableBar.setVisible(false);		
+		tableBar.setVisible(false);
+		dialog.setVisible(false);
+		for(String nodeID : DEFAULT_NODES_SET)
+		{
+			gp.NewNodeAction(nodeID);
+		}
+		for(String edgeID : DEFAULT_EDGES_SET)
+		{
+			String[] splitEdge = edgeID.split("->");
+			gp.ConnectAction(splitEdge[0],splitEdge[1]);
+		}
+		totalMessagesMetric.setText("0");
+		averageHopsMetric.setText("0");
+		updateFrequencyMetric(frequency);
+		updateAlgorithmMetric(algorithm);
+		setStatus("Default Network");
 	}
 
 	/**
@@ -846,7 +845,7 @@ public class View {
 		
 		this.network = new Simulation();
 		
-		setStatus("Creating a new Network");
+		setStatus("New Network");
 		defaultNetworkMenu.setEnabled(true);
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
@@ -854,6 +853,7 @@ public class View {
 		updateMetrics();
 		tableBar.setVisible(false);
 		defaultNetworkMenu.setEnabled(true);
+		dialog.setVisible(false);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -958,11 +958,13 @@ public class View {
 	 */
 	public void updateMetrics()
 	{
+		
 		totalMessagesMetric.setText("" + network.totalMessageList.size());
 		averageHopsMetric.setText("" + network.getAverageHops());
-		updateFrequencyMetric(frequency);
-		updateAlgorithmMetric(algorithm);
+		//updateFrequencyMetric(frequency);
+		//updateAlgorithmMetric(algorithm);
 	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////VIEW MANIPULATION METHODS////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1016,21 +1018,6 @@ public class View {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////VIEW HELPER METHODS//////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Ask the user at start up if they would like to use the default network or not
-	 */
-	private void defaultOption() {
-		int response = JOptionPane.showConfirmDialog(null,"Would you like to use the Default Network?","Default",
-				JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION);
-		if (response == JOptionPane.NO_OPTION ||response == JOptionPane.CLOSED_OPTION) {
-		      newNetwork();
-		      setStatus("New Network");
-		    } else if (response == JOptionPane.YES_OPTION) {
-		      defaultNetwork();
-		      setStatus("Default Network");
-		    }
-	}
 	
 	private void updateListRender(){
 		for(Message m : network.totalMessageList)

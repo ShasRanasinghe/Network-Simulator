@@ -31,6 +31,10 @@ final class Constants {
 	
 	protected static final String JAVADOC2 = "doc\\network\\Simulation.html";
 	
+	protected static final String[] DEFAULT_NODES_SET = {"A","B","C","D","E"};
+	
+	protected static final String[] DEFAULT_EDGES_SET = {"A->B","A->C","A->E","B->D","B->E","C->D"};
+	
 	protected static final String COUTLD_NOT_OPEN_FILE = "Could not open file properly";
 	
 	protected static final String FILE_DOES_NOT_EXIST = "Could Not Find Files Required";

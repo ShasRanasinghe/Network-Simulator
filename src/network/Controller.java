@@ -1,8 +1,5 @@
 package network;
 
-import static network.Constants.NODE_ALREADY_EXISTS;
-import static network.Constants.NODE_S_SPECIFIED_DOES_NOT_EXIST;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -105,7 +102,7 @@ public class Controller implements ActionListener {
 					view.addNewNode(nodeID);
 					break;
 				}else{
-					view.errorMessageDialog(NODE_ALREADY_EXISTS);
+					view.errorMessageDialog(Constants.NODE_ALREADY_EXISTS);
 				}
 			}
 			
@@ -136,7 +133,7 @@ public class Controller implements ActionListener {
 							simulation.editNodeID(prevNodeID, newNodeID);
 							break;
 						}else{
-							view.errorMessageDialog(NODE_ALREADY_EXISTS);
+							view.errorMessageDialog(Constants.NODE_ALREADY_EXISTS);
 						}
 					}
 				}
@@ -168,7 +165,8 @@ public class Controller implements ActionListener {
 	}
 
 	private void defaultNetwork() {
-		view.defaultNetwork();
+		simulation.initializeDefaultNetwork();
+		view.initializeDefaultNetwork(simulation.getAlgorithm(),simulation.getFrequency());
 	}
 
 }

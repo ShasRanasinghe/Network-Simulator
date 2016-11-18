@@ -46,7 +46,7 @@ public class Simulation {
 	/**
 	 * @param nodeIDs Array list of node IDs
 	 */
-	public void createNodes(ArrayList<String> nodeIDs) 
+	public void createNodes(String[] nodeIDs) 
 	{
 		simulationNodes.clear();
 	
@@ -146,7 +146,7 @@ public class Simulation {
 	/**
      * @param edgeIDs Array list of edge IDs
 	 */
-	public void addNeighbors(ArrayList<String> edgeIDs) 
+	public void addNeighbors(String[] edgeIDs) 
 	{
 		//Edges already validated when passed in
 		for(String edgeID : edgeIDs)
@@ -304,68 +304,11 @@ public class Simulation {
 		return algorithm;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		MAIN METHOD FOR ENTIRE NETWORK!!!!																	 //
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * @param args Main method input
-	 */
-/*	public static void main(String[] args) {
-		
-		//Initialize Simulation
-		Simulation simulation = new Simulation();
-		int frequency = 0;
-		ArrayList<String> nodeIDs = new ArrayList<>(); 
-		ArrayList<String> edgeIDs = new ArrayList<>(); 
+	public void initializeDefaultNetwork() {
+		this.frequency = 5;
+		this.algorithm = ALGORITHM.RANDOM;
+		createNodes(Constants.DEFAULT_NODES_SET);
+		addNeighbors(Constants.DEFAULT_EDGES_SET);
+	}
 
-		//Initialize Controller
-		Controller controller = new Controller();
-		
-		if(!controller.isTesting()){
-			//Get user input from controller
-			controller.start();
-			frequency = controller.getFrequency();
-			nodeIDs = controller.getNodes();
-			edgeIDs = controller.getEdges();
-		}
-		//Used to test network
-		else
-		{
-			frequency = 5;
-			nodeIDs.add("A");nodeIDs.add("B");nodeIDs.add("C");nodeIDs.add("D");nodeIDs.add("E");
-			edgeIDs.add("A->B");edgeIDs.add("A->C");edgeIDs.add("A->E");edgeIDs.add("C->D");edgeIDs.add("D->B");
-			edgeIDs.add("B->E");
-		}
-		
-		// Create nodes in the simulation
-		simulation.createNodes(nodeIDs);
-		
-		// Add edges to all nodes in simulation
-		simulation.addNeighbors(edgeIDs);
-
-		// Run specified algorithm
-		ALGORITHM userAlgorithm = controller.getAlgorithm();
-		
-		// If the user wants to run the random algorithm
-		if(userAlgorithm == ALGORITHM.RANDOM)
-		{
-			RandomAlgorithm randomAlgorithm = new RandomAlgorithm(simulation.simulationNodes, frequency);
-			
-			// USER MUST INPUT THE STEP SIZE!!!!!!!!!!!!!!!!!!!!!!!!!!
-			randomAlgorithm.run(50);
-			
-			//Metrics
-			simulation.setTotalMessages(randomAlgorithm.completeMessageList.size());
-			//IS THIS THE RUNNING TOTAL!!!!
-			simulation.setPackets(randomAlgorithm.getTotalHops());
-		}
-
-		// Calculate the average
-		simulation.setAverageHops(simulation.packets/simulation.totalMessages);
-
-		//Print metrics
-		controller.printTotalPackets(simulation.getPackets());
-		System.out.println("total number of messages created: " + simulation.totalMessages);
-		//graph.printTable();
-	}*/
 }
