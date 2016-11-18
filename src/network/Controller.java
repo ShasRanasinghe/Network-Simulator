@@ -29,45 +29,97 @@ public class Controller implements ActionListener {
 		
 		switch(method){
 		case DEFAULT_NETWORK:
-			view.errorMessageDialog("default network");
+			defaultNetwork();
 			break;
 		case DELETE_EDGE:
-			view.errorMessageDialog("delete edge");
+			deleteEdge();
 			break;
 		case DELETE_NODE:
-			view.errorMessageDialog("delete node");
+			deleteNode();
 			break;
 		case EDIT_EDGE:
-			view.errorMessageDialog("edit edge");
+			editEdge();
 			break;
 		case EDIT_NODE:
-			view.errorMessageDialog("edit node");
+			editNode();
 			break;
 		case NEW_EDGE:
-			view.errorMessageDialog("new edge");
+			newEdge();
 			break;
 		case NEW_NETWORK:
-			view.errorMessageDialog("new network");
+			newNetwork();
 			break;
 		case NEW_NODE:
-			view.errorMessageDialog("new node");
+			newNode();
 			break;
 		case RUN:
-			view.errorMessageDialog("run");
+			runSimulation();
 			break;
 		case SET_ALGORITHM:
-			view.errorMessageDialog("set algorithm");
+			setAlgorithm();
 			break;
 		case SET_FREQUENCY:
-			view.errorMessageDialog("set frequency");
+			setFrequeny();
 			break;
 		case STEP_BACK:
-			view.errorMessageDialog("step back");
+			stepBack();
 			break;
 		case STEP_FORWARD:
-			view.errorMessageDialog("step forward");
+			stepForward();
 			break;
 		}
+	}
+
+	private void stepForward() {
+		view.stepForward();
+	}
+
+	private void stepBack() {
+		view.stepBack();
+	}
+
+	private void setFrequeny() {
+		view.setFrequency();
+	}
+
+	private void setAlgorithm() {
+		view.setAlgorithm();
+	}
+
+	private void runSimulation() {
+		view.run();
+	}
+
+	private void newNode() {
+		view.newNode();
+	}
+
+	private void newNetwork() {
+		view.newNetwork();
+	}
+
+	private void newEdge() {
+		view.newEdge();
+	}
+
+	private void editNode() {
+		view.editNode();
+	}
+
+	private void editEdge() {
+		view.editEdge();
+	}
+
+	private void deleteNode() {
+		view.deleteNode();
+	}
+
+	private void deleteEdge() {
+		view.deleteEdge();
+	}
+
+	private void defaultNetwork() {
+		view.defaultNetwork();
 	}
 
 }

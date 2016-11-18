@@ -502,7 +502,7 @@ public class View {
 	/**
 	 * Steps back to a precious state
 	 */
-	private void stepBack() 
+	public void stepBack() 
 	{
 		// ALGORITHMS CURRENTLY DO NOT SUPPORT BACK STEPS!!!!!!!!!!!!!!!!!!!!!
 		// WILL BE IMPLEMENTED LATER!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -511,7 +511,7 @@ public class View {
 	/**
 	 * Step through the network one step at a time
 	 */
-	private void stepForward() 
+	public void stepForward() 
 	{
 		if(checkFullInitialization())
 		{
@@ -530,7 +530,7 @@ public class View {
 	/**
 	 * Run the full simulation to completion
 	 */
-	private void run() 
+	public void run() 
 	{
 		if(checkFullInitialization())
 		{
@@ -554,7 +554,7 @@ public class View {
 	/**
 	 * Delete an existing edge
 	 */
-	private void deleteEdge() {
+	public void deleteEdge() {
 		String edge1 = "";
 		String edge2 = "";
 		JTextField startNode = new JTextField(5);
@@ -600,7 +600,7 @@ public class View {
 	/**
 	 * Edit an existing edge between two nodes
 	 */
-	private void editEdge() {
+	public void editEdge() {
 		String edge1 = "";
 		String edge2 = "";
 		String newEdge1 = "";
@@ -668,7 +668,7 @@ public class View {
 	/**
 	 * Create a new edge
 	 */
-	private void newEdge() {
+	public void newEdge() {
 		String edge1 = "";
 		String edge2 = "";
 		JTextField startNode = new JTextField(5);
@@ -714,7 +714,7 @@ public class View {
 	/**
 	 * Delete an existing node
 	 */
-	private void deleteNode() {
+	public void deleteNode() {
 		for(;;){
 			
 			//Remove graphic node from graphic panel
@@ -752,7 +752,7 @@ public class View {
 	 * Edit a current nodes ID
 	 * doesn't let you edit a non existent node
 	 */
-	private void editNode() {
+	public void editNode() {
 		JTextField nodeID = new JTextField(5);
 		JTextField newNodeID = new JTextField(5);
 
@@ -784,7 +784,7 @@ public class View {
 	 * Create a new node
 	 * Doesn't let you create a node that already exists
 	 */
-	private void newNode() {
+	public void newNode() {
 		for(;;){
 			String nodeID = JOptionPane.showInputDialog(frame,"Enter NodeID:","Create New Node",JOptionPane.QUESTION_MESSAGE);
 			if(nodeID == null){
@@ -808,7 +808,7 @@ public class View {
 	/**
 	 * Creates the table with the nodes list
 	 */
-	private void createTable(){
+	public void createTable(){
 		tableModel.addColumn("Step");
 		for(String node: nodes){
 			tableModel.addColumn(node);
@@ -821,7 +821,7 @@ public class View {
 	/**
 	 * Set the frequency
 	 */
-	private void setFrequency() {
+	public void setFrequency() {
 	    String frequency = (String) JOptionPane.showInputDialog(frame, "Pick a Frequency",
 		        "Set Frequency", JOptionPane.QUESTION_MESSAGE, null, // Use
 		        frequencyList, // Array of choices
@@ -842,7 +842,7 @@ public class View {
 	/**
 	 * Set the algorithm 
 	 */
-	private void setAlgorithm() {
+	public void setAlgorithm() {
 		String[] choices = algorithms.toArray(new String[0]);
 	    String algorithm = (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
 	        "Set Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -861,7 +861,7 @@ public class View {
 	/**
 	 * Creates a default network to be use used for testing or as a basis to start on
 	 */
-	private void defaultNetwork() 
+	public void defaultNetwork() 
 	{		
 		newNetwork();
 		frequency = 5;
@@ -895,7 +895,7 @@ public class View {
 	/**
 	 * Create a new network and reset all information
 	 */
-	private void newNetwork() 
+	public void newNetwork() 
 	{
 		clearInstance();
 		frequency = 0;
@@ -921,7 +921,7 @@ public class View {
 	 * Creates a pop up when a message is selected in the chart
 	 * Pop up shows details of the message
 	 */
-	protected void createPopup() 
+	private void createPopup() 
 	{
 		Message message = (Message)list.getSelectedValue();
 		if(list.getSelectedIndex() != -1)
@@ -991,7 +991,7 @@ public class View {
 	/**
 	 * @return true if all the information needed to run the simulation was provided by the user, false otherwise
 	 */
-	private boolean checkFullInitialization() //TODO
+	private boolean checkFullInitialization()
 	{
 		Integer tempF = frequency;
 		if((frequency != 0 && tempF != null) && algorithm != null)
