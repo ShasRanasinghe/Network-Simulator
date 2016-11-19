@@ -1,6 +1,10 @@
 package network;
 
-//Enumerated types of algorithms
+
+/**
+ * Enumerated types of algorithms
+ *
+ */
 public enum ALGORITHM {
 	RANDOM("Random"), FLOODING("Flooding"), SHORTESTPATH("Shortest Path"), CUSTOM("Custom");
 

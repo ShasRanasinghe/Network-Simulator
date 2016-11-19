@@ -6,11 +6,22 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+/**
+ * Controller class that contains a model and view and handles actions
+ * model = Simulation
+ * view = View
+ *
+ */
 public class Controller implements ActionListener {
 
 	private Simulation simulation;
 	private View view;
 	
+	/**
+	 * Constructor that initializes model and view
+	 * @param simulation The model - back end
+	 * @param view The view - front end
+	 */
 	public Controller(Simulation simulation, View view){
 		this.simulation = simulation;
 		this.view = view;
@@ -23,7 +34,8 @@ public class Controller implements ActionListener {
 	}
 
 	/**
-	 * @param component
+	 * Handles all actions performed
+	 * @param component JComponent
 	 */
 	private void invokeMethod(JComponent component) {
 		METHODS method = (METHODS)component.getClientProperty(Constants.METHOD_SEARCH_STRING);
@@ -76,16 +88,25 @@ public class Controller implements ActionListener {
 		}
 	}
 
+	/**
+	 * Delegates the creation of a default network
+	 */
 	private void defaultNetwork() {
 		simulation.initializeDefaultNetwork();
 		view.initializeDefaultNetwork(simulation.getAlgorithm().getALGString(),simulation.getFrequency());
 	}
 	
+	/**
+	 * Delegates creating a new network
+	 */
 	private void newNetwork() {
 		view.initializeNewNetwork();
 		simulation.initializeNewNetwork();
 	}
 	
+	/**
+	 * Delegates setting the frequency 
+	 */
 	private void setFrequeny() {
 		String frequency = view.setFrequency();
 		if(frequency == null){
@@ -96,6 +117,9 @@ public class Controller implements ActionListener {
 		}
 	}
 
+	/**
+	 * Delegates setting the algorithm
+	 */
 	private void setAlgorithm() {
 		String algorithm = view.setAlgorithm();
 		if(algorithm == null){
@@ -106,11 +130,16 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	//Not yet implemented
+	/**
+	 * Not yet implemented 
+	 */
 	private void stepBack() {
 		view.stepBack();
 	}
 
+	/**
+	 * Delegates running the simulation
+	 */
 	private void runSimulation() {
 		if (simulation.networkExists()) {
 			if (simulation.checkFullInitialization()) {
@@ -127,6 +156,9 @@ public class Controller implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Handles stepping forward
+	 */
 	private void stepForward() {
 		if (simulation.networkExists()) {
 			if (simulation.checkFullInitialization()) {
@@ -143,6 +175,9 @@ public class Controller implements ActionListener {
 		}
 	}
 
+	/**
+	 * Handles the creation of a new edge
+	 */
 	private void newEdge() {
 		List<String> nodes = view.getSelectedNodes();
 		if(nodes.size()>0){
@@ -160,6 +195,9 @@ public class Controller implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Handles the deletion of an edge
+	 */
 	private void deleteEdge() {
 		List<String> nodes = view.getSelectedNodes();
 		if(nodes.size()>0){
@@ -177,6 +215,9 @@ public class Controller implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Handles the creation of a new node
+	 */
 	private void newNode() {
 		for(;;){
 			String nodeID = view.openSingleInputQuestionDialog("Create New Node","Enter NodeID:");
@@ -195,6 +236,9 @@ public class Controller implements ActionListener {
 		}
 	}
 
+	/**
+	 * Handles the editing of a node 
+	 */
 	private void editNode() {
 		List<String> nodes = view.getSelectedNodes();
 		if(nodes.size()>0){
@@ -223,6 +267,9 @@ public class Controller implements ActionListener {
 		}
 	}
 
+	/**
+	 * Handles the deletion of a node
+	 */
 	private void deleteNode() {
 		List<String> nodes = view.getSelectedNodes();
 		if(!nodes.isEmpty()){
@@ -235,6 +282,9 @@ public class Controller implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Handles resetting simulation
+	 */
 	private void resetSimulation() {
 		view.resetSimulation();
 		simulation.resetSimulation();

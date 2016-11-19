@@ -3,10 +3,14 @@ package network;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+/**
+ * Constants class mainly used in View
+ *
+ */
 final class Constants {
 
 	/**
-	 * Private constructor that doesnt do anything as this class is for constants only
+	 * Private constructor that doesn't do anything as this class is for constants only
 	 */
 	private Constants(){}
 	
