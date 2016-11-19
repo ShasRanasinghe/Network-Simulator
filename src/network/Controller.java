@@ -70,7 +70,7 @@ public class Controller implements ActionListener {
 
 	private void defaultNetwork() {
 		simulation.initializeDefaultNetwork();
-		view.initializeDefaultNetwork(simulation.getAlgorithm(),simulation.getFrequency());
+		view.initializeDefaultNetwork(simulation.getAlgorithm().getALGString(),simulation.getFrequency());
 	}
 	
 	private void newNetwork() {
@@ -94,7 +94,7 @@ public class Controller implements ActionListener {
 			view.setStatus("Algortihm Not Set");
 		}else{
 			simulation.setAlgorithm(ALGORITHM.getEnum(algorithm));
-			view.updateAlgorithmMetric(ALGORITHM.getEnum(algorithm));
+			view.updateAlgorithmMetric(algorithm);
 		}
 	}
 

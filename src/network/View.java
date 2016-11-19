@@ -29,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class View implements Observer{
 	//Variables used to create the GUI
-	private List<String> algorithms = new ArrayList<>();
+	private String[] algorithmChoices;
 	private String frequencyList[];
 	private MessageListModel<Message> messageList;
 	private JList<Message> list;
@@ -37,10 +37,10 @@ public class View implements Observer{
 	private int rowCount;
 	
 	//Metrics
-	JTextField totalMessagesMetric;
-	JTextField averageHopsMetric;
-	JTextField frequencyMetric;
-	JTextField algorithmMetric;
+	private JTextField totalMessagesMetric;
+	private JTextField averageHopsMetric;
+	private JTextField frequencyMetric;
+	private JTextField algorithmMetric;
 	
 	
 	//GUI
@@ -102,10 +102,9 @@ public class View implements Observer{
 		}
 		
 		//Initialize array of Algorithms available
-		ALGORITHM[] algorithms;
-		algorithms = ALGORITHM.values();
-		for(ALGORITHM alg: algorithms){
-			this.algorithms.add(alg.getALGString());
+		algorithmChoices = new String[ALGORITHM.values().length];
+		for(int i = 0; i<ALGORITHM.values().length;i++){
+			algorithmChoices[i] = ALGORITHM.values()[i].getALGString();
 		}
 		
 		tableModel = new DefaultTableModel();
@@ -593,14 +592,13 @@ public class View implements Observer{
 	 * Set the algorithm 
 	 */
 	public String setAlgorithm() {
-		String[] choices = algorithms.toArray(new String[0]);
 	    return (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
 	        "Set Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
-	        choices, // Array of choices
-	        choices[0]); // Initial choice
+	        algorithmChoices, // Array of choices
+	        algorithmChoices[0]); // Initial choice
 	}
 
-	public void initializeDefaultNetwork(ALGORITHM algorithm, int frequency) {
+	public void initializeDefaultNetwork(String algorithm, int frequency) {
 		clearInstance();
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
@@ -727,9 +725,9 @@ public class View implements Observer{
 	 * Updates the Algorithm metric
 	 * @param algorithm
 	 */
-	public void updateAlgorithmMetric(ALGORITHM algorithm) {
-		algorithmMetric.setText(algorithm.getALGString());
-		setStatus("Algortihm set to: " + algorithm.getALGString());
+	public void updateAlgorithmMetric(String algorithm) {
+		algorithmMetric.setText(algorithm);
+		setStatus("Algortihm set to: " + algorithm);
 	}
 
 	/**
