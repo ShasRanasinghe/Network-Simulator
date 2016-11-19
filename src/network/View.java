@@ -252,7 +252,7 @@ public class View implements Observer{
 		
 		list =  new JList<>(messageList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.addListSelectionListener(e -> createPopup());//TODO
+		list.addListSelectionListener(e -> createPopup());
 		//listBar.add(list);
 		list.setBackground(center.getBackground());
 		list.setCellRenderer(new MessageListCellRenderer());
@@ -635,6 +635,8 @@ public class View implements Observer{
 		averageHopsMetric.setText("0");
 
 		setEnabledOptionsWhenStepping(true);
+		stepForwardButton.setEnabled(true);
+		runButton.setEnabled(true);
 		setStatus("New Network");
 		dialog.setVisible(false);
 	}
@@ -675,13 +677,6 @@ public class View implements Observer{
 		}
 	}
 	
-	/*private void updateListRender(ArrayList<Message> totalMessageList){
-		for(Message m : totalMessageList)
-		{
-			messageList.update(messageList.indexOf(m));
-		}
-	}*/
-	
 	/**
 	 * Adds a row to the table showing the current location of all the messages in all the nodes
 	 */
@@ -695,7 +690,7 @@ public class View implements Observer{
 		rowColumn.add(Integer.toString(rowCount));
 		allMessages.add(0,rowColumn);
 		
-		for(int i = 1;i < tableModel.getRowCount();i++){
+		for(int i = 1;i < tableModel.getColumnCount();i++){
 			String n = tableModel.getColumnName(i);
 			ArrayList<String> nodeMessages = new ArrayList<>();
 			
@@ -782,8 +777,6 @@ public class View implements Observer{
 	 * So that the user cannot edit the simulation while its running
 	 */
 	private void setEnabledOptionsWhenStepping(boolean bool){
-		stepForwardButton.setEnabled(!bool);
-		runButton.setEnabled(!bool);
 		tableBar.setVisible(!bool);
 		setAlgorithmButton.setEnabled(bool);
 		setFreqButton.setEnabled(bool);

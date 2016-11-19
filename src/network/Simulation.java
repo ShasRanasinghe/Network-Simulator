@@ -43,6 +43,7 @@ public class Simulation extends Observable{
 		frequency = 0;
 		simulationNodes = new ArrayList<Node>();
 		totalMessageList = new ArrayList<Message>();
+		selectedAlgorithm = null;
 	}
 	
 	/**
@@ -318,14 +319,16 @@ public class Simulation extends Observable{
 		totalMessages = 0;
 		simulationNodes.clear();
 		totalMessageList.clear();
-		currentMessageList.clear();
+		currentMessageList = null;
 		//selectedAlgorithm.reset();//TODO
 	}
 	
 	public boolean checkFullInitialization(){
 		
 		if(((frequency != 0 || frequency != 1) && (Integer)frequency != null) && algorithm != null){
-			setupGraph();
+			if(selectedAlgorithm == null){
+				setupGraph();
+			}
 			return true;
 		}
 		return false;
@@ -340,7 +343,12 @@ public class Simulation extends Observable{
 	}
 
 	public boolean isRunning() {
-		return currentMessageList.size() != 0;
+		if(currentMessageList.size() != 0){
+			return true;
+		}else{
+			selectedAlgorithm = null;
+			return false;
+		}
 	}
 
 	public void setAlgorithm(ALGORITHM algorithm) {
