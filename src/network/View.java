@@ -788,28 +788,36 @@ public class View implements Observer{
 		rowCount++;
 		
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
+		for(int i = 0;i < tableModel.getColumnCount();i++){
+			allMessages.add(i, new ArrayList<String>());
+		}
 		
 		ArrayList<String> rowColumn = new ArrayList<>();
 		rowColumn.add(Integer.toString(rowCount));
 		allMessages.add(0,rowColumn);
 		
-		for(int i = 1;i < tableModel.getColumnCount();i++){
-			String n = tableModel.getColumnName(i);
-			ArrayList<String> nodeMessages = new ArrayList<>();
-			
-			for(Message m : currentMessageList)
-			{
-				for(int j = 0; j < m.getCurrent().size(); j++)
-				{
-					if(m.getCurrent().get(j).toString().equals(n)){
-						nodeMessages.add(m.toString());
-					}
-				}
+		for(Message message: currentMessageList){
+			for(Node node: message.getCurrent()){
+				appendMessageToColumn(getColumnNumberOfTable(node.toString()),allMessages, message.toString());
 			}
-			allMessages.add(i, nodeMessages);
 		}
+		
 		tableModel.addRow(allMessages.toArray());
 		table.changeSelection(table.getRowCount() - 1, 0, false, false);
+	}
+	
+	private void appendMessageToColumn(int i,ArrayList<ArrayList<String>> columns,String message){
+		ArrayList<String> str = columns.get(i);
+		str.add(message);
+	}
+	
+	private int getColumnNumberOfTable(String nodeID){
+		for(int i = 1;i < tableModel.getColumnCount();i++){
+			if(tableModel.getColumnName(i).equals(nodeID)){
+				return i;
+			}
+		}
+		return -1;
 	}
 	
 	/**
