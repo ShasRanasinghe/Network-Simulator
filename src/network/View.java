@@ -511,6 +511,7 @@ public class View implements Observer{
 	public void simulationComplete(){
 		runButton.setEnabled(false);
 		stepForwardButton.setEnabled(false);
+		averageHopsMetricButton.setEnabled(true);
 	}
 
 	/**
@@ -586,6 +587,13 @@ public class View implements Observer{
 	        algorithmChoices, // Array of choices
 	        algorithmChoices[0]); // Initial choice
 	}
+	
+	public void averageHopsMetric() {
+		JOptionPane.showInputDialog(null,"",
+		        "Average Hops", JOptionPane.QUESTION_MESSAGE, null, // Use
+		        averageHopsList, // Array of choices
+		        averageHopsList[0]); // Initial choice
+	}
 
 	public void initializeDefaultNetwork(String algorithm, int frequency) {
 		clearInstance();
@@ -607,13 +615,6 @@ public class View implements Observer{
 		updateFrequencyMetric(frequency);
 		updateAlgorithmMetric(algorithm);
 		setStatus("Default Network");
-	}
-	
-	public void averageHopsMetric() {
-		JOptionPane.showInputDialog(null,"",
-		        "Average Hops", JOptionPane.QUESTION_MESSAGE, null, // Use
-		        averageHopsList, // Array of choices
-		        averageHopsList[0]); // Initial choice
 	}
 
 	/**
