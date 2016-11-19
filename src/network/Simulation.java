@@ -42,6 +42,7 @@ public class Simulation extends Observable{
 		frequency = 0;
 		simulationNodes = new ArrayList<Node>();
 		totalMessageList = new ArrayList<Message>();
+		currentMessageList = new ArrayList<Message>();
 		selectedAlgorithm = null;
 	}
 	
@@ -304,21 +305,16 @@ public class Simulation extends Observable{
 	}
 
 	public void initializeDefaultNetwork() {
-		this.frequency = 5;
-		this.algorithm = ALGORITHM.RANDOM;
+		resetSimulation();
+		frequency = 5;
+		algorithm = ALGORITHM.RANDOM;
 		createNodes(Constants.DEFAULT_NODES_SET);
 		addNeighbors(Constants.DEFAULT_EDGES_SET);
 	}
 	
 	public void initializeNewNetwork(){
-		frequency = 0;
-		algorithm = null;
-		averageHops = new ArrayList<>();
-		packets = 0;
-		totalMessages = 0;
+		resetSimulation();
 		simulationNodes.clear();
-		totalMessageList.clear();
-		currentMessageList = null;
 	}
 	
 	public boolean checkFullInitialization(){
@@ -368,7 +364,7 @@ public class Simulation extends Observable{
 		packets = 0;
 		totalMessages = 0;
 		totalMessageList.clear();
-		currentMessageList = null;
+		currentMessageList.clear();
 		selectedAlgorithm = null;
 	}
 	
