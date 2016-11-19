@@ -630,7 +630,7 @@ public class View implements Observer{
 			
 		}
 		
-		JOptionPane.showMessageDialog(null, new JScrollPane(averageTable));
+		JOptionPane.showMessageDialog(frame, new JScrollPane(averageTable),"Average Hops",JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public void initializeDefaultNetwork(String algorithm, int frequency) {
