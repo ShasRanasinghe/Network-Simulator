@@ -246,11 +246,17 @@ public class Simulation {
 		this.algorithm = algorithm;
 		switch(this.algorithm)
 		{
-			case FLOODING: break;// No Flooding Algorithm implemented yet
+			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
+			 				currentMessageList = selectedAlgorithm.messageQueue;
+			 				break;
 				
-			case SHORTESTPATH:	break;// No Shortest Path Algorithm implemented yet
+			case SHORTESTPATH:	selectedAlgorithm = new ShortestPathAlgorithm(simulationNodes, frequency);
+			 					currentMessageList = selectedAlgorithm.messageQueue;
+			 					break;
 				
-			case CUSTOM:	break;// No Custom Algorithm implemented yet
+			case CUSTOM:	selectedAlgorithm = new CustomAlgorithm(simulationNodes, frequency);
+			 				currentMessageList = selectedAlgorithm.messageQueue;
+			 				break;
 				
 			default: selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
 					 currentMessageList = selectedAlgorithm.messageQueue;

@@ -55,7 +55,7 @@ public class Message {
 		running = message.isRunning();
 		name = message.getName();
 		
-		previous = new ArrayList<Node>();
+		previous = message.getPrevious();
 	}
 
 	/**
