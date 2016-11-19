@@ -72,9 +72,10 @@ public class Simulation extends Observable{
 	}
 	
 	public boolean removeNode(String nodeID){
-		for(Node node: simulationNodes){
+		for(int i = 0; i<simulationNodes.size();i++){
+			Node node = simulationNodes.get(i);
 			if(node.toString().equals(nodeID)){
-				simulationNodes.remove(node);
+				simulationNodes.remove(i);
 				return true;
 			}
 		}
@@ -134,12 +135,12 @@ public class Simulation extends Observable{
 	
 		for(Node node : simulationNodes){
 			if(node.toString().equals(id)){
-			//Returns the node when found
-			return node;
-		    	}
-	    	}
-	    	//Returns an empty node if not found
-	    	return new Node("");
+				//Returns the node when found
+				return node;
+			}
+		}
+		//Returns an empty node if not found
+		return null;
 	}
 
 	/**
