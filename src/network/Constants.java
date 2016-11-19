@@ -41,19 +41,9 @@ final class Constants {
 	
 	protected static final String WARNING = "WARNING";
 
-	protected static final String FREQUENCY_NOT_SPECIFIED = "Frequency not specified, Please set to a number greater then 1.";
-
-	protected static final String ALGORITHM_NOT_SPECIFIED = "Algorithm not specified, Please set and try again.";
-
 	protected static final String NODE_ALREADY_EXISTS = "Node Already Exists";
 
-	protected static final String EDGE_ALREADY_EXISTS = "Edge Already Exists";
-
-	protected static final String NODE_S_SPECIFIED_DOES_NOT_EXIST = "Node(s) Specified Does not Exist";
-
-	protected static final String EDGE_DOESNT_EXIST = "Edge Doesnt Exist";
-	
-	protected static final int METRIC_FIELD_SIZE = 5;
+	protected static final int METRIC_FIELD_SIZE = 10;
 	
 	protected static final int ALGORITHM_METRIC_FIEL_SIZE = 15;
 	

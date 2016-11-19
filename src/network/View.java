@@ -34,11 +34,12 @@ public class View implements Observer{
 	private MessageListModel<Message> messageList;
 	private JList<Message> list;
 	private DefaultTableModel tableModel;
+	private String[] averageHopsList;
 	private int rowCount;
 	
 	//Metrics
 	private JTextField totalMessagesMetric;
-	private JTextField averageHopsMetric;
+	private JButton averageHopsMetricButton;
 	private JTextField frequencyMetric;
 	private JTextField algorithmMetric;
 	
@@ -177,6 +178,9 @@ public class View implements Observer{
 		stepBackMenuItem.addActionListener(controller);
 		stepBackMenuItem.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_BACK);
 		
+		averageHopsMetricButton.addActionListener(controller);
+		averageHopsMetricButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.AVERAGE_HOPS_METRIC);
+		
 		dialog = new DefaultOptionDialog(frame, "Default");
 		
 		//TODO
@@ -279,20 +283,17 @@ public class View implements Observer{
 		
 		totalMessagesMetric = new JTextField(METRIC_FIELD_SIZE);
 		totalMessagesMetric.setText("Not Set");
-		averageHopsMetric = new JTextField(METRIC_FIELD_SIZE);
-		averageHopsMetric.setText("Not Set");
+		
 		frequencyMetric = new JTextField(METRIC_FIELD_SIZE);
 		algorithmMetric = new JTextField(ALGORITHM_METRIC_FIEL_SIZE);
 		
 		//Metric block
+		averageHopsMetricButton = new JButton("Average Hops");
+		outputsPanel.add(averageHopsMetricButton);
+		
 		JPanel panel = new JPanel();
 		panel.add(new JLabel("Total Messages:"));
 		panel.add(totalMessagesMetric);
-		outputsPanel.add(panel);
-		
-		panel = new JPanel();
-		panel.add(new JLabel("Average amount of Hops:"));
-		panel.add(averageHopsMetric);
 		outputsPanel.add(panel);
 		
 		panel = new JPanel();
@@ -306,7 +307,7 @@ public class View implements Observer{
 		outputsPanel.add(panel);
 
 		totalMessagesMetric.setEditable(false);
-		averageHopsMetric.setEditable(false);
+		averageHopsMetricButton.setEnabled(false);
 		frequencyMetric.setEditable(false);
 		algorithmMetric.setEditable(false);
 		//Metric Block Ends
@@ -503,7 +504,8 @@ public class View implements Observer{
 		State state = (State)arg1;
 		updateMessageList(state.getTotalMessageList());
 		updateMessageTable(state.getCurrentMessageList());
-		updateMetrics(state.getTotalMessages(),state.getAverageHops());
+		updateTotalMessagesMetrics(state.getTotalMessages());
+		averageHopsList = state.getAverageHopsList();
 	}
 	
 	public void simulationComplete(){
@@ -574,7 +576,7 @@ public class View implements Observer{
 		        frequencyList, // Array of choices
 		        frequencyList[0]); // Initial choice
 	}
-
+//TODO these two could be be joined to one
 	/**
 	 * Set the algorithm 
 	 */
@@ -601,11 +603,17 @@ public class View implements Observer{
 			String[] splitEdge = edgeID.split("->");
 			gp.ConnectAction(splitEdge[0],splitEdge[1]);
 		}
-		totalMessagesMetric.setText("0");
-		averageHopsMetric.setText("0");
+		totalMessagesMetric.setText("Not Set");
 		updateFrequencyMetric(frequency);
 		updateAlgorithmMetric(algorithm);
 		setStatus("Default Network");
+	}
+	
+	public void averageHopsMetric() {
+		JOptionPane.showInputDialog(null,"",
+		        "Average Hops", JOptionPane.QUESTION_MESSAGE, null, // Use
+		        averageHopsList, // Array of choices
+		        averageHopsList[0]); // Initial choice
 	}
 
 	/**
@@ -616,8 +624,7 @@ public class View implements Observer{
 		clearInstance();
 		frequencyMetric.setText("Not Set");
 		algorithmMetric.setText("Not Set");
-		totalMessagesMetric.setText("0");
-		averageHopsMetric.setText("0");
+		totalMessagesMetric.setText("Not Set");
 
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
@@ -748,11 +755,10 @@ public class View implements Observer{
 	/**
 	 * Update the metrics in the view
 	 */
-	private void updateMetrics(int totalMessages, int averageHops)
+	private void updateTotalMessagesMetrics(int totalMessages)
 	{
 		
 		totalMessagesMetric.setText("" + totalMessages);
-		averageHopsMetric.setText("" +averageHops);
 	}
 	
 	private void clearInstance(){
@@ -770,6 +776,7 @@ public class View implements Observer{
 	 * So that the user cannot edit the simulation while its running
 	 */
 	private void setEnabledOptionsWhenStepping(boolean bool){
+		averageHopsMetricButton.setEnabled(!bool);
 		tableBar.setVisible(!bool);
 		setAlgorithmButton.setEnabled(bool);
 		setFreqButton.setEnabled(bool);

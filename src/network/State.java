@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class State {
 	
-	private int averageHops;
+	private String[] averageHopsList;
 	private int totalMessages;
 	private ArrayList<Message> totalMessageList;
 	private ArrayList<Message> currentMessageList;
@@ -21,12 +21,12 @@ public class State {
 		this.totalMessages = totalMessages;
 	}
 
-	public void setAverageHops(int averageHops) {
-		this.averageHops = averageHops;
+	public void setAverageHopsList(String[] averageHopsList) {
+		this.averageHopsList = averageHopsList;
 	}
 
-	public int getAverageHops() {
-		return averageHops;
+	public String[] getAverageHopsList() {
+		return averageHopsList;
 	}
 
 	public int getTotalMessages() {

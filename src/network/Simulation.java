@@ -3,7 +3,6 @@ package network;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import java.lang.Integer;
 
 /**
  * 
@@ -17,7 +16,7 @@ public class Simulation extends Observable{
 	
 	//Metrics:
 	//Maybe I should have total hops too
-	private int averageHops;
+	private ArrayList<String> averageHops;
 	private int packets;
 	private int totalMessages;
 	private int frequency;
@@ -37,7 +36,7 @@ public class Simulation extends Observable{
      */
 	public Simulation()
 	{
-		averageHops = 0;
+		averageHops = new ArrayList<>();
 		packets = 0;
 		totalMessages = 0;
 		frequency = 0;
@@ -191,8 +190,13 @@ public class Simulation extends Observable{
 		setTotalMessages(totalMessageList.size());
 		state.setTotalMessages(totalMessages);
 		
-		setAverageHops(packets/totalMessages);
-		state.setAverageHops(averageHops);
+		//TODO
+		//setAverageHops(packets/totalMessages);
+		String[] averageHopsList = new String[averageHops.size()];
+		for(int i = 0; i<averageHops.size(); i++){
+			averageHopsList[1] = averageHops.get(i);
+		}
+		state.setAverageHopsList(averageHopsList);
 		
 		return state;
 	}
@@ -219,7 +223,7 @@ public class Simulation extends Observable{
 	/**
 	 * @return The average number of hops each message goes through from start to end
 	 */
-	public int getAverageHops() 
+	public ArrayList<String> getAverageHops() 
 	{
 		return averageHops;
 	}
@@ -227,7 +231,7 @@ public class Simulation extends Observable{
 	/**
 	 * @param averageHops Set the number of hops of a message
 	 */
-	public void setAverageHops(int averageHops) 
+	public void setAverageHops(ArrayList<String> averageHops) 
 	{
 		this.averageHops = averageHops;
 	}
@@ -315,7 +319,7 @@ public class Simulation extends Observable{
 	public void initializeNewNetwork(){
 		this.frequency = 0;
 		this.algorithm = null;
-		averageHops = 0;
+		averageHops = new ArrayList<>();
 		packets = 0;
 		totalMessages = 0;
 		simulationNodes.clear();

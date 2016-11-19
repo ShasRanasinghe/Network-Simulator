@@ -65,6 +65,9 @@ public class Controller implements ActionListener {
 		case STEP_FORWARD:
 			stepForward();
 			break;
+		case AVERAGE_HOPS_METRIC:
+			view.averageHopsMetric();
+			break;
 		}
 	}
 
