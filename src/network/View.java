@@ -486,7 +486,7 @@ public class View implements Observer{
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////GUI SETUP COMPLETE. NO GUI SET UP PAST THIS POINT.///////////////////////////////////////////
+	///////////////////////////////////////////////////VIEW MANIPULATION METHODS/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -564,19 +564,6 @@ public class View implements Observer{
 		gp.NewNodeAction(nodeID);
 		setStatus("Node " + nodeID + " Created");
 	}
-	
-	/**
-	 * Creates the table with the nodes list
-	 */
-	public void createTable(ArrayList<String> nodes){
-		tableModel.addColumn("Step");
-		for(String node: nodes){
-			tableModel.addColumn(node);
-		}
-		table.getColumnModel().getColumn(0).setPreferredWidth(50);
-		tableBar.setVisible(true);
-		frame.repaint();
-	}
 
 	/**
 	 * Set the frequency
@@ -638,7 +625,58 @@ public class View implements Observer{
 		setStatus("New Network");
 		dialog.setVisible(false);
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Updates the Algorithm metric
+	 * @param algorithm
+	 */
+	public void updateAlgorithmMetric(String algorithm) {
+		algorithmMetric.setText(algorithm);
+		setStatus("Algortihm set to: " + algorithm);
+	}
+
+	/**
+	 * Updates the Frequency Metric
+	 * @param frequency
+	 */
+	public void updateFrequencyMetric(int frequency) {
+		frequencyMetric.setText("" + frequency);
+		setStatus("Frequency set to: " + frequency);
+	}
+	
+	
+	public void errorMessageDialog(String message) {
+		JOptionPane.showMessageDialog(frame,
+				message,
+			    WARNING,
+			    JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * @param str Message to be written in the status bar
+	 * Updates the status bar and repaints the GUI needed
+	 */
+	public void setStatus(String str) {
+		statusLabel.setText(str);
+		frame.repaint();
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////VIEW HELPER METHODS//////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Creates the table with the nodes list
+	 */
+	private void createTable(ArrayList<String> nodes){
+		tableModel.addColumn("Step");
+		for(String node: nodes){
+			tableModel.addColumn(node);
+		}
+		table.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tableBar.setVisible(true);
+		frame.repaint();
+	}
 	
 	/**
 	 * @param e List Selection Event
@@ -710,41 +748,11 @@ public class View implements Observer{
 	/**
 	 * Update the metrics in the view
 	 */
-	public void updateMetrics(int totalMessages, int averageHops)
+	private void updateMetrics(int totalMessages, int averageHops)
 	{
 		
 		totalMessagesMetric.setText("" + totalMessages);
 		averageHopsMetric.setText("" +averageHops);
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////VIEW MANIPULATION METHODS////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Updates the Algorithm metric
-	 * @param algorithm
-	 */
-	public void updateAlgorithmMetric(String algorithm) {
-		algorithmMetric.setText(algorithm);
-		setStatus("Algortihm set to: " + algorithm);
-	}
-
-	/**
-	 * Updates the Frequency Metric
-	 * @param frequency
-	 */
-	public void updateFrequencyMetric(int frequency) {
-		frequencyMetric.setText("" + frequency);
-		setStatus("Frequency set to: " + frequency);
-	}
-	
-	
-	public void errorMessageDialog(String message) {
-		JOptionPane.showMessageDialog(frame,
-				message,
-			    WARNING,
-			    JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private void clearInstance(){
@@ -755,19 +763,6 @@ public class View implements Observer{
 		rowCount = 0;
 		gp.ClearAction();
 	}
-	
-	/**
-	 * @param str Message to be written in the status bar
-	 * Updates the status bar and repaints the GUI needed
-	 */
-	public void setStatus(String str) {
-		statusLabel.setText(str);
-		frame.repaint();
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////VIEW HELPER METHODS//////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * @param bool true if buttons should be enabled, false otherwise
