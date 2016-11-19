@@ -31,9 +31,8 @@ public class View {
 	private Simulation network;
 	
 	//Store Network information
-	private int frequency;
+	//private int frequency;
 	private ArrayList<String> nodes;
-	private ArrayList<String> edges;
 	private ALGORITHM algorithm;
 	
 	//Variables used to create the GUI
@@ -105,7 +104,7 @@ public class View {
 	 */
 	private void initialize(){
 		nodes = new ArrayList<String>();
-		edges = new ArrayList<String>();
+		//edges = new ArrayList<String>();
 		
 		//Initialize frequency list
 		frequencyList = new String[FREQUENCY_OPTIONS_MAX];
@@ -556,7 +555,7 @@ public class View {
 	}
 	
 	public void removeEdge(String startNodeID, String endNodeID){
-		network.removeLink(startNodeID, startNodeID);
+		gp.removeGraphicEdge(startNodeID, endNodeID);
 		setStatus("Edge " + startNodeID + "-" + endNodeID + " Removed");
 	}
 	
@@ -636,7 +635,6 @@ public class View {
 
 	public void initializeDefaultNetwork(ALGORITHM algorithm, int frequency) {
 		clearInstance();
-		defaultNetworkMenu.setEnabled(false);
 		stepForwardButton.setEnabled(true);
 		runButton.setEnabled(true);
 		tableBar.setVisible(false);
@@ -732,9 +730,11 @@ public class View {
 			
 			for(Message m : network.currentMessageList)
 			{
-				if(m.getCurrentNode().toString().equals(n))
+				for(int i = 0; i < m.getCurrent().size(); i++)
 				{
-					nodeMessages.add(m.toString());
+					if(m.getCurrent().get(i).toString().equals(n)){
+						nodeMessages.add(m.toString());
+					}
 				}
 			}
 			allMessages.add(nodes.indexOf(n)+1, nodeMessages);

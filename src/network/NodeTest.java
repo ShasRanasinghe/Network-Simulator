@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class NodeTest {
-	
+/*	
 	private Node node1 = null;
 	private Node node2 = null;
 	private Node node3 = null;
@@ -62,6 +62,6 @@ public class NodeTest {
 		assertEquals(a,node1.getID());
 	}
 
-
+*/
 
 }

@@ -1,4 +1,7 @@
 package network;
+
+import java.util.ArrayList;
+
 /**  
  * 
  * This class represents a message that travels through a Graph
@@ -10,10 +13,11 @@ package network;
 public class Message {
 	
 	private Node source; // source node
-	private Node current; // current node of message
+	private ArrayList<Node> current; // current node of message
+	private ArrayList<Node> previous;
 	private Node destination; // destination node
-	private String name;
-	private boolean running;
+	private String name;	//string id of the message
+	private boolean running; //is the message still in the network
 	private int hopCount; // hop count for this message
 	
 
@@ -24,11 +28,13 @@ public class Message {
 	 */
 	public Message(Node source, Node destination){
 		this.source = source;
-		this.current = source;
 		this.destination = destination;
-		this.running = true;
-		this.name = "";
-		this.hopCount = 0;
+		running = true;
+		name = "";
+		hopCount = 0;
+		current = new ArrayList<Node>();
+		current.add(source);
+		previous = new ArrayList<Node>();
 	}
 	
 	/**
@@ -37,12 +43,13 @@ public class Message {
 	 */
 	public Message(Message message)
 	{
-		this.source = message.getSource();
-		this.destination = message.getDestination();
-		this.hopCount = message.getHopCount();
-		this.current = message.getCurrent();
-		this.running = message.isRunning();
-		this.name = message.toString();
+		source = message.getSource();
+		destination = message.getDestination();
+		hopCount = message.getHopCount();
+		current = message.getCurrent();
+		running = message.isRunning();
+		name = message.toString();
+		previous = new ArrayList<Node>();
 	}
 
 	/**
@@ -56,14 +63,11 @@ public class Message {
 	/**
 	 * @return the current node
 	 */
-	public Node getCurrent() {
+	public ArrayList<Node> getCurrent() {
 		return current;
 	}
-
-	/**
-	 * @param current sets the current node
-	 */
-	public void setCurrent(Node current) {
+	
+	public void setCurrent(ArrayList<Node> current){
 		this.current = current;
 	}
 
@@ -98,6 +102,14 @@ public class Message {
 	public int getHopCount() 
 	{
 		return hopCount;
+	}
+	
+	public ArrayList<Node> getPrevious(){
+		return previous;
+	}
+	
+	public void setPrevious(ArrayList<Node> previous){
+		this.previous = previous;
 	}
 
 	/**
@@ -136,20 +148,6 @@ public class Message {
 	}
 
 	/**
-	 * @return Current Node the message is in
-	 */
-	public Node getCurrentNode() {
-		return current;
-	}
-
-	/**
-	 * @param current The current node the message is in
-	 */
-	public void setCurrentNode(Node current) {
-		this.current = current;
-	}
-
-	/**
 	 * adds to the hop count the message has taken
 	 */
 	public void incrementHopCount()
@@ -163,7 +161,7 @@ public class Message {
 		if(this.getSource().equals(message.getSource()) 
 				&& this.getDestination().equals(message.getDestination()) 
 				&& this.getHopCount() == message.getHopCount()
-				&& this.getCurrentNode().equals(message.getCurrentNode())
+				&& this.getCurrent().equals(message.getCurrent())
 				&& this.isRunning() == message.isRunning())
 		{
 			return true;

@@ -105,10 +105,8 @@ public class Simulation {
 	{
 		Node node1 = getNodeGivenID(A);
 		Node node2 = getNodeGivenID(B);
-		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
-		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
-		node1.addNeighbor(e);
-		node2.addNeighbor(e2);
+		node1.addNeighbor(node2);
+		node2.addNeighbor(node1);
 	}
 	
 	/**
@@ -119,10 +117,8 @@ public class Simulation {
 	public void removeLink(String A, String B){
 		Node node1 = getNodeGivenID(A);
 		Node node2 = getNodeGivenID(B);
-		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
-		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
-		node1.removeNeighbor(e);
-		node2.removeNeighbor(e2);
+		node1.removeNeighbor(node2);
+		node2.removeNeighbor(node1);
 	}
 
 	/**
@@ -184,7 +180,7 @@ public class Simulation {
 	/**
 	 * Retrieves data from the graph to be used in the simulation
 	 */
-	public void retrieveState()
+	private void retrieveState()
 	{
 		totalMessageList = selectedAlgorithm.getCompleteMessageList();
 		currentMessageList = selectedAlgorithm.getCurrentMessageList();

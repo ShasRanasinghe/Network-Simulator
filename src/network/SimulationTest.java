@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 public class SimulationTest {
-	
+	/*
 	Node node1 = null;
 	Node node2 = null;
 	Simulation simulation1;
@@ -144,5 +144,5 @@ public class SimulationTest {
 		assertTrue(node1.equals(simulation1.getNodeGivenID("A")));
 	}
 
-
+*/
 }
