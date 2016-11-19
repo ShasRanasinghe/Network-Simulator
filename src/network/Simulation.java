@@ -319,7 +319,6 @@ public class Simulation extends Observable{
 		simulationNodes.clear();
 		totalMessageList.clear();
 		currentMessageList = null;
-		//selectedAlgorithm.reset();//TODO
 	}
 	
 	public boolean checkFullInitialization(){
@@ -373,13 +372,18 @@ public class Simulation extends Observable{
 		selectedAlgorithm = null;
 	}
 	
+	/**
+	 * Generates String[] that shows the source-> destination, number of messages 
+	 * with same source/destination and the average
+	 * @return The string array of average hops of messages with same source and destination
+	 */
 	public String[] calculateAverageHops(){
 
 		//Create a copy of the totalMessageList to be used
 		ArrayList<Message> totalMsgLst= totalMessageList;
 		//List that stores all like pairs
 		ArrayList<String> totalMsgLstPairs = new ArrayList<>();
-		//Column Headers
+		//Column Header
 		totalMsgLstPairs.add("Source->Destination | Count | Average");
 		
 		for(int i = 0; i<totalMsgLst.size(); i++){
@@ -405,6 +409,12 @@ public class Simulation extends Observable{
 
 }
 
+	/**
+	 * Generates string that shows the source-> destination, number of messages 
+	 * with same source/destination and the average
+	 * @param sameMsgList List of messages with same source and destination
+	 * @return The string analytics of like messages
+	 */
 	public String generateLikeMessageString(ArrayList<Message> sameMsgList){
 		StringBuilder sb = new StringBuilder();
 		//First message has the same source and destination as rest
@@ -414,7 +424,7 @@ public class Simulation extends Observable{
 		String average = generateSameMessageAverages(sameMsgList);
 		
 		sb.append(source + "->" + destination);
-		sb.append("           ");
+		sb.append("                 ");
 		sb.append(count);
 		sb.append("   ");
 		sb.append(average);
@@ -423,12 +433,18 @@ public class Simulation extends Observable{
 		
 	}
 	
+	/**
+	 * Returns the average hops of like source and destination messages
+	 * @param sameMsgList List of messages with same source and destination
+	 * @return The average hops of like source and destination messages
+	 */
 	public String generateSameMessageAverages(ArrayList<Message> sameMsgList){
 		
 		if (sameMsgList.size()==1){
 			return "" + sameMsgList.get(0).getHopCount();
 		}
 		
+		//Add all hops to be averaged to a array
 		ArrayList<Integer> hopsToBeAveraged = new ArrayList<>();
 		for(int i = 0; i<sameMsgList.size(); i++){
 			hopsToBeAveraged.add(sameMsgList.get(i).getHopCount());
@@ -438,6 +454,11 @@ public class Simulation extends Observable{
 		
 	}
 	
+	/**
+	 * Returns the average hops of messages with same source and destination
+	 * @param hopsToBeAveraged List of hops to be averaged
+	 * @return Average of a given source and destination
+	 */
 	private String calculateAverage(ArrayList<Integer> hopsToBeAveraged) {
 		Integer average = 0;
 		Integer size = hopsToBeAveraged.size();
