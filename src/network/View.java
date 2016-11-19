@@ -62,6 +62,7 @@ public class View implements Observer{
 	private JButton runButton;
 	private JButton stepForwardButton;
 	private JButton stepBackButton;
+	private JButton resetButton;
 	private JTable table;
 	private JPanel tableBar;
 	private DefaultOptionDialog dialog;
@@ -180,6 +181,10 @@ public class View implements Observer{
 		
 		averageHopsMetricButton.addActionListener(controller);
 		averageHopsMetricButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.AVERAGE_HOPS_METRIC);
+		
+		resetButton.addActionListener(controller);
+		resetButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.RESET_SIMULATION);
+		
 		
 		dialog = new DefaultOptionDialog(frame, "Default");
 		
@@ -382,6 +387,9 @@ public class View implements Observer{
 		
 		deleteEdgeButton = new JButton("Delete Edge");
 		toolBar.add(deleteEdgeButton);
+		
+		resetButton = new JButton("Reset");
+		toolBar.add(resetButton);
 		
 		JPanel west = new JPanel();
 		west.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -631,6 +639,23 @@ public class View implements Observer{
 		stepForwardButton.setEnabled(true);
 		runButton.setEnabled(true);
 		setStatus("New Network");
+		dialog.setVisible(false);
+	}
+	
+	public void resetSimulation() {
+		messageList.clear();
+		tableModel.setNumRows(0);
+		tableModel.setColumnCount(0);
+		table.revalidate();
+		rowCount = 0;
+		frequencyMetric.setText("Not Set");
+		algorithmMetric.setText("Not Set");
+		totalMessagesMetric.setText("Not Set");
+
+		setEnabledOptionsWhenStepping(true);
+		stepForwardButton.setEnabled(true);
+		runButton.setEnabled(true);
+		setStatus("Network Reset");
 		dialog.setVisible(false);
 	}
 	

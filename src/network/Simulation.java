@@ -153,9 +153,7 @@ public class Simulation extends Observable{
 		    String[] splitEdge = edgeID.split("->");
 		    String nodeOneID = splitEdge[0]; 
 		    String nodeTwoID = splitEdge[1];
-		    //Node nodeOne = getNodeGivenID(simulationNodes, nodeOneID);
-		    //Node nodeTwo = getNodeGivenID(simulationNodes, nodeTwoID);
-
+		    
 		    //Add neighbors
 			createLink(nodeOneID, nodeTwoID);
 		}
@@ -317,8 +315,8 @@ public class Simulation extends Observable{
 	}
 	
 	public void initializeNewNetwork(){
-		this.frequency = 0;
-		this.algorithm = null;
+		frequency = 0;
+		algorithm = null;
 		averageHops = new ArrayList<>();
 		packets = 0;
 		totalMessages = 0;
@@ -366,6 +364,17 @@ public class Simulation extends Observable{
 			return true;
 		}
 		return false;
+	}
+
+	public void resetSimulation() {
+		frequency = 0;
+		algorithm = null;
+		averageHops = new ArrayList<>();
+		packets = 0;
+		totalMessages = 0;
+		totalMessageList.clear();
+		currentMessageList = null;
+		selectedAlgorithm = null;
 	}
 
 }

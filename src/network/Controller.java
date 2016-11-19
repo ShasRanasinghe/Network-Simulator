@@ -68,6 +68,11 @@ public class Controller implements ActionListener {
 		case AVERAGE_HOPS_METRIC:
 			view.averageHopsMetric();
 			break;
+		case RESET_SIMULATION:
+			resetSimulation();
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -228,6 +233,11 @@ public class Controller implements ActionListener {
 		}else{
 			view.errorMessageDialog("You Have Not Selected Anything\nPlease Select Node(s) And Try Again.");
 		}
+	}
+	
+	private void resetSimulation() {
+		view.resetSimulation();
+		simulation.resetSimulation();
 	}
 	
 }
