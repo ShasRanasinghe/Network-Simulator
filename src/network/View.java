@@ -615,10 +615,22 @@ public class View implements Observer{
 	}
 	
 	public void averageHopsMetric() {
-		JOptionPane.showInputDialog(null,"",
-		        "Average Hops", JOptionPane.QUESTION_MESSAGE, null, // Use
-		        averageHopsList, // Array of choices
-		        averageHopsList[0]); // Initial choice
+		
+		DefaultTableModel averageTableModel = new DefaultTableModel(); 
+		JTable averageTable = new JTable(averageTableModel);
+		
+		averageTableModel.addColumn("Source");
+		averageTableModel.addColumn("Destination");
+		averageTableModel.addColumn("Count");
+		averageTableModel.addColumn("Average");
+		
+		for (String line: averageHopsList){
+			String[] splited = line.split("[\\|\\s]+");
+			averageTableModel.addRow(new Object[]{splited[0], splited[1], splited[2], splited[3]});
+			
+		}
+		
+		JOptionPane.showMessageDialog(null, new JScrollPane(averageTable));
 	}
 
 	public void initializeDefaultNetwork(String algorithm, int frequency) {

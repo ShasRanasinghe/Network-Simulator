@@ -379,8 +379,6 @@ public class Simulation extends Observable{
 		ArrayList<Message> totalMsgLst= totalMessageList;
 		//List that stores all like pairs
 		ArrayList<String> totalMsgLstPairs = new ArrayList<>();
-		//Column Header
-		totalMsgLstPairs.add("Source->Destination | Count | Average");
 		
 		for(int i = 0; i<totalMsgLst.size(); i++){
 			//Temporary list that stores like pairs
@@ -419,10 +417,13 @@ public class Simulation extends Observable{
 		String count = ""+ sameMsgList.size();
 		String average = generateSameMessageAverages(sameMsgList);
 		
-		sb.append(source + "->" + destination);
-		sb.append("                 ");
+		//delimiter used: |
+		sb.append(source);
+		sb.append("|");
+		sb.append(destination);
+		sb.append("|");
 		sb.append(count);
-		sb.append("   ");
+		sb.append("|");
 		sb.append(average);
 		
 		return sb.toString();
