@@ -50,6 +50,7 @@ public class View implements Observer{
 	private JPanel outputsPanel;
 	private JPanel playPanel;
 	private JPanel toolBar;
+	private JPanel listBar;
 	private JLabel statusLabel;
 	private JScrollPane scrollPaneList;
 	private JScrollPane scrollPaneTable;
@@ -255,7 +256,7 @@ public class View implements Observer{
 	 */
 	private void makeMessageListBar(JPanel center) {
 		//set list bar
-		JPanel listBar = new JPanel();
+		listBar = new JPanel();
 		listBar.setLayout(new GridLayout(0,1));
 		
 		list =  new JList<>(messageList);
@@ -272,6 +273,7 @@ public class View implements Observer{
 		//set list renderer
 		list.setCellRenderer(new MessageListCellRenderer());		
 		center.add(listBar,BorderLayout.EAST);
+		listBar.setVisible(false);
 	}
 
 	/**
@@ -527,7 +529,7 @@ public class View implements Observer{
 	 */
 	public void prepairForSimulation(ArrayList<String> nodes) 
 	{
-		if(!tableBar.isVisible()){createTable(nodes);}
+		if(!tableBar.isVisible()){openTableAndList(nodes);}
 		setEnabledOptionsWhenStepping(false);
 	}
 	
@@ -608,7 +610,6 @@ public class View implements Observer{
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
 		runButton.setEnabled(true);
-		tableBar.setVisible(false);
 		dialog.setVisible(false);
 		for(String nodeID : DEFAULT_NODES_SET)
 		{
@@ -711,6 +712,11 @@ public class View implements Observer{
 		frame.repaint();
 	}
 	
+	private void openTableAndList(ArrayList<String> nodes){
+		createTable(nodes);
+		listBar.setVisible(true);
+	}
+	
 	/**
 	 * @param e List Selection Event
 	 * Creates a pop up when a message is selected in the chart
@@ -804,6 +810,7 @@ public class View implements Observer{
 	private void setEnabledOptionsWhenStepping(boolean bool){
 		averageHopsMetricButton.setEnabled(!bool);
 		tableBar.setVisible(!bool);
+		listBar.setVisible(!bool);
 		setAlgorithmButton.setEnabled(bool);
 		setFreqButton.setEnabled(bool);
 		newEdgeButton.setEnabled(bool);
