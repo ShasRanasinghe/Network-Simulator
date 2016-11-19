@@ -411,7 +411,7 @@ public class Simulation extends Observable{
 	 * @param sameMsgList List of messages with same source and destination
 	 * @return The string analytics of like messages
 	 */
-	public String generateLikeMessageString(ArrayList<Message> sameMsgList){
+	private String generateLikeMessageString(ArrayList<Message> sameMsgList){
 		StringBuilder sb = new StringBuilder();
 		//First message has the same source and destination as rest
 		String source = sameMsgList.get(0).getSourceID();
@@ -434,7 +434,7 @@ public class Simulation extends Observable{
 	 * @param sameMsgList List of messages with same source and destination
 	 * @return The average hops of like source and destination messages
 	 */
-	public String generateSameMessageAverages(ArrayList<Message> sameMsgList){
+	private String generateSameMessageAverages(ArrayList<Message> sameMsgList){
 		
 		if (sameMsgList.size()==1){
 			return "" + sameMsgList.get(0).getHopCount();
