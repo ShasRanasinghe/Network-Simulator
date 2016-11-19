@@ -13,7 +13,6 @@ import javax.swing.*;
  * Functionalities are: Add node, delete node, add edge and clear graph
  *  
  * @author Mohamed Dahrouj, Andrew Ward
- * Highly refactored to meet project needs from Dr.John B. Matthews implementation(https://sites.google.com/site/drjohnbmatthews/graphpanel)
  */
 @SuppressWarnings("serial")
 public class GraphicPanel extends JComponent {
@@ -33,23 +32,6 @@ public class GraphicPanel extends JComponent {
     public List<GraphicNode> graphicNodes;
     public List<GraphicNode> selected;
     public List<GraphicEdge> graphicEdges;
-
-    /*
-    public static void main(String[] args) throws Exception {
-        EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                JFrame f = new JFrame("GraphicPanel");
-                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                GraphicPanel gp = new GraphicPanel();
-                f.add(new JScrollPane(gp), BorderLayout.CENTER);
-                f.pack();
-                f.setLocationByPlatform(true);
-                f.setVisible(true);
-            }
-        });
-    }*/
-
     
     /**
      * Constructor for GraphPanel
@@ -79,7 +61,7 @@ public class GraphicPanel extends JComponent {
             e.draw(g);
         }
         for (GraphicNode n : graphicNodes) {
-            n.draw(g);
+           n.draw(g);
         }
         if (selecting) {
             g.setColor(Color.darkGray);
@@ -108,38 +90,6 @@ public class GraphicPanel extends JComponent {
     public int getNodeRadius(){
     	return radius;
     }
-	
-    /**
-     * Controller for New Node Action that adds a node from pop up menu
-     * Therefore a dialog requesting an ID is triggered
-     *
-     */
-    public void NewNodeAction(){
-    	
-    	nodeCount++;
-	    GraphicNode.selectNone(graphicNodes);
-	    Point p = offsetP();
-
-	    //Retrieves node ID
-	    String nodeID = "";
-		JTextField id = new JTextField(1);
-		JPanel idPanel = new JPanel();
-		idPanel.setLayout(new BoxLayout(idPanel, BoxLayout.Y_AXIS));
-		idPanel.add(new JLabel("Node ID:"));
-		idPanel.add(id);
-	    int result = JOptionPane.showConfirmDialog(null, idPanel, "New node:", JOptionPane.OK_CANCEL_OPTION);
-	    if (result == JOptionPane.OK_OPTION)
-	    {
-	    	if(!id.getText().equals("")){
-	    		nodeID = id.getText();
-	    	}
-	    }
-		
-	    GraphicNode n = new GraphicNode(nodeID, p, radius, color);
-	    n.setSelected(true);
-	    graphicNodes.add(n);
-	    repaint();
-    }
     
     /**
      * @param nodeID Node id to be created
@@ -154,31 +104,6 @@ public class GraphicPanel extends JComponent {
 	    GraphicNode n = new GraphicNode(nodeID, p, radius, color);
 	    n.setSelected(true);
 	    graphicNodes.add(n);
-	    repaint();
-    }
-    
-    /**
-     * Controller for Connect Action that connects two nodes
-     *
-     */
-    public void ConnectAction() {
-
-	    GraphicNode.getSelected(graphicNodes, selected);
-	    
-	    //You can only connect 2 nodes together
-	    if (selected.size() > 2){
-			JPanel idPanel = new JPanel();
-			idPanel.setLayout(new BoxLayout(idPanel, BoxLayout.Y_AXIS));
-			idPanel.add(new JLabel("You may only connect two nodes together."));
-		    JOptionPane.showConfirmDialog(null, idPanel, "Error", JOptionPane.OK_CANCEL_OPTION);
-	    }
-	    if (selected.size() == 2) {
-	        for (int i = 0; i < selected.size() - 1; ++i) {
-	            GraphicNode n1 = selected.get(i);
-	            GraphicNode n2 = selected.get(i + 1);
-	            graphicEdges.add(new GraphicEdge(n1, n2));
-	        }
-	    }
 	    repaint();
     }
     
@@ -217,23 +142,6 @@ public class GraphicPanel extends JComponent {
 	    	//Returns an empty node if not found
 	    	return new GraphicNode("");
 	}
-
-    /**
-     * Controller for Delete Action that deletes the nodes
-     *
-     */
-    public void DeleteAction() {
-
-            ListIterator<GraphicNode> iter = graphicNodes.listIterator();
-            while (iter.hasNext()) {
-                GraphicNode n = iter.next();
-                if (n.isSelected()) {
-                    deleteEdges(n);
-                    iter.remove();
-                }
-            }
-            repaint();
-    }
     
     /**
      * Deletes a single graphic node from graphic panel given ID

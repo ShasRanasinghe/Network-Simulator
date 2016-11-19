@@ -1,11 +1,18 @@
 package network;
 
+
 import java.awt.Color;
+
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 /**
  * GraphicNode represents a node in a graph.
@@ -18,6 +25,10 @@ public class GraphicNode {
     private Color color;
     private boolean selected = false;
     private Rectangle b = new Rectangle();
+    //Easter Egg
+    private String charlesUpper = "Charles";
+    private String charlesLower = "charles";
+    private String charlesFacePath = "charles.jpg";
 	
 
 	/**
@@ -40,7 +51,7 @@ public class GraphicNode {
 	/**
 	 * @param nodeID Node id of the node to be drawn 
 	 * 
-	 * Draws a temperary node
+	 * Draws a temporary node
 	 */
 	public GraphicNode(String nodeID) {
         this.nodeID = nodeID;
@@ -52,25 +63,40 @@ public class GraphicNode {
     private void setBoundary(Rectangle b) {
         b.setBounds(p.x - r, p.y - r, 2 * r, 2 * r);
     }
+    
+    
+    /**
+     * Returns the image
+     */
+    private BufferedImage getImage() throws IOException {
+    	return ImageIO.read(new File(charlesFacePath));
+    }
 
     /**
      * @param g Graphics object
      */
-    public void draw(Graphics g) {
-    	//Draw Oval
-    	g.setColor(this.color);
-        g.fillOval(b.x, b.y, b.width, b.height);
-        
-        // Draw centered text
-        FontMetrics fm = g.getFontMetrics();
-        double textWidth = fm.getStringBounds(nodeID, g).getWidth();
-        g.setColor(Color.WHITE);
-        g.drawString(nodeID, (int) (b.x - (textWidth/2) + r), (int) (b.y + (fm.getMaxAscent() / 2)) +r);  
-        
-        if (selected) {
-            g.setColor(Color.darkGray);
-            g.drawRect(b.x, b.y, b.width, b.height);
-        }
+    public void draw(Graphics g){
+    	try {
+			
+	    	if(this.getNodeID().equals(charlesLower)||this.getNodeID().equals(charlesUpper)){
+	    	    g.drawImage(getImage(), b.x, b.y, b.width, b.height, null);
+	    	}
+	    	else{
+	    		//Draw Oval
+	    		g.setColor(this.color);
+	    		g.fillOval(b.x, b.y, b.width, b.height);
+	        
+	    		// Draw centered text
+	    		FontMetrics fm = g.getFontMetrics();
+	    		double textWidth = fm.getStringBounds(nodeID, g).getWidth();
+	    		g.setColor(Color.WHITE);
+	    		g.drawString(nodeID, (int) (b.x - (textWidth/2) + r), (int) (b.y + (fm.getMaxAscent() / 2)) +r);  
+	    	}
+	        if (selected) {
+	            g.setColor(Color.darkGray);
+	            g.drawRect(b.x, b.y, b.width, b.height);
+	        }
+		} catch (IOException e) {}
     }
 
     /**
@@ -152,8 +178,8 @@ public class GraphicNode {
     }
 
     /**
-     * @param list list of grpahic nodes
-     * @param r rectable of selected area
+     * @param list list of graphic nodes
+     * @param r rectangle of selected area
      * Select each node in r.
      */
     public static void selectRect(List<GraphicNode> list, Rectangle r) {
