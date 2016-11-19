@@ -1,6 +1,8 @@
 package network;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Observable;
+
 import java.lang.Integer;
 
 /**
@@ -11,7 +13,7 @@ import java.lang.Integer;
  * @version 1.0
  */
 
-public class Simulation {
+public class Simulation extends Observable{
 	
 	//Metrics:
 	//Maybe I should have total hops too
@@ -60,7 +62,7 @@ public class Simulation {
 	
 	public boolean addNewNode(String nodeID){
 		for(Node node: simulationNodes){
-			if(node.getID().equals(nodeID)){
+			if(node.toString().equals(nodeID)){
 				return false;
 			}
 		}
@@ -70,7 +72,7 @@ public class Simulation {
 	
 	public boolean removeNode(String nodeID){
 		for(Node node: simulationNodes){
-			if(node.getID().equals(nodeID)){
+			if(node.toString().equals(nodeID)){
 				simulationNodes.remove(node);
 				return true;
 			}
@@ -80,7 +82,7 @@ public class Simulation {
 	
 	public boolean isNode(String nodeID){
 		for(Node node: simulationNodes){
-			if(node.getID().equals(nodeID)){
+			if(node.toString().equals(nodeID)){
 				return true;
 			}
 		}
@@ -89,7 +91,7 @@ public class Simulation {
 	
 	public void editNodeID(String prevNodeID, String newNodeID){
 		for(Node node: simulationNodes){
-			if(node.getID().equals(prevNodeID)){
+			if(node.toString().equals(prevNodeID)){
 				node.setNodeID(newNodeID);
 				break;
 			}
@@ -130,7 +132,7 @@ public class Simulation {
 	{
 	
 		for(Node node : simulationNodes){
-			if(node.getID().equals(id)){
+			if(node.toString().equals(id)){
 			//Returns the node when found
 			return node;
 		    	}
@@ -163,32 +165,34 @@ public class Simulation {
 	 */
 	public void runAlgorithm(int stepSize)
 	{
-		Integer tempF = frequency;
-		if(frequency == 0 || frequency == 1 && tempF != null)
-		{
-			// ERROR: invalid message creation frequency
-			System.out.println("ERROR: invalid message creation frequency (please select a frequency not equal to 0 or 1)");
-		}
-		else
-		{
 			selectedAlgorithm.run(stepSize);
-			retrieveState();
-		}
+			State state = retrieveState();
+			setChanged();
+			notifyObservers(state);
 	}
 	
 	
 	/**
 	 * Retrieves data from the graph to be used in the simulation
 	 */
-	private void retrieveState()
+	private State retrieveState()
 	{
+		State state = new State();
 		totalMessageList = selectedAlgorithm.getCompleteMessageList();
+		state.setTotalMessageList(totalMessageList);
+		
 		currentMessageList = selectedAlgorithm.getCurrentMessageList();
+		state.setCurrentMessageList(currentMessageList);
 		
 		setPackets(selectedAlgorithm.getTotalHops());
+		
 		setTotalMessages(totalMessageList.size());
+		state.setTotalMessages(totalMessages);
 		
 		setAverageHops(packets/totalMessages);
+		state.setAverageHops(averageHops);
+		
+		return state;
 	}
 	
 	
@@ -275,10 +279,9 @@ public class Simulation {
 	/**
 	 * @param algorithm The algorithm the simulation would be set to
 	 */
-	public void setAlgorithm(ALGORITHM algorithm) 
+	public void setupGraph() 
 	{
-		this.algorithm = algorithm;
-		switch(this.algorithm)
+		switch(algorithm)
 		{
 			case FLOODING: break;// No Flooding Algorithm implemented yet
 				
@@ -317,6 +320,31 @@ public class Simulation {
 		totalMessageList.clear();
 		currentMessageList.clear();
 		//selectedAlgorithm.reset();//TODO
+	}
+	
+	public boolean checkFullInitialization(){
+		
+		if(((frequency != 0 || frequency != 1) && (Integer)frequency != null) && algorithm != null){
+			setupGraph();
+			return true;
+		}
+		return false;
+	}
+
+	public ArrayList<String> getStringArrayNodes() {
+		ArrayList<String> nodes = new ArrayList<>();
+		for(Node node: simulationNodes){
+			nodes.add(node.toString());
+		}
+		return nodes;
+	}
+
+	public boolean isRunning() {
+		return currentMessageList.size() != 0;
+	}
+
+	public void setAlgorithm(ALGORITHM algorithm) {
+		this.algorithm = algorithm;
 	}
 
 }

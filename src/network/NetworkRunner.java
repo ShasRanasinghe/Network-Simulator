@@ -11,7 +11,8 @@ public class NetworkRunner {
 	public static void main(String args[])
 	{
 		Simulation networkSimulation = new Simulation();
-		View view = new View(networkSimulation);
+		View view = new View();
+		networkSimulation.addObserver(view);
 		
 		Controller controller = new Controller(networkSimulation, view);
 		

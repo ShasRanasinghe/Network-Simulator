@@ -104,11 +104,23 @@ public class Controller implements ActionListener {
 	}
 
 	private void runSimulation() {
-		view.run();
+		if(simulation.checkFullInitialization()){
+			view.prepairForSimulation(simulation.getStringArrayNodes());
+			while(simulation.isRunning()){
+				simulation.runAlgorithm(1);
+			}
+			view.simulationComplete();
+		}
 	}
 	
 	private void stepForward() {
-		view.stepForward();
+		if(simulation.checkFullInitialization()){
+			view.prepairForSimulation(simulation.getStringArrayNodes());
+			simulation.runAlgorithm(1);
+			if(!simulation.isRunning()){
+				view.simulationComplete();
+			}
+		}
 	}
 
 	private void newEdge() {

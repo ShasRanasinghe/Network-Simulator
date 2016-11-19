@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -25,16 +27,7 @@ import javax.swing.table.DefaultTableModel;
  * It also contains all the methods used in the GUI 
  *
  */
-public class View {
-
-	//Simulation
-	private Simulation network;
-	
-	//Store Network information
-	//private int frequency;
-	private ArrayList<String> nodes;
-	private ALGORITHM algorithm;
-	
+public class View implements Observer{
 	//Variables used to create the GUI
 	private List<String> algorithms = new ArrayList<>();
 	private String frequencyList[];
@@ -79,7 +72,6 @@ public class View {
 	private JMenuItem editNodeMenu;
 	private JMenuItem deleteNodeMenu;
 	private JMenuItem newEdgeMenu;
-	private JMenuItem editEdgeMenu;
 	private JMenuItem deleteEdgeMenu;
 	private JMenuItem newNetworkMenu;
 	private JMenuItem defaultNetworkMenu;
@@ -92,9 +84,8 @@ public class View {
 	 * MAIN CONSTRUCTOR OF GUI
 	 * @param sim Associated simulation with the View
 	 */
-	public View(Simulation sim)
+	public View()
 	{
-		this.network = sim;
 		initialize();
 		makeFrame();
 	}
@@ -103,8 +94,6 @@ public class View {
 	 * Initializes all the required variables to create the frame
 	 */
 	private void initialize(){
-		nodes = new ArrayList<String>();
-		//edges = new ArrayList<String>();
 		
 		//Initialize frequency list
 		frequencyList = new String[FREQUENCY_OPTIONS_MAX];
@@ -232,9 +221,6 @@ public class View {
 		frame.setLocation(SCREEN_DIMENTIONS.width/2 - frame.getWidth()/2,SCREEN_DIMENTIONS.height/2 - frame.getHeight()/2);
 		
 		frame.setVisible(true);
-		
-		updateMetrics();//TODO
-		
 	}
 
 	/**
@@ -293,7 +279,9 @@ public class View {
 		outputsPanel.setLayout(new FlowLayout(FlowLayout.CENTER,20,0));
 		
 		totalMessagesMetric = new JTextField(METRIC_FIELD_SIZE);
+		totalMessagesMetric.setText("Not Set");
 		averageHopsMetric = new JTextField(METRIC_FIELD_SIZE);
+		averageHopsMetric.setText("Not Set");
 		frequencyMetric = new JTextField(METRIC_FIELD_SIZE);
 		algorithmMetric = new JTextField(ALGORITHM_METRIC_FIEL_SIZE);
 		
@@ -510,48 +498,27 @@ public class View {
 		// ALGORITHMS CURRENTLY DO NOT SUPPORT BACK STEPS!!!!!!!!!!!!!!!!!!!!!
 		// WILL BE IMPLEMENTED LATER!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
-
-	/**
-	 * Step through the network one step at a time
-	 */
-	public void stepForward() 
-	{
-		if(checkFullInitialization())
-		{
-			if(!tableBar.isVisible()){createTable();}
-			setEnabledOptionsWhenStepping(false);
-			network.runAlgorithm(1);
-			if(network.currentMessageList.size() == 0){stepForwardButton.setEnabled(false);runButton.setEnabled(false);defaultNetworkMenu.setEnabled(true);}
-			addMessagesToList();
-			addMessagesToTable();
-			updateListRender();
-			updateMetrics();
-			table.changeSelection(table.getRowCount() - 1, 0, false, false);
-		}
+	
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		State state = (State)arg1;
+		updateMessageList(state.getTotalMessageList());
+		updateMessageTable(state.getCurrentMessageList());
+		updateMetrics(state.getTotalMessages(),state.getAverageHops());
+	}
+	
+	public void simulationComplete(){
+		runButton.setEnabled(false);
+		stepForwardButton.setEnabled(false);
 	}
 
 	/**
 	 * Run the full simulation to completion
 	 */
-	public void run() 
+	public void prepairForSimulation(ArrayList<String> nodes) 
 	{
-		if(checkFullInitialization())
-		{
-			if(!tableBar.isVisible()){createTable();}
-			setEnabledOptionsWhenStepping(false);
-			while(network.currentMessageList.size() != 0)
-			{
-				network.runAlgorithm(1);
-				addMessagesToList();
-				addMessagesToTable();
-				updateListRender();
-				updateMetrics();
-				table.changeSelection(table.getRowCount() - 1, 0, false, false);
-			}
-			runButton.setEnabled(false);
-			stepForwardButton.setEnabled(false);
-			defaultNetworkMenu.setEnabled(true);
-		}
+		if(!tableBar.isVisible()){createTable(nodes);}
+		setEnabledOptionsWhenStepping(false);
 	}
 	
 	public void removeEdge(String startNodeID, String endNodeID){
@@ -602,7 +569,7 @@ public class View {
 	/**
 	 * Creates the table with the nodes list
 	 */
-	public void createTable(){
+	public void createTable(ArrayList<String> nodes){
 		tableModel.addColumn("Step");
 		for(String node: nodes){
 			tableModel.addColumn(node);
@@ -635,6 +602,7 @@ public class View {
 
 	public void initializeDefaultNetwork(ALGORITHM algorithm, int frequency) {
 		clearInstance();
+		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
 		runButton.setEnabled(true);
 		tableBar.setVisible(false);
@@ -666,14 +634,9 @@ public class View {
 		totalMessagesMetric.setText("0");
 		averageHopsMetric.setText("0");
 
-		defaultNetworkMenu.setEnabled(true);
 		setEnabledOptionsWhenStepping(true);
-		stepForwardButton.setEnabled(true);
-		runButton.setEnabled(true);
-		tableBar.setVisible(false);
-		defaultNetworkMenu.setEnabled(true);
-		dialog.setVisible(false);
 		setStatus("New Network");
+		dialog.setVisible(false);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -700,21 +663,29 @@ public class View {
 	/**
 	 * Adds a message to the JList of messages to be displayed in the chart
 	 */
-	private void addMessagesToList()
+	private void updateMessageList(ArrayList<Message> totalMessageList)
 	{
-		for(Message m : network.totalMessageList)
+		for(Message m : totalMessageList)
 		{
 			if(!messageList.contains(m))
 			{
 				messageList.addElement(m);
 			}
+			messageList.update(messageList.indexOf(m));
 		}
 	}
+	
+	/*private void updateListRender(ArrayList<Message> totalMessageList){
+		for(Message m : totalMessageList)
+		{
+			messageList.update(messageList.indexOf(m));
+		}
+	}*/
 	
 	/**
 	 * Adds a row to the table showing the current location of all the messages in all the nodes
 	 */
-	private void addMessagesToTable()
+	private void updateMessageTable(ArrayList<Message> currentMessageList)
 	{
 		rowCount++;
 		
@@ -724,59 +695,33 @@ public class View {
 		rowColumn.add(Integer.toString(rowCount));
 		allMessages.add(0,rowColumn);
 		
-		for(String n : nodes)
-		{
+		for(int i = 1;i < tableModel.getRowCount();i++){
+			String n = tableModel.getColumnName(i);
 			ArrayList<String> nodeMessages = new ArrayList<>();
 			
-			for(Message m : network.currentMessageList)
+			for(Message m : currentMessageList)
 			{
-				for(int i = 0; i < m.getCurrent().size(); i++)
+				for(int j = 0; j < m.getCurrent().size(); j++)
 				{
-					if(m.getCurrent().get(i).toString().equals(n)){
+					if(m.getCurrent().get(j).toString().equals(n)){
 						nodeMessages.add(m.toString());
 					}
 				}
 			}
-			allMessages.add(nodes.indexOf(n)+1, nodeMessages);
+			allMessages.add(i, nodeMessages);
 		}
 		tableModel.addRow(allMessages.toArray());
-	}
-	
-	
-	/**
-	 * @return true if all the information needed to run the simulation was provided by the user, false otherwise
-	 */
-	private boolean checkFullInitialization()
-	{
-		Integer tempF = frequency;
-		if((frequency != 0 && tempF != null) && algorithm != null)
-		{
-			return true;
-		}
-		else
-		{
-			if(algorithm == null)
-			{
-				errorMessageDialog(ALGORITHM_NOT_SPECIFIED);
-			}
-			if(frequency == 0)
-			{
-				errorMessageDialog(FREQUENCY_NOT_SPECIFIED);
-			}
-			return false;
-		}
+		table.changeSelection(table.getRowCount() - 1, 0, false, false);
 	}
 	
 	/**
 	 * Update the metrics in the view
 	 */
-	public void updateMetrics()//TODO
+	public void updateMetrics(int totalMessages, int averageHops)
 	{
 		
-		totalMessagesMetric.setText("" + network.totalMessageList.size());
-		averageHopsMetric.setText("" + network.getAverageHops());
-		//updateFrequencyMetric(frequency);
-		//updateAlgorithmMetric(algorithm);
+		totalMessagesMetric.setText("" + totalMessages);
+		averageHopsMetric.setText("" +averageHops);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -831,19 +776,15 @@ public class View {
 	////////////////////////////////////////////////VIEW HELPER METHODS//////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private void updateListRender(){
-		for(Message m : network.totalMessageList)
-		{
-			messageList.update(messageList.indexOf(m));
-		}
-	}
-	
 	/**
 	 * @param bool true if buttons should be enabled, false otherwise
 	 * Disables buttons and menu items when the algorithm is running
 	 * So that the user cannot edit the simulation while its running
 	 */
 	private void setEnabledOptionsWhenStepping(boolean bool){
+		stepForwardButton.setEnabled(!bool);
+		runButton.setEnabled(!bool);
+		tableBar.setVisible(!bool);
 		setAlgorithmButton.setEnabled(bool);
 		setFreqButton.setEnabled(bool);
 		newEdgeButton.setEnabled(bool);
@@ -854,7 +795,6 @@ public class View {
 		editNodeMenu.setEnabled(bool);
 		deleteNodeMenu.setEnabled(bool);
 		newEdgeMenu.setEnabled(bool);
-		editEdgeMenu.setEnabled(bool);
 		deleteEdgeMenu.setEnabled(bool);
 		deleteEdgeButton.setEnabled(bool);
 		deleteNodeButton.setEnabled(bool);
@@ -869,7 +809,6 @@ public class View {
 			editNodeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
 			deleteNodeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
 			newEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
-			editEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
 			deleteEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
 			deleteEdgeButton.setToolTipText(DISABLED_WHEN_STEPPING);
 			deleteNodeButton.setToolTipText(DISABLED_WHEN_STEPPING);;
@@ -952,4 +891,5 @@ public class View {
 		      System.exit(0);
 		}
 	}
+	
 }
