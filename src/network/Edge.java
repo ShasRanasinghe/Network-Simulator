@@ -6,10 +6,6 @@ package network;
  * 
  * Class Edge implements a "Link" between two nodes consisting of a source and destination
  */
-/**
- * @author shast
- *
- */
 public class Edge 
 {
 	private String id; // String id for an edge
