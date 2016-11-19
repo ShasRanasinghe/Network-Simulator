@@ -155,14 +155,27 @@ public class Message {
 		hopCount++;
 	}
 	
+	/**
+	 * Source ID
+	 * @return The source ID
+	 */
 	public String getSourceID(){
 		return source.toString();
 	}
 	
+	/**
+	 * Source ID
+	 * @return The destination ID
+	 */
 	public String getDestinationID(){
 		return destination.toString();
 	}
 	
+	/**
+	 * Compares message to see if it has the same source and destination
+	 * @param obj Message to be compared against
+	 * @return True if messages have same source and destination else false
+	 */
 	public boolean hasSameSourceAndDestination(Object obj){
 		Message message = (Message)obj;
 		if(this.getSource().equals(message.getSource()) && this.getDestination().equals(message.getDestination())){
