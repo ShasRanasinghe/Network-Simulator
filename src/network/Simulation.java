@@ -325,7 +325,7 @@ public class Simulation extends Observable{
 	
 	public boolean checkFullInitialization(){
 		
-		if(((frequency != 0 || frequency != 1) && (Integer)frequency != null) && algorithm != null){
+		if(frequency != 0 && algorithm != null){
 			if(selectedAlgorithm == null){
 				setupGraph();
 			}
@@ -353,6 +353,14 @@ public class Simulation extends Observable{
 
 	public void setAlgorithm(ALGORITHM algorithm) {
 		this.algorithm = algorithm;
+	}
+
+	public boolean networkExists() {
+		if(simulationNodes.size()>=2 
+				&& simulationNodes.get(0).getNeighborhoodsize()>0){
+			return true;
+		}
+		return false;
 	}
 
 }

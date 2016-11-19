@@ -104,22 +104,34 @@ public class Controller implements ActionListener {
 	}
 
 	private void runSimulation() {
-		if(simulation.checkFullInitialization()){
-			view.prepairForSimulation(simulation.getStringArrayNodes());
-			while(simulation.isRunning()){
-				simulation.runAlgorithm(1);
-			}
-			view.simulationComplete();
+		if (simulation.networkExists()) {
+			if (simulation.checkFullInitialization()) {
+				view.prepairForSimulation(simulation.getStringArrayNodes());
+				while (simulation.isRunning()) {
+					simulation.runAlgorithm(1);
+				}
+				view.simulationComplete();
+			} else {
+				view.errorMessageDialog("Frequency Or Algorithm Is Missing");
+			} 
+		}else{
+			view.errorMessageDialog("Please create a network and try again");
 		}
 	}
 	
 	private void stepForward() {
-		if(simulation.checkFullInitialization()){
-			view.prepairForSimulation(simulation.getStringArrayNodes());
-			simulation.runAlgorithm(1);
-			if(!simulation.isRunning()){
-				view.simulationComplete();
-			}
+		if (simulation.networkExists()) {
+			if (simulation.checkFullInitialization()) {
+				view.prepairForSimulation(simulation.getStringArrayNodes());
+				simulation.runAlgorithm(1);
+				if (!simulation.isRunning()) {
+					view.simulationComplete();
+				}
+			} else {
+				view.errorMessageDialog("Frequency Or Algorithm Is Missing");
+			} 
+		}else{
+			view.errorMessageDialog("Please create a network and try again");
 		}
 	}
 
