@@ -180,7 +180,7 @@ public class Controller implements ActionListener {
 	private void newNode() {
 		for(;;){
 			String nodeID = view.openSingleInputQuestionDialog("Create New Node","Enter NodeID:");
-			if(nodeID == null){
+			if(nodeID == null || nodeID.equals("")){
 				view.setStatus("No Nodes Created");
 				break;
 			}else{

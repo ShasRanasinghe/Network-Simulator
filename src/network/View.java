@@ -209,6 +209,22 @@ public class View implements Observer{
 		frame = new JFrame("Network Simulator");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		JPanel contentPane = (JPanel)frame.getContentPane();
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (ClassNotFoundException e) {
+			errorMessageDialog("Something Messed Up Yo");
+			quit();
+		} catch (InstantiationException e) {
+			errorMessageDialog("Something Messed Up Yo");
+			quit();
+		} catch (IllegalAccessException e) {
+			errorMessageDialog("Something Messed Up Yo");
+			quit();
+		} catch (UnsupportedLookAndFeelException e) {
+			errorMessageDialog("Something Messed Up Yo");
+			quit();
+		}
+		JFrame.setDefaultLookAndFeelDecorated(true);
 		
 		makeMenu();
 		
