@@ -538,6 +538,7 @@ public class View implements Observer{
 		runButton.setEnabled(false);
 		stepForwardButton.setEnabled(false);
 		averageHopsMetricButton.setEnabled(true);
+		setStatus("Simulation Complete!");
 	}
 
 	/**
@@ -547,6 +548,7 @@ public class View implements Observer{
 	{
 		if(!tableBar.isVisible()){openTableAndList(nodes);}
 		setEnabledOptionsWhenStepping(false);
+		setStatus("Simulation Running...");
 	}
 	
 	public void removeEdge(String startNodeID, String endNodeID){
