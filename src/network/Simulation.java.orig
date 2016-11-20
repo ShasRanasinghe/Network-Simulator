@@ -129,6 +129,11 @@ public class Simulation extends Observable{
 	{
 		Node node1 = getNodeGivenID(A);
 		Node node2 = getNodeGivenID(B);
+<<<<<<< HEAD
+		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
+		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
+=======
+>>>>>>> e9f27f7da80f78daff1fa4e3da896ab86e457bb6
 		node1.addNeighbor(node2);
 		node2.addNeighbor(node1);
 	}
@@ -141,6 +146,11 @@ public class Simulation extends Observable{
 	public void removeLink(String A, String B){
 		Node node1 = getNodeGivenID(A);
 		Node node2 = getNodeGivenID(B);
+<<<<<<< HEAD
+		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
+		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
+=======
+>>>>>>> e9f27f7da80f78daff1fa4e3da896ab86e457bb6
 		node1.removeNeighbor(node2);
 		node2.removeNeighbor(node1);
 	}
@@ -306,10 +316,16 @@ public class Simulation extends Observable{
 	{
 		switch(algorithm)
 		{
+<<<<<<< HEAD
 			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
 			 				currentMessageList = selectedAlgorithm.messageQueue;
 			 				break;
+=======
+			case FLOODING: 
+				selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
+				 currentMessageList = selectedAlgorithm.messageQueue;
 				break;// No Flooding Algorithm implemented yet
+>>>>>>> e9f27f7da80f78daff1fa4e3da896ab86e457bb6
 				
 			case SHORTESTPATH:	selectedAlgorithm = new ShortestPathAlgorithm(simulationNodes, frequency);
 			 					currentMessageList = selectedAlgorithm.messageQueue;

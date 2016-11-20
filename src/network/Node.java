@@ -35,7 +35,7 @@ public class Node
 	 */
 	public Node(Node node)
 	{
-		this.id = node.getID();
+		this.id = node.toString();
 		this.thehood = node.getNeighbors();
 	}
 	
@@ -91,13 +91,8 @@ public class Node
 		return thehood.size();
 	}
 	
-
-	/**
-	 * @return the id of the vertex
-	 */
-	public String getID()
-	{
-		return id;
+	public void setNodeID(String newNodeID) {
+		this.id = newNodeID;
 	}
 	
 	/**
@@ -117,7 +112,7 @@ public class Node
 	@Override
 	public boolean equals(Object obj){
 		Node node = (Node)obj;
-		if(this.id.equals(node.getID()) 
+		if(this.id.equals(node.toString()) 
 				&& this.thehood.equals(node.getNeighbors())){ return true;}
 		return false;
 	}

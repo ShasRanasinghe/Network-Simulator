@@ -757,7 +757,19 @@ public class View implements Observer{
 		Message message = (Message)list.getSelectedValue();
 		if(list.getSelectedIndex() != -1)
 		{
+<<<<<<< HEAD
+			String info = message.getSource() + " -> " + message.getDestination() + "\n"
+					+ "Hop Count: " + message.getHopCount() + "\n"
+							+ "Current Node: ";
+			if(!message.isRunning()){
+				info += message.getDestination();
+			}else{
+				info += message.getCurrent();
+			}
+			int response = JOptionPane.showConfirmDialog(null,info,message.toString(),
+=======
 			int response = JOptionPane.showConfirmDialog(null,message.getDetailedString(),message.toString(),
+>>>>>>> e9f27f7da80f78daff1fa4e3da896ab86e457bb6
 														JOptionPane.PLAIN_MESSAGE,
 														JOptionPane.CLOSED_OPTION);
 			if (response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION) 
@@ -787,15 +799,29 @@ public class View implements Observer{
 	 */
 	private void updateMessageTable(ArrayList<Message> currentMessageList)
 	{
-		rowCount++;
+<<<<<<< HEAD
+		int i = 0;
 		
+		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
+		for(String n : nodes)
+		{
+			ArrayList<String> nodeMessages = new ArrayList<>();
+			
+			for(Message m : network.currentMessageList)
+			{
+				for(i = 0; i < m.getCurrent().size(); i++)
+				{
+					if(m.getCurrent().get(i).toString().equals(n))
+					{
+						nodeMessages.add(m.getName());
+					}
+				}
+=======
+		rowCount++;
 		
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
 		for(int i = 0;i < tableModel.getColumnCount();i++){
 			allMessages.add(i, new ArrayList<String>());
-					{
-						nodeMessages.add(m.getName());
-					}
 		}
 		
 		ArrayList<String> rowColumn = new ArrayList<>();
@@ -805,6 +831,7 @@ public class View implements Observer{
 		for(Message message: currentMessageList){
 			for(Node node: message.getCurrent()){
 				appendMessageToColumn(getColumnNumberOfTable(node.toString()),allMessages, message.toString());
+>>>>>>> e9f27f7da80f78daff1fa4e3da896ab86e457bb6
 			}
 		}
 		

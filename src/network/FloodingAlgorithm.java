@@ -58,7 +58,7 @@ public class FloodingAlgorithm extends Graph{
 			{
 
 				// Step 1.2.1) Increment the message's hop count and the total amount of hops for the algorithm
-				message.incrumentHopCount();
+				message.incrementHopCount();
 				totalFloodingHops++;
 				
 				// Step 1.2.2) Check to see if the message should create a new message
