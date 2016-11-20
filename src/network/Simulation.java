@@ -390,6 +390,8 @@ public class Simulation extends Observable{
 			for(int j = i+1; j<totalMsgLst.size(); j++){
 				if(totalMsgLst.get(i).hasSameSourceAndDestination(totalMsgLst.get(j))){
 					sameMsgList.add(totalMsgLst.get(j));
+					totalMsgLst.remove(j);
+					
 				}
 			}
 			totalMsgLstPairs.add(generateLikeMessageString(sameMsgList));
