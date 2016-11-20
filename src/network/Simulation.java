@@ -61,6 +61,11 @@ public class Simulation extends Observable{
 
 	}
 	
+	/**
+	 * Adds a new node to simulation
+	 * @param nodeID New node to be added to Simulation
+	 * @return true if new node was added
+	 */
 	public boolean addNewNode(String nodeID){
 		for(Node node: simulationNodes){
 			if(node.toString().equals(nodeID)){
@@ -71,6 +76,11 @@ public class Simulation extends Observable{
 		return true;
 	}
 	
+	/**
+	 * Removes node from simulation
+	 * @param nodeID Node to be removed from Simulation
+	 * @return true if node removed
+	 */
 	public boolean removeNode(String nodeID){
 		for(int i = 0; i<simulationNodes.size();i++){
 			Node node = simulationNodes.get(i);
@@ -82,6 +92,11 @@ public class Simulation extends Observable{
 		return false;
 	}
 	
+	/**
+	 * Checks if node exists in simulation
+	 * @param nodeID The node to be checked
+	 * @return true if the node is in simulation
+	 */
 	public boolean isNode(String nodeID){
 		for(Node node: simulationNodes){
 			if(node.toString().equals(nodeID)){
@@ -91,6 +106,11 @@ public class Simulation extends Observable{
 		return false;
 	}
 	
+	/**
+	 * Edits node within simulation
+	 * @param prevNodeID Previous node
+	 * @param newNodeID New node ID to replace previous
+	 */
 	public void editNodeID(String prevNodeID, String newNodeID){
 		for(Node node: simulationNodes){
 			if(node.toString().equals(prevNodeID)){
@@ -101,9 +121,9 @@ public class Simulation extends Observable{
 	}
 
     /**
-	 * @param A Node 
-	 * @param B Node
-	 * Creates a link between the two nodes. IE adds an edge to each nodes "hood" (ArrayList)
+     * Creates a link between the two nodes. IE adds an edge to each nodes "hood" (ArrayList)
+	 * @param A Node A
+	 * @param B Node B
 	 */
 	public void createLink(String A, String B)
 	{
@@ -114,9 +134,9 @@ public class Simulation extends Observable{
 	}
 	
 	/**
-	 * @param A Node
-	 * @param B Node
 	 * Removes the links between nodes in the nodes
+	 * @param A Node A
+	 * @param B Node B
 	 */
 	public void removeLink(String A, String B){
 		Node node1 = getNodeGivenID(A);
@@ -126,7 +146,7 @@ public class Simulation extends Observable{
 	}
 
 	/**
-	 * 
+	 * Returns Node given ID
 	 * @param id ID of node
 	 * @return Node object if an ID matches
 	 */
@@ -144,6 +164,7 @@ public class Simulation extends Observable{
 	}
 
 	/**
+	 * Adds neighbors to simulation
      * @param edgeIDs Array list of edge IDs
 	 */
 	public void addNeighbors(String[] edgeIDs) 
@@ -161,6 +182,7 @@ public class Simulation extends Observable{
 	}
 	
 	/**
+	 * Runs the algorithm given step size
 	 * @param stepSize The size of each step when run algorithm is called
 	 */
 	public void runAlgorithm(int stepSize)
@@ -300,13 +322,16 @@ public class Simulation extends Observable{
 	}
 	
 	/**
-	 * @return the algorithm choosen
+	 * @return the algorithm chosen for simulation
 	 */
 	public ALGORITHM getAlgorithm()
 	{
 		return algorithm;
 	}
 
+	/**
+	 * Initializes the default network within the simulation
+	 */
 	public void initializeDefaultNetwork() {
 		resetSimulation();
 		frequency = 5;
@@ -315,11 +340,18 @@ public class Simulation extends Observable{
 		addNeighbors(Constants.DEFAULT_EDGES_SET);
 	}
 	
+	/**
+	 * Initializes a new network within the simulation
+	 */
 	public void initializeNewNetwork(){
 		resetSimulation();
 		simulationNodes.clear();
 	}
 	
+	/**
+	 * Checks if site is fully initialized
+	 * @return True if fully initialized
+	 */
 	public boolean checkFullInitialization(){
 		
 		if(frequency != 0 && algorithm != null){
@@ -331,6 +363,10 @@ public class Simulation extends Observable{
 		return false;
 	}
 
+	/**
+	 * Returns array of nodes
+	 * @return Array of Nodes
+	 */
 	public ArrayList<String> getStringArrayNodes() {
 		ArrayList<String> nodes = new ArrayList<>();
 		for(Node node: simulationNodes){
@@ -339,6 +375,10 @@ public class Simulation extends Observable{
 		return nodes;
 	}
 
+	/**
+	 * Checks if simulation is still running
+	 * @return True if simulation is still running
+	 */
 	public boolean isRunning() {
 		if(currentMessageList.size() != 0){
 			return true;
@@ -348,10 +388,18 @@ public class Simulation extends Observable{
 		}
 	}
 
+	/**
+	 * Sets the simulation algorithm
+	 * @param algorithm Algorithm used to set simulation algorithm
+	 */
 	public void setAlgorithm(ALGORITHM algorithm) {
 		this.algorithm = algorithm;
 	}
 
+	/**
+	 * Checks if network exists within simulation
+	 * @return True if network exists
+	 */
 	public boolean networkExists() {
 		if(simulationNodes.size()>=2 
 				&& simulationNodes.get(0).getNeighborhoodsize()>0){
@@ -360,6 +408,9 @@ public class Simulation extends Observable{
 		return false;
 	}
 
+	/**
+	 * Resets the simulation
+	 */
 	public void resetSimulation() {
 		frequency = 0;
 		algorithm = null;
@@ -380,7 +431,7 @@ public class Simulation extends Observable{
 
 		//Create a copy of the totalMessageList to be used
 		ArrayList<Message> totalMsgLst= totalMessageList;
-		//List that stores all like pairs
+		//List that stores all like pairs of messages
 		ArrayList<String> totalMsgLstPairs = new ArrayList<>();
 		
 		for(int i = 0; i<totalMsgLst.size(); i++){
@@ -390,6 +441,7 @@ public class Simulation extends Observable{
 			for(int j = i+1; j<totalMsgLst.size(); j++){
 				if(totalMsgLst.get(i).hasSameSourceAndDestination(totalMsgLst.get(j))){
 					sameMsgList.add(totalMsgLst.get(j));
+					//Removes the message if matched to avoid duplication
 					totalMsgLst.remove(j);
 					
 				}
@@ -404,8 +456,6 @@ public class Simulation extends Observable{
 		}
 		
 		return averageHopsDescriptiveList;
-
-
 }
 
 	/**
