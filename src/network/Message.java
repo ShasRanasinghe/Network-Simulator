@@ -1,6 +1,7 @@
 package network;
 
-import java.util.ArrayList;
+
+import java.util.*;
 
 /**  
  * 
@@ -19,7 +20,6 @@ public class Message {
 	private String name;	// string id of the message
 	private boolean running;	// is the message still in the network?
 	private int hopCount; // hop count for this message
-	
 
 	/**
 	 * @param source node
@@ -40,6 +40,7 @@ public class Message {
 		running = true;
 		name = "";
 		hopCount = 0;
+		
 	}
 	
 	/**
@@ -56,6 +57,7 @@ public class Message {
 		name = message.getName();
 		
 		previous = message.getPrevious();
+		
 	}
 
 	/**

@@ -27,8 +27,7 @@ public class ShortestPathAlgorithm extends Graph{
 	// A copy of the messageQueue to remove concurrency issues
 	private ArrayList<Message> currentShortestPathMessageQueue;
 	
-	private ArrayList<ArrayList<Node>> shortestPaths;
-	
+	private Map<String, List<Node>> paths;
 	
 
 	public ShortestPathAlgorithm(ArrayList<Node> nodes, int frequency)
@@ -45,55 +44,24 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		totalShortestPathHops = 0;
 		currentShortestPathMessageQueue = new ArrayList<Message>();
-		shortestPaths = new ArrayList<ArrayList<Node>>();
 		
-		calculateAllShortestPaths(graphNodes);
-		createNewMessage();
-	}
-
-
-	/**
-	 * 
-	 * @param graphNodes
-	 */
-	private void calculateAllShortestPaths(ArrayList<Node> graphNodes) 
-	{
-		for(Node source : graphNodes)
+		paths = new HashMap<String, List<Node>>();
+		
+		// Generate ALL shortest paths
+		for(Node n1 : graphNodes)
 		{
-			for(Node destination : graphNodes)
+			for(Node n2 : graphNodes)
 			{
-				// find shortest path for ALL source/destination combos
-				findShortestPath(source, destination);
-			}
-		}
-	}
-
-	
-	private void findShortestPath(Node s, Node d)
-	{
-		int dist = 0;
-		Node current = s;
-		ArrayList<Node> shortest;
-		
-		LinkedList<Node> lL = new LinkedList<Node>();
-		lL.add(current);
-		
-		while(!lL.isEmpty())
-		{
-			current = lL.removeFirst();
-			
-			for(Node n : current.getNeighbors())
-			{
-				if(!lL.contains(n))
+				if(!n1.equals(n2))
 				{
-					lL.addFirst(n);
+					Path p = new Path(n1,n2);
+					paths.put(p.getiD(), p.findPath());
 				}
 			}
 		}
 		
-		System.out.println(lL);
+		createNewMessage();
 	}
-
 	
 	@Override
 	void run(int stepSize) 
@@ -109,13 +77,17 @@ public class ShortestPathAlgorithm extends Graph{
 			// Step 1.2) Iterate through the currentMessageQueue
 			for(Message message : currentShortestPathMessageQueue)
 			{
-				// Have message follow shortest path
+				String id = "" + message.getSource() + message.getDestination();
+				List<Node> path = paths.get(id);
+				int location = message.getHopCount();
 				
-				
-				/*
+				// Set current node of message to location in path
+				ArrayList<Node> temp = new ArrayList<Node>();
+				temp.add(path.get(location));
+				message.setCurrent(temp);
 				
 				// Step 1.2.3.2) If the message has reached its destination
-				if(neighbor.equals(message.getDestination()))
+				if(path.get(location).equals(message.getDestination()))
 				{
 					// Step 1.2.3.2.1) Remove the message from the queue
 					removeMessage(message);
@@ -127,7 +99,7 @@ public class ShortestPathAlgorithm extends Graph{
 						break;
 					}
 				}
-				*/
+				// Otherwise, Step
 				// Step 1.2.) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrumentHopCount();
 				totalShortestPathHops++;
@@ -135,9 +107,7 @@ public class ShortestPathAlgorithm extends Graph{
 				// Step 1.2.) Check to see if the message should create a new message
 				checkFrequency(message);
 			}
-			
-			
-			
+			n++;
 		}
 		// END OF ALGORITHM
 	}
@@ -158,7 +128,85 @@ public class ShortestPathAlgorithm extends Graph{
 		return 0;
 	}
 	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public class Path {
+		
+		private String id;
+		
+		// Set keeps track of nodes we have already been to in the path
+		private Set<Node> nodesPassed;
+		// FCFS queue (Linked list) to traverse through hoods
+		private Queue<Node> queue;
+		// Where we traverse to next
+		private Map<Node, Node> nextHood;
+		// The found currently found path
+		private List<Node> path;
+		
+		private Node source;
+		private Node destination;
+		
+		
+		public Path(Node s, Node d)
+		{
+			id = "" + s.getID() + d.getID();
+			
+			// Initialize everything
+			nodesPassed = new HashSet<Node>();
+			queue = new LinkedList<Node>();
+			nextHood = new HashMap<Node, Node>();
+			path = new LinkedList<Node>();
+			
+			source = s;
+			destination = d;
+		}
+		
+		private List<Node> findPath()
+		{ 
+			Map<Node, Boolean> passed = new HashMap<Node, Boolean>();
+			Node current = source;
+			
+			queue.add(current);
+			passed.put(current, true);
+			while(!queue.isEmpty())
+			{
+				current = queue.remove();
+				if(current.equals(destination))
+				{
+					break;
+				}
+				else
+				{
+					for(Node n : current.getNeighbors())
+					{
+						if(!passed.containsKey(n))
+						{
+							queue.add(n);
+							passed.put(n, true);
+							nextHood.put(n, current);
+						}
+					}
+				}
+			}
+			if(!current.equals(destination))
+			{
+				//Fail
+			}
+			for(Node node = destination; node != null; node = nextHood.get(node))
+			{
+				path.add(node);
+			}
+			Collections.reverse(path);
+			return path;
+		}
+		
+		public String getiD()
+		{
+			return id;
+		}
+	}
 	
+	
+	// TESTING PATHS
 	public static void main(String[] args)
 	{
 		Node a = new Node("A");
@@ -190,8 +238,10 @@ public class ShortestPathAlgorithm extends Graph{
 		nodeList.add(c);
 		nodeList.add(d);
 		nodeList.add(e);
-		
 		ShortestPathAlgorithm sPT = new ShortestPathAlgorithm(nodeList,5);
+		Path p = sPT.new Path(d,e);
+		
+		System.out.println(p.findPath().toString());
 	}
 	
 }
