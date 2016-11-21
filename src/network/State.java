@@ -13,6 +13,7 @@ public class State {
 	private int totalMessages;
 	private ArrayList<Message> totalMessageList;
 	private ArrayList<Message> currentMessageList;
+	private boolean undo = false;
 
 	/**
 	 * @param totalMessageList Total messages currently in network
@@ -68,6 +69,21 @@ public class State {
 	 */
 	public ArrayList<Message> getCurrentMessageList() {
 		return currentMessageList;
+	}
+	
+	/**
+	 * Sets the Undo status of this state
+	 * @param undo is this state is called from a step back or not
+	 */
+	public void setUndo(boolean undo){
+		this.undo = undo;
+	}
+
+	/**
+	 * @return true is this state is sent cause of a step back
+	 */
+	public boolean isUndo() {
+		return undo;
 	}
 
 }

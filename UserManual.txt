@@ -114,7 +114,7 @@ After the Network GUI has been initialized, the user can use the following funct
 			'Network' - 'New Network' - Initializes an empty network, that will require
 			_________
 										the user to create their own network to be 
-										
+									
 										simulated.
 										
 										

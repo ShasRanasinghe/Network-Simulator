@@ -135,6 +135,7 @@ public class Controller implements ActionListener {
 	 */
 	private void stepBack() {
 		view.stepBack();
+		simulation.stepBack();
 	}
 
 	/**
