@@ -83,12 +83,11 @@ public class Message {
 	}
 	
 	/**
-	 * 
-	 * @return the previous node
+	 * @param source Vertex to be set as the source
 	 */
-	public ArrayList<Node> getPrevious() 
+	public void setSource(Node source) 
 	{
-		return previous;
+		this.source = source;
 	}
 
 	/**
@@ -100,44 +99,6 @@ public class Message {
 	}
 
 	/**
-	 * 
-	 * @return the hop count of the message
-	 */
-	public int getHopCount() 
-	{
-		return hopCount;
-	}
-
-	/**
-	 * @param name name of the message eg. "Message 1"
-	 */
-	public void setName(String name) 
-	{
-		this.name = name;
-	}
-
-	/**
-	 * @param source Vertex to be set as the source
-	 */
-	public void setSource(Node source) 
-	{
-		this.source = source;
-	}
-
-	/**
-	 * @param current sets the current node
-	 */
-	public void setCurrent(ArrayList<Node> current) 
-	{
-		this.current = current;
-	}
-
-	public void setPrevious(ArrayList<Node> previous)
-	{
-		this.previous = previous;
-	}
-
-	/**
 	 * @param destination Vertex to be set as the destination
 	 */
 	public void setDestination(Node destination) 
@@ -146,8 +107,64 @@ public class Message {
 	}
 	
 	/**
+	 * 
+	 * @return the hop count of the message
+	 */
+	public int getHopCount() 
+	{
+		return hopCount;
+	}
+	
+	/**
+	 * @return Previous array list of nodes
+	 */
+	public ArrayList<Node> getPrevious(){
+		return previous;
+	}
+	
+	/**
+	 * @param previous Sets the previous array list of Nodes
+	 */
+	public void setPrevious(ArrayList<Node> previous){
+		this.previous = previous;
+	}
+
+	/**
+	 * @param hopCount Hop count of message 
+	 */
+	public void setHopCount(int hopCount) 
+	{
+		this.hopCount = hopCount;
+	}
+	
+	/**
+	 * @return true id message is running, false if message has reached its destination
+	 */
+	public boolean isRunning() {
+		return running;
+	}
+
+	/**
+	 * @param running true if running, false if message has reached its destination
+	 */
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	/**
+	 * @param name name of the message eg. "Message 1"
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * adds to the hop count the message has taken
-	 * @param hopCount  set the hopCount 
 	 */
 	public void incrementHopCount()
 	{
@@ -160,19 +177,6 @@ public class Message {
 	 */
 	public String getSourceID(){
 		return source.toString();
-	}
-
-	/**
-	 * @return true id message is running, false if message has reached its destination
-	 */
-	public boolean isRunning() 
-	{
-		return running;
-	}
-	
-	public void setRunning(boolean b)
-	{
-		running = b;
 	}
 	
 	/**
@@ -196,9 +200,6 @@ public class Message {
 		return false;
 	}
 	
-	/**
-	 * Test to compare the full object of Message
-	 */
 	@Override
 	public boolean equals(Object obj){
 		Message message = (Message)obj;
@@ -213,6 +214,9 @@ public class Message {
 		return false;
 	}
 	
+	/**
+	 * @return Detailed string output of message
+	 */
 	public String getDetailedString(){
 		String returnString;
 		returnString = source + " -> " + destination + "\n"
@@ -225,12 +229,6 @@ public class Message {
 		}
 		
 		return returnString;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
 	}
 	
 }

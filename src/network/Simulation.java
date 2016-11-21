@@ -2,6 +2,7 @@ package network;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Stack;
 
 
 /**
@@ -31,6 +32,8 @@ public class Simulation extends Observable{
 	public ArrayList<Message> totalMessageList;
 	public ArrayList<Message> currentMessageList;
 	
+	private Stack<State> stateStack;
+	
 	/**
 	 * Constructor initializes the simulation
      */
@@ -44,6 +47,7 @@ public class Simulation extends Observable{
 		totalMessageList = new ArrayList<Message>();
 		currentMessageList = new ArrayList<Message>();
 		selectedAlgorithm = null;
+		stateStack = new Stack<>();
 	}
 	
 	/**
@@ -193,6 +197,21 @@ public class Simulation extends Observable{
 			notifyObservers(state);
 	}
 	
+
+	/**
+	 * Retrieves the last state and updates the view with it
+	 */
+	public void stepBack() {
+		if(stateStack.size() > 1){
+			stateStack.pop();
+			State state = stateStack.pop();
+			state.setUndo(true);
+			setChanged();
+			notifyObservers(state);
+			stateStack.push(state);
+		}
+	}
+	
 	
 	/**
 	 * Retrieves data from the graph to be used in the simulation
@@ -201,10 +220,14 @@ public class Simulation extends Observable{
 	{
 		State state = new State();
 		totalMessageList = selectedAlgorithm.getCompleteMessageList();
-		state.setTotalMessageList(totalMessageList);
+		ArrayList<Message> total = new ArrayList<>();
+		total.addAll(totalMessageList);
+		state.setTotalMessageList(total);
 		
 		currentMessageList = selectedAlgorithm.getCurrentMessageList();
-		state.setCurrentMessageList(currentMessageList);
+		ArrayList<Message> current = new ArrayList<>();
+		current.addAll(currentMessageList);
+		state.setCurrentMessageList(current);
 		
 		setPackets(selectedAlgorithm.getTotalHops());
 		
@@ -215,6 +238,7 @@ public class Simulation extends Observable{
 		String[] averageHopsList = calculateAverageHops();
 		state.setAverageHopsList(averageHopsList);
 		
+		stateStack.push(state);
 		return state;
 	}
 	
@@ -306,6 +330,10 @@ public class Simulation extends Observable{
 	{
 		switch(algorithm)
 		{
+			case FLOODING: 
+				selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
+				 currentMessageList = selectedAlgorithm.messageQueue;
+				break;// No Flooding Algorithm implemented yet
 			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
 			 				currentMessageList = selectedAlgorithm.messageQueue;
 			 				break;
@@ -423,6 +451,7 @@ public class Simulation extends Observable{
 		totalMessageList.clear();
 		currentMessageList.clear();
 		selectedAlgorithm = null;
+		stateStack.clear();
 	}
 	
 	/**

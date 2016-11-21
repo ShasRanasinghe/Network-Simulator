@@ -9,7 +9,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +84,7 @@ public class View implements Observer{
 	private JMenuItem runMenuItem;
 	private JMenuItem stepForwardMenuItem;
 	private JMenuItem stepBackMenuItem;
+	private JSplitPane splitPane;
 	
 	/**
 	 * MAIN CONSTRUCTOR OF GUI
@@ -116,6 +119,9 @@ public class View implements Observer{
 		messageList = new MessageListModel<>();
 	}
 	
+	/**
+	 * @param controller Controller to be used in conjunction
+	 */
 	public void setController(Controller controller) {
 		stepBackButton.addActionListener(controller);
 		stepBackButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_BACK);
@@ -185,7 +191,6 @@ public class View implements Observer{
 		
 		resetButton.addActionListener(controller);
 		resetButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.RESET_SIMULATION);
-		
 		
 		dialog = new DefaultOptionDialog(frame, "Default");
 		
@@ -287,8 +292,14 @@ public class View implements Observer{
 		listBar.add(scrollPaneList);
 		
 		//set list renderer
-		list.setCellRenderer(new MessageListCellRenderer());		
-		center.add(listBar,BorderLayout.EAST);
+		list.setCellRenderer(new MessageListCellRenderer());
+		//commented out from previous implementation
+		//center.add(listBar,BorderLayout.EAST);
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				new JScrollPane(gp), listBar);
+		listBar.setMinimumSize(new Dimension(100,500));
+		splitPane.setOneTouchExpandable(true);
+		center.add(splitPane, BorderLayout.CENTER);
 		listBar.setVisible(false);
 	}
 
@@ -358,7 +369,8 @@ public class View implements Observer{
 		JPanel center = new JPanel();
 		center.setLayout(new BorderLayout());
 		gp = new GraphicPanel();
-		center.add(new JScrollPane(gp), BorderLayout.CENTER);
+		//commented out from previous implementation
+		//center.add(new JScrollPane(gp), BorderLayout.CENTER);
 		
 		
 		playPanel = new JPanel();
@@ -482,11 +494,11 @@ public class View implements Observer{
 		menu.add(runMenuItem);
 		
 		stepForwardMenuItem = new JMenuItem("Step Forward");
-		stepForwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_KP_RIGHT,SHORTCUT_MASK));
+		stepForwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,SHORTCUT_MASK));
 		menu.add(stepForwardMenuItem);
 		
 		stepBackMenuItem = new JMenuItem("Step Back");
-		stepBackMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_KP_LEFT,SHORTCUT_MASK));
+		stepBackMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,SHORTCUT_MASK));
 		menu.add(stepBackMenuItem);
 		stepBackMenuItem.setEnabled(false);
 		stepBackMenuItem.setToolTipText("Not Implemented Yet");
@@ -523,21 +535,40 @@ public class View implements Observer{
 	{
 		// ALGORITHMS CURRENTLY DO NOT SUPPORT BACK STEPS!!!!!!!!!!!!!!!!!!!!!
 		// WILL BE IMPLEMENTED LATER!!!!!!!!!!!!!!!!!!!!!!!!!
+		if(tableModel.getRowCount()>1){
+			
+			tableModel.removeRow(table.getRowCount() - 1);
+			tableModel.removeRow(table.getRowCount() - 1);
+			table.changeSelection(table.getRowCount() - 1, 0, false, false);
+			rowCount = rowCount - 1;
+		}else{
+			if(tableModel.getRowCount()==1){tableModel.removeRow(0);}
+			stepBackButton.setEnabled(false);
+			stepBackMenuItem.setEnabled(false);
+			messageList.clear();
+		}
 	}
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		State state = (State)arg1;
-		updateMessageList(state.getTotalMessageList());
+		updateMessageList(state.getTotalMessageList(),state.isUndo());
 		updateMessageTable(state.getCurrentMessageList());
 		updateTotalMessagesMetrics(state.getTotalMessages());
 		averageHopsList = state.getAverageHopsList();
 	}
 	
+	/**
+	 * Ends the current simulation
+	 */
 	public void simulationComplete(){
 		runButton.setEnabled(false);
+		runMenuItem.setEnabled(false);
 		stepForwardButton.setEnabled(false);
+		stepForwardMenuItem.setEnabled(false);
 		averageHopsMetricButton.setEnabled(true);
+		stepBackButton.setEnabled(false);
+		stepBackMenuItem.setEnabled(false);
 		setStatus("Simulation Complete!");
 	}
 
@@ -551,16 +582,29 @@ public class View implements Observer{
 		setStatus("Simulation Running...");
 	}
 	
+	/**
+	 * Remove graphical edge from View
+	 * @param startNodeID Node 1
+	 * @param endNodeID Node 2
+	 */
 	public void removeEdge(String startNodeID, String endNodeID){
 		gp.removeGraphicEdge(startNodeID, endNodeID);
 		setStatus("Edge " + startNodeID + "-" + endNodeID + " Removed");
 	}
 	
+	/**
+	 * Add graphical edge
+	 * @param startNodeID Node 1
+	 * @param endNodeID Node 2
+	 */
 	public void addNewEdge(String startNodeID, String endNodeID){
 		gp.ConnectAction(startNodeID, endNodeID);
 		setStatus("Edge " + startNodeID + "-" + endNodeID + " Created");
 	}
 
+	/**
+	 * @param nodeID Graphical Node ID to be removed
+	 */
 	public void removeNode(String nodeID){
 		gp.removeGraphicNode(nodeID);
 		if(gp.numberOfSelectedNodes() > 1){
@@ -570,6 +614,9 @@ public class View implements Observer{
 		}
 	}
 	
+	/**
+	 * @return Selected nodes in graphic panel
+	 */
 	public List<String> getSelectedNodes(){
 		gp.populateSelectedNodesList();
 		List<String> nodes = new ArrayList<>();
@@ -579,6 +626,11 @@ public class View implements Observer{
 		return nodes;
 	}
 	
+	/**
+	 * Edit graphical node
+	 * @param prevNodeID Previous Node ID
+	 * @param newNodeID New Node ID
+	 */
 	public void editNodeID(String prevNodeID, String newNodeID){
 		for(GraphicNode gn: gp.getSelectedNodesList()){
 			if(gn.getNodeID().equals(prevNodeID)){gn.setNodeID(newNodeID);}
@@ -587,10 +639,20 @@ public class View implements Observer{
 		}
 	}
 
+	/**
+	 * Generic JOption Pane requesting input
+	 * @param title Title of JOptionPane
+	 * @param inputfieldString Input string
+	 * @return JOptionPane
+	 */
 	public String openSingleInputQuestionDialog(String title, String inputfieldString){
 		return JOptionPane.showInputDialog(frame,inputfieldString,title,JOptionPane.QUESTION_MESSAGE);
 	}
 	
+	/**
+	 * Add new graphical node
+	 * @param nodeID Node ID to be added
+	 */
 	public void addNewNode(String nodeID){
 		gp.NewNodeAction(nodeID);
 		setStatus("Node " + nodeID + " Created");
@@ -605,7 +667,9 @@ public class View implements Observer{
 		        frequencyList, // Array of choices
 		        frequencyList[0]); // Initial choice
 	}
-//TODO these two could be be joined to one
+
+	//TODO these two could be be joined to one
+	
 	/**
 	 * Set the algorithm 
 	 */
@@ -616,6 +680,9 @@ public class View implements Observer{
 	        algorithmChoices[0]); // Initial choice
 	}
 	
+	/**
+	 * Displays the average hops (Metric 2) as a JTable in a JOptionPane
+	 */
 	public void averageHopsMetric() {
 		
 		DefaultTableModel averageTableModel = new DefaultTableModel(); 
@@ -635,11 +702,18 @@ public class View implements Observer{
 		JOptionPane.showMessageDialog(frame, new JScrollPane(averageTable),"Average Hops",JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	/**
+	 * Initialize the Default Network
+	 * @param algorithm Algorithm to be used
+	 * @param frequency Frequency to be used
+	 */
 	public void initializeDefaultNetwork(String algorithm, int frequency) {
 		clearInstance();
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
+		stepForwardMenuItem.setEnabled(true);
 		runButton.setEnabled(true);
+		runMenuItem.setEnabled(true);
 		dialog.setVisible(false);
 		for(String nodeID : DEFAULT_NODES_SET)
 		{
@@ -668,11 +742,16 @@ public class View implements Observer{
 
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
+		stepForwardMenuItem.setEnabled(true);
 		runButton.setEnabled(true);
+		runMenuItem.setEnabled(true);
 		setStatus("New Network");
 		dialog.setVisible(false);
 	}
 	
+	/**
+	 * Measures taken to reset the current simulation-graphically
+	 */
 	public void resetSimulation() {
 		messageList.clear();
 		tableModel.setNumRows(0);
@@ -685,7 +764,9 @@ public class View implements Observer{
 
 		setEnabledOptionsWhenStepping(true);
 		stepForwardButton.setEnabled(true);
+		stepForwardMenuItem.setEnabled(true);
 		runButton.setEnabled(true);
+		runMenuItem.setEnabled(true);
 		setStatus("Network Reset");
 		dialog.setVisible(false);
 	}
@@ -709,6 +790,10 @@ public class View implements Observer{
 	}
 	
 	
+	/**
+	 * Generic error message dialog
+	 * @param message Warning message
+	 */
 	public void errorMessageDialog(String message) {
 		JOptionPane.showMessageDialog(frame,
 				message,
@@ -742,9 +827,14 @@ public class View implements Observer{
 		frame.repaint();
 	}
 	
+	/**
+	 * Opens message log table and the message list upon stepping through or running
+	 * @param nodes List of nodes
+	 */
 	private void openTableAndList(ArrayList<String> nodes){
 		createTable(nodes);
 		listBar.setVisible(true);
+		splitPane.setDividerLocation(splitPane.getWidth()-100);
 	}
 	
 	/**
@@ -770,13 +860,18 @@ public class View implements Observer{
 	/**
 	 * Adds a message to the JList of messages to be displayed in the chart
 	 */
-	private void updateMessageList(ArrayList<Message> totalMessageList)
+	private void updateMessageList(ArrayList<Message> totalMessageList,boolean undo)
 	{
+		if(undo){messageList.clear();}
 		for(Message m : totalMessageList)
 		{
-			if(!messageList.contains(m))
-			{
+			if(undo){
 				messageList.addElement(m);
+			}else{
+				if(!messageList.contains(m))
+				{
+					messageList.addElement(m);
+				}
 			}
 			messageList.update(messageList.indexOf(m));
 		}
@@ -788,7 +883,6 @@ public class View implements Observer{
 	private void updateMessageTable(ArrayList<Message> currentMessageList)
 	{
 		rowCount++;
-		
 		
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
 		for(int i = 0;i < tableModel.getColumnCount();i++){
@@ -809,11 +903,21 @@ public class View implements Observer{
 		table.changeSelection(table.getRowCount() - 1, 0, false, false);
 	}
 	
+	/**
+	 * Appends a message to the Message log table
+	 * @param i Index
+	 * @param columns ArrayList with ArrayList that stores the columns
+	 * @param message Message string
+	 */
 	private void appendMessageToColumn(int i,ArrayList<ArrayList<String>> columns,String message){
 		ArrayList<String> str = columns.get(i);
 		str.add(message);
 	}
 	
+	/**
+	 * @param nodeID Node string ID
+	 * @return The column number of table given node ID
+	 */
 	private int getColumnNumberOfTable(String nodeID){
 		for(int i = 1;i < tableModel.getColumnCount();i++){
 			if(tableModel.getColumnName(i).equals(nodeID)){
@@ -832,6 +936,9 @@ public class View implements Observer{
 		totalMessagesMetric.setText("" + totalMessages);
 	}
 	
+	/**
+	 * Visually clears all current settings
+	 */
 	private void clearInstance(){
 		messageList.clear();
 		tableModel.setNumRows(0);
@@ -847,6 +954,8 @@ public class View implements Observer{
 	 * So that the user cannot edit the simulation while its running
 	 */
 	private void setEnabledOptionsWhenStepping(boolean bool){
+		stepBackButton.setEnabled(!bool);
+		stepBackMenuItem.setEnabled(!bool);
 		averageHopsMetricButton.setEnabled(!bool);
 		tableBar.setVisible(!bool);
 		listBar.setVisible(!bool);
@@ -876,7 +985,21 @@ public class View implements Observer{
 			newEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
 			deleteEdgeMenu.setToolTipText(DISABLED_WHEN_STEPPING);
 			deleteEdgeButton.setToolTipText(DISABLED_WHEN_STEPPING);
-			deleteNodeButton.setToolTipText(DISABLED_WHEN_STEPPING);;
+			deleteNodeButton.setToolTipText(DISABLED_WHEN_STEPPING);
+		}else{
+			setAlgorithmButton.setToolTipText(null);
+			setFreqButton.setToolTipText(null);
+			newEdgeButton.setToolTipText(null);
+			newNodeButton.setToolTipText(null);
+			setAlgorithmMenu.setToolTipText(null);
+			setFrequencyMenu.setToolTipText(null);
+			newNodeMenu.setToolTipText(null);
+			editNodeMenu.setToolTipText(null);
+			deleteNodeMenu.setToolTipText(null);
+			newEdgeMenu.setToolTipText(null);
+			deleteEdgeMenu.setToolTipText(null);
+			deleteEdgeButton.setToolTipText(null);
+			deleteNodeButton.setToolTipText(null);
 		}
 	}
 	
@@ -921,7 +1044,7 @@ public class View implements Observer{
 	}
 
 	/**
-	 * SHow details of the project and authors
+	 * Show details of the project and authors
 	 */
 	private void showAbout() {
 		JOptionPane.showMessageDialog(frame, ABOUT,"About",JOptionPane.INFORMATION_MESSAGE);
@@ -935,7 +1058,20 @@ public class View implements Observer{
 		File file = new File(README);
 		if(file.exists()){
 			try {
-				Desktop.getDesktop().open(file);
+				JFrame readmeFrame = new JFrame("README");
+				FileReader reader = new FileReader(file.getAbsolutePath());
+				BufferedReader br = new BufferedReader(reader);
+				JTextArea text = new JTextArea();
+				text.read(br,null);
+				br.close();
+				text.requestFocus();
+				readmeFrame.add(new JScrollPane(text));
+				//Desktop.getDesktop().open(file);
+				
+				readmeFrame.pack();
+				readmeFrame.setSize(new Dimension(1000, 600));
+				readmeFrame.setLocation(SCREEN_DIMENTIONS.width/2 - frame.getWidth()/2,SCREEN_DIMENTIONS.height/2 - frame.getHeight()/2);
+				readmeFrame.setVisible(true);
 			} catch (IOException e) {
 				errorMessageDialog(COULD_NOT_OPEN_FILE);
 			}
