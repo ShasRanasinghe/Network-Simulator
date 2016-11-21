@@ -1,6 +1,6 @@
 package network;
 
-
+import static network.Constants.*;
 import java.awt.Color;
 
 import java.awt.FontMetrics;
@@ -25,11 +25,6 @@ public class GraphicNode {
     private Color color;
     private boolean selected = false;
     private Rectangle b = new Rectangle();
-    //Easter Egg
-    private String charlesUpper = "Charles";
-    private String charlesLower = "charles";
-    private String charlesFacePath = "charles.jpg";
-	
 
 	/**
 	 * @param nodeID Node id of the node to be drawn
@@ -66,10 +61,10 @@ public class GraphicNode {
     
     
     /**
-     * Returns the image
+     * Returns the image used for Charles' face
      */
     private BufferedImage getImage() throws IOException {
-    	return ImageIO.read(new File(charlesFacePath));
+    	return ImageIO.read(new File(CHARLESFACEPATH));
     }
 
     /**
@@ -78,7 +73,7 @@ public class GraphicNode {
     public void draw(Graphics g){
     	try {
 			
-	    	if(this.getNodeID().equals(charlesLower)||this.getNodeID().equals(charlesUpper)){
+	    	if(this.getNodeID().equals(CHARLESLOWER)||this.getNodeID().equals(CHARLESUPPER)){
 	    	    g.drawImage(getImage(), b.x, b.y, b.width, b.height, null);
 	    	}
 	    	else{

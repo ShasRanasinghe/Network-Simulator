@@ -116,6 +116,9 @@ public class View implements Observer{
 		messageList = new MessageListModel<>();
 	}
 	
+	/**
+	 * @param controller Controller to be used in conjunction
+	 */
 	public void setController(Controller controller) {
 		stepBackButton.addActionListener(controller);
 		stepBackButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.STEP_BACK);
@@ -534,6 +537,9 @@ public class View implements Observer{
 		averageHopsList = state.getAverageHopsList();
 	}
 	
+	/**
+	 * Ends the current simulation
+	 */
 	public void simulationComplete(){
 		runButton.setEnabled(false);
 		stepForwardButton.setEnabled(false);
@@ -551,16 +557,29 @@ public class View implements Observer{
 		setStatus("Simulation Running...");
 	}
 	
+	/**
+	 * Remove graphical edge from View
+	 * @param startNodeID Node 1
+	 * @param endNodeID Node 2
+	 */
 	public void removeEdge(String startNodeID, String endNodeID){
 		gp.removeGraphicEdge(startNodeID, endNodeID);
 		setStatus("Edge " + startNodeID + "-" + endNodeID + " Removed");
 	}
 	
+	/**
+	 * Add graphical edge
+	 * @param startNodeID Node 1
+	 * @param endNodeID Node 2
+	 */
 	public void addNewEdge(String startNodeID, String endNodeID){
 		gp.ConnectAction(startNodeID, endNodeID);
 		setStatus("Edge " + startNodeID + "-" + endNodeID + " Created");
 	}
 
+	/**
+	 * @param nodeID Graphical Node ID to be removed
+	 */
 	public void removeNode(String nodeID){
 		gp.removeGraphicNode(nodeID);
 		if(gp.numberOfSelectedNodes() > 1){
@@ -570,6 +589,9 @@ public class View implements Observer{
 		}
 	}
 	
+	/**
+	 * @return Selected nodes in graphic panel
+	 */
 	public List<String> getSelectedNodes(){
 		gp.populateSelectedNodesList();
 		List<String> nodes = new ArrayList<>();
@@ -579,6 +601,11 @@ public class View implements Observer{
 		return nodes;
 	}
 	
+	/**
+	 * Edit graphical node
+	 * @param prevNodeID Previous Node ID
+	 * @param newNodeID New Node ID
+	 */
 	public void editNodeID(String prevNodeID, String newNodeID){
 		for(GraphicNode gn: gp.getSelectedNodesList()){
 			if(gn.getNodeID().equals(prevNodeID)){gn.setNodeID(newNodeID);}
@@ -587,10 +614,20 @@ public class View implements Observer{
 		}
 	}
 
+	/**
+	 * Generic JOption Pane requesting input
+	 * @param title Title of JOptionPane
+	 * @param inputfieldString Input string
+	 * @return JOptionPane
+	 */
 	public String openSingleInputQuestionDialog(String title, String inputfieldString){
 		return JOptionPane.showInputDialog(frame,inputfieldString,title,JOptionPane.QUESTION_MESSAGE);
 	}
 	
+	/**
+	 * Add new graphical node
+	 * @param nodeID Node ID to be added
+	 */
 	public void addNewNode(String nodeID){
 		gp.NewNodeAction(nodeID);
 		setStatus("Node " + nodeID + " Created");
@@ -605,7 +642,9 @@ public class View implements Observer{
 		        frequencyList, // Array of choices
 		        frequencyList[0]); // Initial choice
 	}
-//TODO these two could be be joined to one
+
+	//TODO these two could be be joined to one
+	
 	/**
 	 * Set the algorithm 
 	 */
@@ -616,6 +655,9 @@ public class View implements Observer{
 	        algorithmChoices[0]); // Initial choice
 	}
 	
+	/**
+	 * Displays the average hops (Metric 2) as a JTable in a JOptionPane
+	 */
 	public void averageHopsMetric() {
 		
 		DefaultTableModel averageTableModel = new DefaultTableModel(); 
@@ -635,6 +677,11 @@ public class View implements Observer{
 		JOptionPane.showMessageDialog(frame, new JScrollPane(averageTable),"Average Hops",JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	/**
+	 * Initialize the Default Network
+	 * @param algorithm Algorithm to be used
+	 * @param frequency Frequency to be used
+	 */
 	public void initializeDefaultNetwork(String algorithm, int frequency) {
 		clearInstance();
 		setEnabledOptionsWhenStepping(true);
@@ -673,6 +720,9 @@ public class View implements Observer{
 		dialog.setVisible(false);
 	}
 	
+	/**
+	 * Measures taken to reset the current simulation-graphically
+	 */
 	public void resetSimulation() {
 		messageList.clear();
 		tableModel.setNumRows(0);
@@ -709,6 +759,10 @@ public class View implements Observer{
 	}
 	
 	
+	/**
+	 * Generic error message dialog
+	 * @param message Warning message
+	 */
 	public void errorMessageDialog(String message) {
 		JOptionPane.showMessageDialog(frame,
 				message,
@@ -742,6 +796,10 @@ public class View implements Observer{
 		frame.repaint();
 	}
 	
+	/**
+	 * Opens message log table and the message list upon stepping through or running
+	 * @param nodes List of nodes
+	 */
 	private void openTableAndList(ArrayList<String> nodes){
 		createTable(nodes);
 		listBar.setVisible(true);
@@ -808,11 +866,21 @@ public class View implements Observer{
 		table.changeSelection(table.getRowCount() - 1, 0, false, false);
 	}
 	
+	/**
+	 * Appends a message to the Message log table
+	 * @param i Index
+	 * @param columns ArrayList with ArrayList that stores the columns
+	 * @param message Message string
+	 */
 	private void appendMessageToColumn(int i,ArrayList<ArrayList<String>> columns,String message){
 		ArrayList<String> str = columns.get(i);
 		str.add(message);
 	}
 	
+	/**
+	 * @param nodeID Node string ID
+	 * @return The column number of table given node ID
+	 */
 	private int getColumnNumberOfTable(String nodeID){
 		for(int i = 1;i < tableModel.getColumnCount();i++){
 			if(tableModel.getColumnName(i).equals(nodeID)){
@@ -831,6 +899,9 @@ public class View implements Observer{
 		totalMessagesMetric.setText("" + totalMessages);
 	}
 	
+	/**
+	 * Visually clears all current settings
+	 */
 	private void clearInstance(){
 		messageList.clear();
 		tableModel.setNumRows(0);
@@ -920,7 +991,7 @@ public class View implements Observer{
 	}
 
 	/**
-	 * SHow details of the project and authors
+	 * Show details of the project and authors
 	 */
 	private void showAbout() {
 		JOptionPane.showMessageDialog(frame, ABOUT,"About",JOptionPane.INFORMATION_MESSAGE);

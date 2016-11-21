@@ -119,8 +119,18 @@ public abstract class Graph {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		METHODS THAT HAVE SPECIFIC BEHAVIOR DEPENDING ON THE ALGORITHM										 //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Method that runs the algorithm against the Graph
+	 * @param stepSize Step size used when running algorithm against graph
+	 */
 	abstract void run(int stepSize);
+	/**
+	 * @return Total hops taken in algorithm
+	 */
 	abstract int getTotalHops();
+	/**
+	 * @return The current number of messages in algorithm
+	 */
 	abstract int getNumberOfCurrentMessages();
 	
 }

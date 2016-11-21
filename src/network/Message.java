@@ -67,6 +67,10 @@ public class Message {
 		return current;
 	}
 	
+	/**
+	 * Sets current array of nodes
+	 * @param current Current Array nodes
+	 */
 	public void setCurrent(ArrayList<Node> current){
 		this.current = current;
 	}
@@ -104,17 +108,22 @@ public class Message {
 		return hopCount;
 	}
 	
+	/**
+	 * @return Previous array list of nodes
+	 */
 	public ArrayList<Node> getPrevious(){
 		return previous;
 	}
 	
+	/**
+	 * @param previous Sets the previous array list of Nodes
+	 */
 	public void setPrevious(ArrayList<Node> previous){
 		this.previous = previous;
 	}
 
 	/**
-	 * 
-	 * @param hopCount  set the hopCount 
+	 * @param hopCount Hop count of message 
 	 */
 	public void setHopCount(int hopCount) 
 	{
@@ -198,6 +207,9 @@ public class Message {
 		return false;
 	}
 	
+	/**
+	 * @return Detailed string output of message
+	 */
 	public String getDetailedString(){
 		String returnString;
 		returnString = source + " -> " + destination + "\n"

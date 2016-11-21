@@ -66,4 +66,9 @@ final class Constants {
 	protected static final String METHOD_SEARCH_STRING = "METHOD";
 	
 	protected static final String DISABLED_WHEN_STEPPING = "Disabled When Stepping";
+	
+    //Easter Egg
+	protected static final String CHARLESUPPER = "Charles";
+	protected static final String CHARLESLOWER = "charles";
+	protected static final String CHARLESFACEPATH = "charles.jpg";
 }

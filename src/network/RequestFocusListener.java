@@ -14,10 +14,13 @@ import javax.swing.SwingUtilities;
  * https://tips4java.wordpress.com/2010/03/14/dialog-focus/
  * Author: Prasad Said
  * 
- * Solution used as it is simple and works in linux and all java versions
+ * Solution used as it is simple and works in Linux and all java versions
  */
 public class RequestFocusListener implements HierarchyListener 
 {
+	/**
+	 * Constructor
+	 */
 	public RequestFocusListener() {}
 
 	@Override

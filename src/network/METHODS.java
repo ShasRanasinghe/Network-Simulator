@@ -1,5 +1,9 @@
 package network;
 
+/**
+ * Controller methods enumeration class
+ *
+ */
 public enum METHODS {
 	STEP_BACK, 
 	RUN, 
