@@ -205,43 +205,4 @@ public class ShortestPathAlgorithm extends Graph{
 		}
 	}
 	
-	
-	// TESTING PATHS
-	public static void main(String[] args)
-	{
-		Node a = new Node("A");
-		Node b = new Node("B");
-		Node c = new Node("C");
-		Node d = new Node("D");
-		Node e = new Node("E");
-		
-		a.addNeighbor(b);
-		a.addNeighbor(c);
-		a.addNeighbor(e);
-		
-		b.addNeighbor(a);
-		b.addNeighbor(d);
-		b.addNeighbor(e);
-		
-		c.addNeighbor(a);
-		c.addNeighbor(d);
-		
-		d.addNeighbor(b);
-		d.addNeighbor(c);
-		
-		e.addNeighbor(a);
-		e.addNeighbor(b);
-		
-		ArrayList<Node> nodeList = new ArrayList<Node>();
-		nodeList.add(a);
-		nodeList.add(b);
-		nodeList.add(c);
-		nodeList.add(d);
-		nodeList.add(e);
-		ShortestPathAlgorithm sPT = new ShortestPathAlgorithm(nodeList,5);
-		Path p = sPT.new Path(d,e);
-		
-		System.out.println(p.findPath().toString());
-	}
-	
 }

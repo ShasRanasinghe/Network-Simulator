@@ -170,6 +170,11 @@ public class Message {
 		return running;
 	}
 	
+	public void setRunning(boolean b)
+	{
+		running = b;
+	}
+	
 	/**
 	 * Source ID
 	 * @return The destination ID
