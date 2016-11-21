@@ -92,9 +92,9 @@ After the Network GUI has been initialized, the user can use the following funct
 				
 				is displayed in a list (right of the graph). Each message in the list is clickable
 				
-				to see its Source and Destination. If the message is highlighted in GREEN, the
+				to see its Source, Destination, hop count and current location. If the message is highlighted in GREEN, the
 				
-				message is still transferred in the network. If the message is highlighted in
+				message is still transfering in the network. If the message is highlighted in
 				
 				RED, the message has reached its Destination and has terminated.
 					
