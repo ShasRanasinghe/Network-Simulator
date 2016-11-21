@@ -30,10 +30,10 @@ The project is divided into 4 iterations, each of which correspond to a mileston
 
 2) "Extract All" files from .zip folder into a specified directory
 
-3) In the command prompt, either specify the directory the .zip folder was extracted to, or copy the file "milestone2.jar" to the
+3) In the command prompt, either specify the directory the .zip folder was extracted to, or copy the file "milestone3.jar" to the
    M-Drive directory (If on Carleton University computer).
    
-4) Type the following into the command propmt to begin executing the program: **java -jar milestone2.jar**
+4) Type the following into the command propmt to begin executing the program: **java -jar milestone3.jar**
 
 5) For any further help with the program, refer to 'Help'->'User Manual' in the GUI.
 
