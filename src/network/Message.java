@@ -1,6 +1,7 @@
 package network;
 
-import java.util.ArrayList;
+
+import java.util.*;
 
 /**  
  * 
@@ -13,20 +14,20 @@ import java.util.ArrayList;
 public class Message {
 	
 	private Node source; // source node
-	private ArrayList<Node> current; // current node of message
-	private ArrayList<Node> previous;
+	private ArrayList<Node> current; // current nodes of message
+	private ArrayList<Node> previous; // previous node of message
 	private Node destination; // destination node
-	private String name;	//string id of the message
-	private boolean running; //is the message still in the network
+	private String name;	// string id of the message
+	private boolean running;	// is the message still in the network?
 	private int hopCount; // hop count for this message
-	
 
 	/**
 	 * @param source node
 	 * @param destination node
 	 * creates a message to be injected into the network 
 	 */
-	public Message(Node source, Node destination){
+	public Message(Node source, Node destination)
+	{
 		this.source = source;
 		this.destination = destination;
 		running = true;
@@ -35,6 +36,11 @@ public class Message {
 		current = new ArrayList<Node>();
 		current.add(source);
 		previous = new ArrayList<Node>();
+		
+		running = true;
+		name = "";
+		hopCount = 0;
+		
 	}
 	
 	/**
@@ -50,12 +56,20 @@ public class Message {
 		running = message.isRunning();
 		name = message.toString();
 		previous = new ArrayList<Node>();
+		previous = message.getPrevious();
+		
 	}
 
 	/**
-	 * @return The source of the message
+	 * 
+	 * @return The name id of the message
 	 */
-	public Node getSource() 
+	public String getName()
+	{
+		return name;
+	}
+	
+	public Node getSource()
 	{
 		return source;
 	}
@@ -63,18 +77,11 @@ public class Message {
 	/**
 	 * @return the current node
 	 */
-	public ArrayList<Node> getCurrent() {
+	public ArrayList<Node> getCurrent() 
+	{
 		return current;
 	}
 	
-	/**
-	 * Sets current array of nodes
-	 * @param current Current Array nodes
-	 */
-	public void setCurrent(ArrayList<Node> current){
-		this.current = current;
-	}
-
 	/**
 	 * @param source Vertex to be set as the source
 	 */
@@ -113,6 +120,15 @@ public class Message {
 	 */
 	public ArrayList<Node> getPrevious(){
 		return previous;
+	}
+	
+	/**
+	 * 
+	 * @param c the new list of current nodes that the message is currently at
+	 */
+	public void setCurrent(ArrayList<Node> c)
+	{
+		current = c;
 	}
 	
 	/**

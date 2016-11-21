@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class MessageTest {
 	
-	/*Message message1 = null;
+	Message message1 = null;
 	Node node1 = null;
 	Node node2 = null;
 	
@@ -53,27 +53,9 @@ public class MessageTest {
 	}
 
 	@Test
-	public void testSetHopCount() {
-		message1.setHopCount(27);
-		assertEquals(27,message1.getHopCount());
-	}
-
-	@Test
 	public void testIncrumentHopCount() {
 		message1.incrementHopCount();
 		assertEquals(1,message1.getHopCount());
-	}
-	
-	@Test
-	public void testIsRunning() {
-		message1.setRunning(false);
-		assertEquals(false,message1.isRunning());
-	}
-
-	@Test
-	public void testSetRunning() {
-		message1.setRunning(true);
-		assertEquals(true,message1.isRunning());
 	}
 	
 	@Test
@@ -90,13 +72,6 @@ public class MessageTest {
 
 	@Test
 	public void testGetCurrentNode() {
-		assertTrue(message1.getCurrent().equals(node1));
+		assertTrue(message1.getCurrent().get(0).equals(node1));
 	}
-
-	@Test
-	public void testSetCurrentNode() {
-		message1.setCurrent(node2);
-		assertTrue(message1.getCurrent().equals(node2));
-	}*/
-
 }

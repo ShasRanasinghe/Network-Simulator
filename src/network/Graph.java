@@ -52,6 +52,7 @@ public abstract class Graph {
 		
 		// Form the message and add it to the message queue and total 
 		Message message = new Message(tempS,tempD);
+		message.setPrevious(message.getCurrent());
 		message.setName(messageName);
 		messageQueue.add(message);
 		completeMessageList.add(message);

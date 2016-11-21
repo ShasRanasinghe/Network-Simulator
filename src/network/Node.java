@@ -41,7 +41,7 @@ public class Node
 	
 	
 	/**
-	 * @param edge This method adds an edge to a Vertex
+	 * @param neighbor This method adds an edge to a Vertex
 	 */
 	public void addNeighbor(Node neighbor)
 	{
@@ -55,8 +55,7 @@ public class Node
 	}
 	
 	/**
-	 * @param edge
-	 * the edge for which the algorithm will use to search
+	 * @param neighbor the edge for which the algorithm will use to search
 	 * @return Returns true if edge exists for Node else false
 	 */
 	public boolean containsNeighbor(Node neighbor)
@@ -65,9 +64,9 @@ public class Node
 	}
 	
 	/**
-	 * @param index
-	 * returns the edge(neighbor route) at the specified index
-	 * @return The edge given index
+	 * @param index the neighbor that is requested
+	 * returns the node(neighbor) at the specified index
+	 * @return The node given index
 	 */
 	public Node getNeighbor(int index)
 	{
@@ -76,7 +75,8 @@ public class Node
 	
 	
 	/**
-	 * @param e remove a specified edge
+	 * Remove a specified node
+	 * @param n node to be removed
 	 */
 	public void removeNeighbor(Node n)
 	{

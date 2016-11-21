@@ -111,7 +111,13 @@ public class Controller implements ActionListener {
 		String frequency = view.setFrequency();
 		if(frequency == null){
 			view.setStatus("Frequency Not Set");
-		}else{
+		}
+		else{
+			if(Integer.parseInt(frequency) == 1)
+			{
+				view.setRunButton(false);
+				view.errorMessageDialog("When frequency is set to 1, infinite message creation is possible \nTherefore user can only step");
+			}
 			simulation.setFrequency(Integer.parseInt(frequency));
 			view.updateFrequencyMetric(Integer.parseInt(frequency));
 		}
@@ -185,9 +191,12 @@ public class Controller implements ActionListener {
 			if(nodes.size() == 2){
 				String nodeOneID = nodes.get(0);
 				String nodeTwoID = nodes.get(1);
-				view.addNewEdge(nodeOneID,nodeTwoID);
-				simulation.createLink(nodeOneID, nodeTwoID);
-				
+				if(!simulation.containsEdge(nodeOneID,nodeTwoID)){
+					view.addNewEdge(nodeOneID,nodeTwoID);
+					simulation.createLink(nodeOneID, nodeTwoID);
+				}else{
+					view.errorMessageDialog("Edge Already Exists");
+				}
 			}else{
 				view.errorMessageDialog("Please Select Two Nodes And Try Again");
 			}
@@ -205,9 +214,12 @@ public class Controller implements ActionListener {
 			if(nodes.size() == 2){
 				String nodeOneID = nodes.get(0);
 				String nodeTwoID = nodes.get(1);
-				view.removeEdge(nodeOneID,nodeTwoID);
-				simulation.removeLink(nodeOneID, nodeTwoID);
-				
+				if(simulation.containsEdge(nodeOneID, nodeTwoID)){
+					view.removeEdge(nodeOneID,nodeTwoID);
+					simulation.removeLink(nodeOneID, nodeTwoID);
+				}else{
+					view.errorMessageDialog("No Edges Exist");
+				}
 			}else{
 				view.errorMessageDialog("Please Select Two Nodes And Try Again");
 			}

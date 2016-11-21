@@ -65,6 +65,7 @@ public class RandomAlgorithm extends Graph{
 			for(Message message : currentRandomMessageQueue)
 			{
 				// Step 1.2.1) Choose a random edge of the current message's location, and save the destination of the edge
+				//											(IN RANDOM THERE IS ONLY ONE NODE IN THE CURRENT ARRAY LIST)
 				Random random = new Random();
 				Node messageCurrent = message.getCurrent().get(0);
 				

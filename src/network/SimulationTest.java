@@ -8,13 +8,15 @@ import org.junit.Test;
 import org.junit.Before;
 
 public class SimulationTest {
-	/*
+
 	Node node1 = null;
 	Node node2 = null;
 	Simulation simulation1;
 	ArrayList<Node> nodes;
 	String[] list;
 	String[] edgelist;
+	
+	ArrayList<String> temp;
 	
 	@Before
 	public void setUp() 
@@ -35,6 +37,10 @@ public class SimulationTest {
 		edgelist = new String[2];
 		edgelist[0] = "A->B";
 		edgelist[1] = "B->A";
+		
+		String s = "69";
+		temp = new ArrayList<String>();
+		temp.add(s);
 	}
 	
 	@Test
@@ -47,17 +53,13 @@ public class SimulationTest {
 	@Test
 	public void testCreateLink() {
 		simulation1.createLink("A","B");
-		Edge e1 = new Edge("A->B",node1,node2);
-		Edge e2 = new Edge("B->A",node2,node1);
-		assertTrue(node1.containsNeighbor(e1) && node2.containsNeighbor(e2));
+		assertTrue(node1.containsNeighbor(node2) && node2.containsNeighbor(node1));
 	}
 
 	@Test
 	public void testAddNeighbors() {
 		simulation1.addNeighbors(edgelist);
-		Edge e = new Edge(node1.getID() + "->" + node2.getID(),node1,node2);
-		Edge e2 = new Edge(node2.getID() + "->" + node1.getID(),node2,node1);
-		assertTrue(node1.containsNeighbor(e) && node2.containsNeighbor(e2));
+		assertTrue(node1.containsNeighbor(node2) && node2.containsNeighbor(node1));
 	}
 
 	@Test
@@ -74,13 +76,14 @@ public class SimulationTest {
 
 	@Test
 	public void testGetAverageHops() {
-		assertEquals(0,simulation1.getAverageHops());
+		simulation1.setAverageHops(temp);
+		assertEquals(temp,simulation1.getAverageHops());
 	}
 
 	@Test
 	public void testSetAverageHops() {
-		simulation1.setAverageHops(69);
-		assertEquals(69,simulation1.getAverageHops());
+		simulation1.setAverageHops(temp);
+		assertEquals(temp,simulation1.getAverageHops());
 	}
 
 	@Test
@@ -143,6 +146,4 @@ public class SimulationTest {
 	public void testGetNodeGivenID() {
 		assertTrue(node1.equals(simulation1.getNodeGivenID("A")));
 	}
-
-*/
 }

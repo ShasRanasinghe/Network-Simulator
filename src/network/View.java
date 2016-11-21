@@ -88,7 +88,6 @@ public class View implements Observer{
 	
 	/**
 	 * MAIN CONSTRUCTOR OF GUI
-	 * @param sim Associated simulation with the View
 	 */
 	public View()
 	{
@@ -574,6 +573,7 @@ public class View implements Observer{
 
 	/**
 	 * Run the full simulation to completion
+	 * @param nodes List of nodeID Strings
 	 */
 	public void prepairForSimulation(ArrayList<String> nodes) 
 	{
@@ -660,6 +660,7 @@ public class View implements Observer{
 
 	/**
 	 * Set the frequency
+	 * @return String representation of the given frequency
 	 */
 	public String setFrequency() {
 	    return (String) JOptionPane.showInputDialog(frame, "Pick a Frequency",
@@ -672,12 +673,22 @@ public class View implements Observer{
 	
 	/**
 	 * Set the algorithm 
+	 * @return String representation of the given algorithm
 	 */
 	public String setAlgorithm() {
 	    return (String) JOptionPane.showInputDialog(null, "Choose Algorithm",
 	        "Set Algorithm", JOptionPane.QUESTION_MESSAGE, null, // Use
 	        algorithmChoices, // Array of choices
 	        algorithmChoices[0]); // Initial choice
+	}
+	
+	/**
+	 * 
+	 * @param b is the user allowed to use the RUN function
+	 */
+	public void setRunButton(boolean b)
+	{
+		runButton.setEnabled(b);
 	}
 	
 	/**
@@ -773,7 +784,7 @@ public class View implements Observer{
 	
 	/**
 	 * Updates the Algorithm metric
-	 * @param algorithm
+	 * @param algorithm String representation of the algorithm
 	 */
 	public void updateAlgorithmMetric(String algorithm) {
 		algorithmMetric.setText(algorithm);
@@ -782,7 +793,7 @@ public class View implements Observer{
 
 	/**
 	 * Updates the Frequency Metric
-	 * @param frequency
+	 * @param frequency frequency of the simulation
 	 */
 	public void updateFrequencyMetric(int frequency) {
 		frequencyMetric.setText("" + frequency);
@@ -1069,7 +1080,7 @@ public class View implements Observer{
 				//Desktop.getDesktop().open(file);
 				
 				readmeFrame.pack();
-				readmeFrame.setSize(new Dimension(1000, 600));
+				readmeFrame.setSize(new Dimension(800, 600));
 				readmeFrame.setLocation(SCREEN_DIMENTIONS.width/2 - frame.getWidth()/2,SCREEN_DIMENTIONS.height/2 - frame.getHeight()/2);
 				readmeFrame.setVisible(true);
 			} catch (IOException e) {
