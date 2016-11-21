@@ -150,8 +150,6 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		private String id;
 		
-		// Set keeps track of nodes we have already been to in the path
-		private Set<Node> nodesPassed;
 		// FCFS queue (Linked list) to traverse through hoods
 		private Queue<Node> queue;
 		// Where we traverse to next
@@ -172,7 +170,6 @@ public class ShortestPathAlgorithm extends Graph{
 			id = "" + s.toString() + d.toString();
 			
 			// Initialize everything
-			nodesPassed = new HashSet<Node>();
 			queue = new LinkedList<Node>();
 			nextHood = new HashMap<Node, Node>();
 			path = new LinkedList<Node>();

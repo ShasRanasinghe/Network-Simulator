@@ -324,7 +324,7 @@ public class Simulation extends Observable{
 	}
 
 	/**
-	 * @param algorithm The algorithm the simulation would be set to
+	 * algorithm The algorithm the simulation would be set to
 	 */
 	public void setupGraph() 
 	{
@@ -451,7 +451,7 @@ public class Simulation extends Observable{
 	}
 	
 	/**
-	 * Generates String[] that shows the source-> destination, number of messages 
+	 * Generates String[] that shows the source and destination, number of messages 
 	 * with same source/destination and the average
 	 * @return The string array of average hops of messages with same source and destination
 	 */
@@ -550,6 +550,22 @@ public class Simulation extends Observable{
 			return "" + average.doubleValue() / size;
 		}
 		return average.toString();
+	}
+
+	
+	/**
+	 * @param nodeOneID node ID of the first node
+	 * @param nodeTwoID node ID of the second node
+	 * @return true if both nodes contain each other as a neighbor
+	 */
+	public boolean containsEdge(String nodeOneID, String nodeTwoID) {
+		Node node1 = getNodeGivenID(nodeOneID);
+		Node node2 = getNodeGivenID(nodeTwoID);
+		
+		if(node1.containsNeighbor(node2) && node2.containsNeighbor(node1)){
+			return true;
+		}
+		return false;
 	}
 
 }

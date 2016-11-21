@@ -176,7 +176,8 @@ public class GraphicPanel extends JComponent {
     
     /**
      * Deletes an edges given edge ID
-     * @param edgeID ID of edge to be deleted
+     * @param nodeOneID node ID of the start of the edge
+     * @param nodeTwoID node ID of the end of the edge
      */
     public void removeGraphicEdge(String nodeOneID, String nodeTwoID) {
         ListIterator<GraphicEdge> iter = graphicEdges.listIterator();
