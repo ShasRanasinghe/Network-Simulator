@@ -111,7 +111,13 @@ public class Controller implements ActionListener {
 		String frequency = view.setFrequency();
 		if(frequency == null){
 			view.setStatus("Frequency Not Set");
-		}else{
+		}
+		else{
+			if(Integer.parseInt(frequency) == 1)
+			{
+				view.setRunButton(false);
+				view.errorMessageDialog("When frequency is set to 1, infinite message creation is possible \nTherefore user can only step");
+			}
 			simulation.setFrequency(Integer.parseInt(frequency));
 			view.updateFrequencyMetric(Integer.parseInt(frequency));
 		}

@@ -330,10 +330,6 @@ public class Simulation extends Observable{
 	{
 		switch(algorithm)
 		{
-			case FLOODING: 
-				selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
-				 currentMessageList = selectedAlgorithm.messageQueue;
-				break;// No Flooding Algorithm implemented yet
 			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
 			 				currentMessageList = selectedAlgorithm.messageQueue;
 			 				break;

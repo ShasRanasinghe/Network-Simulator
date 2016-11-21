@@ -681,6 +681,15 @@ public class View implements Observer{
 	}
 	
 	/**
+	 * 
+	 * @param b is the user allowed to use the RUN function
+	 */
+	public void setRunButton(boolean b)
+	{
+		runButton.setEnabled(b);
+	}
+	
+	/**
 	 * Displays the average hops (Metric 2) as a JTable in a JOptionPane
 	 */
 	public void averageHopsMetric() {

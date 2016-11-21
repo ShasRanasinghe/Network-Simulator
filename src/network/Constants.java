@@ -53,7 +53,7 @@ final class Constants {
 	
 	protected static final int FREQUENCY_OPTIONS_MAX = 30;
 	
-	protected static final int FREQUENCY_OPTIONS_MIN = 2;
+	protected static final int FREQUENCY_OPTIONS_MIN = 1;
 	
 	protected static final int FRAME_HEIGHT = 600;
 	

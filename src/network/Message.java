@@ -123,6 +123,15 @@ public class Message {
 	}
 	
 	/**
+	 * 
+	 * @param c the new list of current nodes that the message is currently at
+	 */
+	public void setCurrent(ArrayList<Node> c)
+	{
+		current = c;
+	}
+	
+	/**
 	 * @param previous Sets the previous array list of Nodes
 	 */
 	public void setPrevious(ArrayList<Node> previous){
