@@ -82,6 +82,7 @@ public class View implements Observer{
 	private JMenuItem runMenuItem;
 	private JMenuItem stepForwardMenuItem;
 	private JMenuItem stepBackMenuItem;
+	private JSplitPane splitPane; //TODO
 	
 	/**
 	 * MAIN CONSTRUCTOR OF GUI
@@ -290,8 +291,14 @@ public class View implements Observer{
 		listBar.add(scrollPaneList);
 		
 		//set list renderer
-		list.setCellRenderer(new MessageListCellRenderer());		
-		center.add(listBar,BorderLayout.EAST);
+		list.setCellRenderer(new MessageListCellRenderer());
+		//commented out from previous implementation
+		//center.add(listBar,BorderLayout.EAST);
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				new JScrollPane(gp), listBar);
+		listBar.setMinimumSize(new Dimension(100,500));
+		splitPane.setOneTouchExpandable(true);
+		center.add(splitPane, BorderLayout.CENTER);
 		listBar.setVisible(false);
 	}
 
@@ -361,7 +368,8 @@ public class View implements Observer{
 		JPanel center = new JPanel();
 		center.setLayout(new BorderLayout());
 		gp = new GraphicPanel();
-		center.add(new JScrollPane(gp), BorderLayout.CENTER);
+		//commented out from previous implementation
+		//center.add(new JScrollPane(gp), BorderLayout.CENTER);
 		
 		
 		playPanel = new JPanel();
@@ -803,6 +811,7 @@ public class View implements Observer{
 	private void openTableAndList(ArrayList<String> nodes){
 		createTable(nodes);
 		listBar.setVisible(true);
+		splitPane.setDividerLocation(splitPane.getWidth()-100);
 	}
 	
 	/**
