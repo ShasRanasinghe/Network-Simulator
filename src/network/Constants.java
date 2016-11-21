@@ -29,7 +29,7 @@ final class Constants {
 	
 	protected static final String README = "UserManual.txt";
 	
-	protected static final String UML = "Milestone2_UML.pdf";
+	protected static final String UML = "Milestone3_UML.pdf";
 	
 	protected static final String JAVADOC1 = "doc\\index.html";
 	
