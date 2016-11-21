@@ -65,26 +65,29 @@ public class FloodingAlgorithm extends Graph{
 				checkFrequency(message);
 				
 				ArrayList<Node> newHood = new ArrayList<Node>();
-				// Step 1.2.3) For each node in a message current ArrayList, get their hood
-				for(Node neighbor : message.getCurrent())
+				
+				for(Node n1 : message.getCurrent())
 				{
-					// Step 1.2.3.1) Flood neighbors
-					if(!message.getPrevious().contains(neighbor))
+					for(Node neighbor : n1.getNeighbors())
 					{
-						newHood.add(neighbor);
-					}
-					
-					// Step 1.2.3.2) If the message has reached its destination
-					if(neighbor.equals(message.getDestination()))
-					{
-						// Step 1.2.3.2.1) Remove the message from the queue
-						removeMessage(message);
-						
-						// Step 1.2.3.2.2) Check to see if the queue is now empty
-						if(messageQueue.size() == 0)
+						// Step 1.2.3.1) Flood neighbors
+						if(!message.getPrevious().contains(neighbor))
 						{
-							// TERMINATE ALGORITHM
-							break;
+							newHood.add(neighbor);
+						}
+						
+						// Step 1.2.3.2) If the message has reached its destination
+						if(neighbor.equals(message.getDestination()))
+						{
+							// Step 1.2.3.2.1) Remove the message from the queue
+							removeMessage(message);
+							
+							// Step 1.2.3.2.2) Check to see if the queue is now empty
+							if(messageQueue.size() == 0)
+							{
+								// TERMINATE ALGORITHM
+								break;
+							}
 						}
 					}
 				}

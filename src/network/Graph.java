@@ -70,7 +70,6 @@ public abstract class Graph {
 			if(messageQueue.get(i).equals(message))
 			{
 				// Remove
-				messageQueue.get(i).setRunning(false);
 				messageQueue.remove(i);
 			}
 		}

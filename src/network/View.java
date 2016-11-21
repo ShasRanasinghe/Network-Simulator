@@ -793,9 +793,6 @@ public class View implements Observer{
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
 		for(int i = 0;i < tableModel.getColumnCount();i++){
 			allMessages.add(i, new ArrayList<String>());
-					{
-						nodeMessages.add(m.getName());
-					}
 		}
 		
 		ArrayList<String> rowColumn = new ArrayList<>();

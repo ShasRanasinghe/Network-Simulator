@@ -1,4 +1,4 @@
-package network;
+/*package network;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class MessageTest {
 	
-	/*Message message1 = null;
+	Message message1 = null;
 	Node node1 = null;
 	Node node2 = null;
 	
@@ -101,6 +101,3 @@ public class MessageTest {
 		message1.setCurrent(node2);
 		assertTrue(message1.getCurrent().equals(node2));
 	}*/
-
-	*/
-}

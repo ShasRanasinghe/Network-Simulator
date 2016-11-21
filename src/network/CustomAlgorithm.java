@@ -85,7 +85,7 @@ public class CustomAlgorithm extends Graph{
 				}
 				
 				// Step 1.2.2) Increment the message's hop count and the total amount of hops for the algorithm
-				message.incrumentHopCount();
+				message.incrementHopCount();
 				totalCustomHops++;
 				
 				// Step 1.2.3) Check to see if the message should create a new message
@@ -110,6 +110,7 @@ public class CustomAlgorithm extends Graph{
 				{
 					// Step 1.2.5.1) Forward the message to the nextNode
 					ArrayList<Node> newCurrent = new ArrayList<Node>();
+					message.setPrevious(message.getCurrent());
 					newCurrent.add(nextNode);
 					message.setCurrent(newCurrent);
 				}

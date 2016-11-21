@@ -101,7 +101,7 @@ public class ShortestPathAlgorithm extends Graph{
 				}
 				// Otherwise, Step
 				// Step 1.2.) Increment the message's hop count and the total amount of hops for the algorithm
-				message.incrumentHopCount();
+				message.incrementHopCount();
 				totalShortestPathHops++;
 				
 				// Step 1.2.) Check to see if the message should create a new message
@@ -148,7 +148,7 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		public Path(Node s, Node d)
 		{
-			id = "" + s.getID() + d.getID();
+			id = "" + s.toString() + d.toString();
 			
 			// Initialize everything
 			nodesPassed = new HashSet<Node>();

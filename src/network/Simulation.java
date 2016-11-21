@@ -309,7 +309,6 @@ public class Simulation extends Observable{
 			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
 			 				currentMessageList = selectedAlgorithm.messageQueue;
 			 				break;
-				break;// No Flooding Algorithm implemented yet
 				
 			case SHORTESTPATH:	selectedAlgorithm = new ShortestPathAlgorithm(simulationNodes, frequency);
 			 					currentMessageList = selectedAlgorithm.messageQueue;

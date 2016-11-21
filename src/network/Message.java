@@ -69,17 +69,7 @@ public class Message {
 		return name;
 	}
 	
-	/**
-	 * 
-	 * @return The name id of the message
-	 */
-	public ArrayList<Node> getCurrent() {
-	public String toString()
-	{
-		return name;
-	}
-	
-	public void setCurrent(ArrayList<Node> current){
+	public Node getSource()
 	{
 		return source;
 	}
@@ -116,14 +106,6 @@ public class Message {
 	public int getHopCount() 
 	{
 		return hopCount;
-	}
-	
-	public ArrayList<Node> getPrevious(){
-		return previous;
-	}
-	
-	public void setPrevious(ArrayList<Node> previous){
-		this.previous = previous;
 	}
 
 	/**
@@ -178,7 +160,6 @@ public class Message {
 	 */
 	public String getSourceID(){
 		return source.toString();
-		this.running = running;
 	}
 
 	/**
@@ -239,6 +220,12 @@ public class Message {
 		}
 		
 		return returnString;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 	
 }
