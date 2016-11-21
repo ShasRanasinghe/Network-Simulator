@@ -1,23 +1,23 @@
 Initialize Network:
 _______________________
 
-When 'Milestone2.jar' is executed the user will be prompted to use to the default network (Specified in the Project Requirements)
+When 'Milestone3.jar' is executed the user will be prompted to use to the default network (Specified in the Project Requirements)
 
-	1)If the user selects 'Yes', the network will be initialized with following default settings:
+        1)If the user selects 'Default', the network will be initialized with following default settings:
 	
-		Routers in simulation: A B C D E
+                Routers in simulation: A B C D E
 		
-		Edges in Simulation: A->B A->C A->E B->D B->E C->D
+                Edges in Simulation: A->B A->C A->E B->D B->E C->D
 		
-		Message creation frequency: 1 message / 5 hops
+                Message creation frequency: 1 message / 5 hops
 		
-		Algorithm: Random
+                Algorithm: Random
 		
-	2)If the user selects 'No', it will be up to the user to initialize their own Routing Network
+        2)If the user selects 'New Network', it will be up to the user to initialize their own Routing Network
 	
-	NOTE:Once the simulation of the network has been started (IE: the user presses the 'Step' or 'Run" button) the manipulation of the network
-	
-		will be limited.
+        NOTE:Once the simulation of the network has been started (IE: the user presses the 'Step' or 'Run" button)
+
+                the manipulation of the network will be limited.
 
 
 
@@ -28,16 +28,16 @@ ________________________________________
 
 - The user may click and drag nodes to move them around the GUI
 
-	- The position of the nodes in the network does not affect the functionality of
+       - The position of the nodes in the network does not affect the functionality of
 	
-		the network. (Purely Aesthetic)
+             the network. (Purely Aesthetic)
 	
 		
 NOTE: If a node is selected(Surrounded by rectangle), and if the user tries to use any
  
-		of the following functionalities, the behavior will be applied to the selected
+                of the following functionalities, the behavior will be applied to the selected
 		
-		node (without prompting the user, Be Careful!!!)
+                node (without prompting the user, Be Careful!!!)
 
 
 
@@ -46,140 +46,138 @@ __________________________________
 
 After the Network GUI has been initialized, the user can use the following functionality to manipulate the Network:
 
-	1) BUTTONS:	
-	  _________
+        1) BUTTONS:	
+          _________
 	  
-			'New Node' - prompts the user to provide an 'id' for the Router being added to the network
-			__________
+                        'New Node' - prompts the user to provide an 'id' for the Router being added to the network
+                        __________
 			
-			'New Edge' - prompts the user for two 'Router ids' to connect with the edge
-			__________
+                        'New Edge' - prompts the user for two 'Router ids' to connect with the edge
+                        __________
 			
-			'Set Frequency' - prompts the user to set the 'Message Creation Frequency' of the simulation
-			_______________
+                        'Set Frequency' - prompts the user to set the 'Message Creation Frequency' of the simulation
+                        _______________
 			
-				[NOTE: when selecting frequency the user must highlight the integer field in order
+                                 [NOTE: when selecting frequency the user must highlight the integer field in order
 				
-					for the frequency to be set. Refer to STATUS bar at bottom of GUI to 
+                                        for the frequency to be set. Refer to STATUS bar at bottom of GUI to 
 					
-					ensure frequency is set properly. (Bug will be fixed in next milestone)]
+                                        ensure frequency is set properly. (Bug will be fixed in next milestone)]
 					
 					
-			'Set Algorithm' - prompts the user to select the desired algorithm to be applied to the 
-			_______________
-								network.
+                        'Set Algorithm' - prompts the user to select the desired algorithm to be applied to the 
+                        _______________
+                                           network.
 						
 						
-			'Delete Node' - IF NO NODE IS SELECTED - the user will be prompted to provided an id of the
-			_____________
-							Router to be deleted from the network
+                        'Delete Node' - IF NO NODE IS SELECTED - the user will be prompted to provided an id of the
+                        _______________
+                                           Router to be deleted from the network
 							
 						
-				      	  - IF NODE IS SELECTED - the currently selected Router will be deleted from 
+                                      - IF NODE IS SELECTED - the currently selected Router will be deleted from 
 				      	  
-							the network
+                                           the network
 							
 							
-				[NOTE: Deleting a Router, deletes any and all edges connected to it.]
+                                  [NOTE: Deleting a Router, deletes any and all edges connected to it.]
 				
 				
-			'Delete Edge' - prompts the user to specify the Source/Destination Routers to identify
-			_____________
-							which edge will be deleted
+                        'Delete Edge' - prompts the user to specify the Source/Destination Routers to identify
+                        _____________
+                                        which edge will be deleted
+
+                        'Reset' - Resets the metrics of the current network so that it can be used once again
+                        _______			
+                                        without having to rebuild the network.
 							
 							
-			'Run' - Runs the currently configured network simulation, and displays each step of
-			______
-					the simulation until it terminates. Each 'Hop' taken by each message is shown
+                        'Run' - Runs the currently configured network simulation, and displays each step of
+                        ______
+                                        the simulation until it terminates. Each 'Hop' taken by each message is shown
 					
-					in the generated table (above the graph). Each message created in the simulation
+                                        in the generated table (above the graph). Each message created in the simulation
 					
-					is displayed in a list (right of the graph). Each message in the list is clickable
+                                        is displayed in a list (right of the graph). Each message in the list is clickable
 					
-					to see its Source and Destination. If the message is highlighted in GREEN, the
+                                        to see its Source and Destination. If the message is highlighted in GREEN, the
 					
-					message is still transferred in the network. If the message is highlighted in
+                                        message is still transferred in the network. If the message is highlighted in
 					
-					RED, the message has reached its Destination and has terminated.
-					
-					
-			'Next' - Simulates one 'Hop' in the simulation, and returns the new state of the Simulation to
-			______
-					the GUI.
+                                        RED, the message has reached its Destination and has terminated.
 					
 					
-	2) MENUS:
-	  _______
+                        'Next' - Simulates one 'Hop' in the simulation, and returns the new state of the Simulation to
+                        ______
+                                        the GUI.
+					
+					
+        2) MENUS:
+          _______
 	  
-			'Network' - 'New Network' - Initializes an empty network, that will require
-			_________
-										the user to create their own network to be 
+                        'Network' - 'New Network' - Initializes an empty network, that will require
+                        _________
+                                        the user to create their own network to be 
 									
-										simulated.
+                                        simulated.
 										
 										
-					  - 'Default Network' - Initializes a default network (as specified
+                                  - 'Default Network' - Initializes a default network (as specified
 					  
-					  						in the project requirements).
+                                        in the project requirements).
 					  						
 					  						
-					  - 'Quit' - Allows the user to exit the program and close the GUI.
+                                  - 'Quit' - Allows the user to exit the program and close the GUI.
 					  
 					  
-			'Edit' - 'Set Algorithm' - Same functionality outlined for button (above).
-			______
+                        'Edit' - 'Set Algorithm' - Same functionality outlined for button (above).
+                        ______
 					 
-					 'Set Frequency' - Same functionality outlined for button (above).
+                               - 'Set Frequency' - Same functionality outlined for button (above).
+					 
+		
+                               - 'New Node' - Same functionality outlined for button (above).
 					 
 					 
-					 'New Node' - Same functionality outlined for button (above).
+                               - 'Edit Node' - Allows the user to manipulate the 'id' of a specified
+					 
+                                               node.
+					 				
+                               - 'Delete Node' - Same functionality outlined for button (above).
 					 
 					 
-					 'Edit Node' - Allows the user to manipulate the 'id' of a specified
+                               - 'New Edge' - Same functionality outlined for button (above).
 					 
-					 				node.
+					 
+                               - 'Edit Edge' - Allows the user to manipulate the destination of 
+				
+                                               a specified edge.
 					 				
 					 
-					 'Delete Node' - Same functionality outlined for button (above).
+                               - 'Delete Edge' - Same functionality outlined for button (above).
 					 
 					 
-					 'New Edge' - Same functionality outlined for button (above).
-					 
-					 
-					 'Edit Edge' - Allows the user to manipulate the destination of 
-					 
-					 				a specified edge.
-					 				
-					 
-					 'Delete Edge' - Same functionality outlined for button (above).
-					 
-					 
-			'Tools' - 'Run' - Same functionality outlined for button (above).
-			________
+                        'Tools' - 'Run' - Same functionality outlined for button (above).
+                        ________
 			
-					  'Next' - Same functionality outlined for button (above).
+                                - 'Next' - Same functionality outlined for button (above).
 					  
 					  
-			'Help' - 'README' - Displays instructions on how to properly use the UI 
-			______
-								created for this project, and defines functionality
+                        'Help' - 'README' - Displays instructions on how to properly use the UI 
+                        ______
+                                            created for this project, and defines functionality
 								
-								of any user interactible items.
+                                            of any user interactible items.
 								
 								
-				   - 'About' - Displays a short summary of the creators of this project
+                               - 'About' - Displays a short summary of the creators of this project
 				   
 				   
-				   - 'Javadoc' - Displays the generated Javadoc of the classes contained
+                               - 'Javadoc' - Displays the generated Javadoc of the classes contained
 				   
-				   				within the program's src folder.
+                                             within the program's src folder.
 				   				
 				   				
-				   - 'UML Diagram' - Displays the created UML diagram for all classes
+                               - 'UML Diagram' - Displays the created UML diagram for all classes
 				   
-				   					contained within the program's src folder.
-				   					
-				   					
-				   - 'Test Cases' - Displays the created Test Cases used to test the
-				   
-				   					functionality of the program.
+                                             contained within the program's src folder.

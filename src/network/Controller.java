@@ -191,9 +191,12 @@ public class Controller implements ActionListener {
 			if(nodes.size() == 2){
 				String nodeOneID = nodes.get(0);
 				String nodeTwoID = nodes.get(1);
-				view.addNewEdge(nodeOneID,nodeTwoID);
-				simulation.createLink(nodeOneID, nodeTwoID);
-				
+				if(!simulation.containsEdge(nodeOneID,nodeTwoID)){
+					view.addNewEdge(nodeOneID,nodeTwoID);
+					simulation.createLink(nodeOneID, nodeTwoID);
+				}else{
+					view.errorMessageDialog("Edge Already Exists");
+				}
 			}else{
 				view.errorMessageDialog("Please Select Two Nodes And Try Again");
 			}
@@ -211,9 +214,12 @@ public class Controller implements ActionListener {
 			if(nodes.size() == 2){
 				String nodeOneID = nodes.get(0);
 				String nodeTwoID = nodes.get(1);
-				view.removeEdge(nodeOneID,nodeTwoID);
-				simulation.removeLink(nodeOneID, nodeTwoID);
-				
+				if(simulation.containsEdge(nodeOneID, nodeTwoID)){
+					view.removeEdge(nodeOneID,nodeTwoID);
+					simulation.removeLink(nodeOneID, nodeTwoID);
+				}else{
+					view.errorMessageDialog("No Edges Exist");
+				}
 			}else{
 				view.errorMessageDialog("Please Select Two Nodes And Try Again");
 			}

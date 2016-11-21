@@ -214,7 +214,7 @@ public class GraphicNode {
     
 	/**
 	 * Edit Node ID to given ID
-	 * @param newNodeID
+	 * @param nodeID new ID of node
 	 */
 	public void setNodeID(String nodeID) {
 		this.nodeID = nodeID;
