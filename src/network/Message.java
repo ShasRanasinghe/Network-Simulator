@@ -35,12 +35,7 @@ public class Message {
 		hopCount = 0;
 		current = new ArrayList<Node>();
 		current.add(source);
-		previous = new ArrayList<Node>();
-		
-		running = true;
-		name = "";
-		hopCount = 0;
-		
+		previous = new ArrayList<Node>();		
 	}
 	
 	/**
