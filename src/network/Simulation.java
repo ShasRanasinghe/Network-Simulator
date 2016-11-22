@@ -458,11 +458,11 @@ public class Simulation extends Observable{
 	public String[] calculateAverageHops(){
 
 		//Create a copy of the totalMessageList to be used
-		ArrayList<Message> totalMsgLst= totalMessageList;
+		ArrayList<Message> totalMsgLst = totalMessageList;
 		//List that stores all like pairs of messages
 		ArrayList<String> totalMsgLstPairs = new ArrayList<>();
 		
-		for(int i = 0; i<totalMsgLst.size(); i++){
+		for(int i = 0; i < totalMsgLst.size(); i++){
 			//Temporary list that stores like pairs
 			ArrayList<Message> sameMsgList= new ArrayList<>();
 			sameMsgList.add(totalMsgLst.get(i));
