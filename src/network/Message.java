@@ -203,7 +203,10 @@ public class Message {
 	 */
 	public boolean hasSameSourceAndDestination(Object obj){
 		Message message = (Message)obj;
-		if(this.getSource().equals(message.getSource()) && this.getDestination().equals(message.getDestination())){
+		if(this.getSourceID().equals(message.getSourceID()) && this.getDestinationID().equals(message.getDestinationID())){
+			return true;
+		}
+		if(this.getSourceID().equals(message.getDestinationID()) && this.getDestinationID().equals(message.getSourceID())){
 			return true;
 		}
 		return false;
