@@ -82,7 +82,6 @@ public abstract class Graph {
 	public Message getMessage()
 	{
 		Message temp = messageQueue.get(0);
-		messageQueue.remove(0);
 		return temp;
 	}
 	

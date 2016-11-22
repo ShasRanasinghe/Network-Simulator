@@ -27,9 +27,14 @@ public class ShortestPathAlgorithm extends Graph{
 	// A copy of the messageQueue to remove concurrency issues
 	private ArrayList<Message> currentShortestPathMessageQueue;
 	
-	private Map<String, List<Node>> paths;
+	public Map<String, List<Node>> paths;
 	
 
+	/**
+	 * 
+	 * @param nodes
+	 * @param frequency
+	 */
 	public ShortestPathAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
 		// INHERITED FROM GRAPH!!!!!
@@ -63,6 +68,9 @@ public class ShortestPathAlgorithm extends Graph{
 		createNewMessage();
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	void run(int stepSize) 
 	{
@@ -113,7 +121,9 @@ public class ShortestPathAlgorithm extends Graph{
 	}
 
 
-
+/**
+ * 
+ */
 	@Override
 	int getTotalHops() 
 	{
@@ -121,7 +131,9 @@ public class ShortestPathAlgorithm extends Graph{
 	}
 
 
-
+/**
+ * 
+ */
 	@Override
 	int getNumberOfCurrentMessages() {
 		// TODO Auto-generated method stub
@@ -129,6 +141,11 @@ public class ShortestPathAlgorithm extends Graph{
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * 
+	 * @author alexhoecht
+	 *
+	 */
 	public class Path {
 		
 		private String id;
@@ -143,7 +160,11 @@ public class ShortestPathAlgorithm extends Graph{
 		private Node source;
 		private Node destination;
 		
-		
+		/**
+		 * 
+		 * @param s
+		 * @param d
+		 */
 		public Path(Node s, Node d)
 		{
 			id = "" + s.toString() + d.toString();
@@ -157,6 +178,10 @@ public class ShortestPathAlgorithm extends Graph{
 			destination = d;
 		}
 		
+		/**
+		 * 
+		 * @return
+		 */
 		private List<Node> findPath()
 		{ 
 			Map<Node, Boolean> passed = new HashMap<Node, Boolean>();
@@ -196,6 +221,10 @@ public class ShortestPathAlgorithm extends Graph{
 			return path;
 		}
 		
+		/**
+		 * 
+		 * @return
+		 */
 		public String getiD()
 		{
 			return id;
