@@ -90,6 +90,13 @@ After the Network GUI has been initialized, the user can use the following funct
                         'Reset' - Resets the metrics of the current network so that it can be used once again
                         _______			
                                         without having to rebuild the network.
+                                        
+                                        
+                        'Average Hops' - Calculates the average hops of messages with the same source and destination pair.
+                        _____________			
+                                        Displayed as JTable in a pop up. Can be seen at any time during run time.
+                                        
+                                        Displays source, destination, number of messages with same source/destination and average.                                        
 							
 							
                         'Run' - Runs the currently configured network simulation, and displays each step of
