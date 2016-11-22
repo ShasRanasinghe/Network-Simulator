@@ -16,7 +16,7 @@ public abstract class Graph {
 	// List of Nodes within the graph
 	protected ArrayList<Node> graphNodes;
 	// List of ALL messages created during the simulation
-	protected ArrayList<Message> completeMessageList;
+	protected ArrayList<Message> completeMessageList = new ArrayList<>();
 	// List of messages currently in the network
 	protected ArrayList<Message> messageQueue;
 	
