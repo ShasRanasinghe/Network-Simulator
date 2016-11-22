@@ -475,6 +475,7 @@ public class View implements Observer{
 		menu.add(editNodeMenu);
 		
 		deleteNodeMenu = new JMenuItem("Delete Node");
+		deleteNodeMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,SHORTCUT_MASK));
 		menu.add(deleteNodeMenu);
 
 		newEdgeMenu = new JMenuItem("New Edge");
