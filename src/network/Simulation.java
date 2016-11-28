@@ -439,8 +439,6 @@ public class Simulation extends Observable{
 	 * Resets the simulation
 	 */
 	public void resetSimulation() {
-		frequency = 0;
-		algorithm = null;
 		averageHops = new ArrayList<>();
 		packets = 0;
 		totalMessages = 0;

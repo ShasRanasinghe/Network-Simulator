@@ -770,8 +770,6 @@ public class View implements Observer{
 		tableModel.setColumnCount(0);
 		table.revalidate();
 		rowCount = 0;
-		frequencyMetric.setText("Not Set");
-		algorithmMetric.setText("Not Set");
 		totalMessagesMetric.setText("Not Set");
 
 		setEnabledOptionsWhenStepping(true);
