@@ -286,7 +286,6 @@ public class View implements Observer{
 		list =  new JList<>(messageList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(e -> createPopup());
-		//listBar.add(list);
 		list.setBackground(center.getBackground());
 		list.setCellRenderer(new MessageListCellRenderer());
 		listBar.setPreferredSize(new Dimension(100,0));
@@ -296,8 +295,6 @@ public class View implements Observer{
 		
 		//set list renderer
 		list.setCellRenderer(new MessageListCellRenderer());
-		//commented out from previous implementation
-		//center.add(listBar,BorderLayout.EAST);
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				new JScrollPane(gp), listBar);
 		listBar.setMinimumSize(new Dimension(100,500));
@@ -382,7 +379,6 @@ public class View implements Observer{
 		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER,100,0));
 		stepBackButton = new JButton("Back");
 		stepBackButton.setEnabled(false);
-		stepBackButton.setToolTipText("Not Implemented yet");
 		runButton = new JButton("Run");
 		stepForwardButton = new JButton("Next");
 		
@@ -516,7 +512,6 @@ public class View implements Observer{
 		stepBackMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,SHORTCUT_MASK));
 		menu.add(stepBackMenuItem);
 		stepBackMenuItem.setEnabled(false);
-		stepBackMenuItem.setToolTipText("Not Implemented Yet");
 		
 		//HELP menu
 		menu = new JMenu("Help");
@@ -548,8 +543,6 @@ public class View implements Observer{
 	 */
 	public void stepBack() 
 	{
-		// ALGORITHMS CURRENTLY DO NOT SUPPORT BACK STEPS!!!!!!!!!!!!!!!!!!!!!
-		// WILL BE IMPLEMENTED LATER!!!!!!!!!!!!!!!!!!!!!!!!!
 		if(tableModel.getRowCount()>1){
 			
 			tableModel.removeRow(table.getRowCount() - 1);
