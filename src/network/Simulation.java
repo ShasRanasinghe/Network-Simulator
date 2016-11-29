@@ -1,5 +1,6 @@
 package network;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
@@ -191,12 +192,11 @@ public class Simulation extends Observable{
 	 */
 	public void runAlgorithm(int stepSize)
 	{
-			selectedAlgorithm.run(stepSize);
-			State state = retrieveState();
-			setChanged();
-			notifyObservers(state);
+		selectedAlgorithm.run(stepSize);
+		State state = retrieveState();
+		setChanged();
+		notifyObservers(state);
 	}
-	
 
 	/**
 	 * Retrieves the last state and updates the view with it
@@ -205,6 +205,7 @@ public class Simulation extends Observable{
 		if(stateStack.size() > 1){
 			stateStack.pop();
 			State state = stateStack.pop();
+			stepBackMessages(state.getCurrentMessageList());
 			state.setUndo(true);
 			setChanged();
 			notifyObservers(state);
@@ -213,6 +214,16 @@ public class Simulation extends Observable{
 	}
 	
 	
+	/**
+	 * Steps all the messages in the current list back
+	 * @param currentMessageList list of current messages in the network
+	 */
+	private void stepBackMessages(ArrayList<Message> currentMessageList) {
+		for(Message message : currentMessageList){
+			message.stepBack();
+		}
+	}
+
 	/**
 	 * Retrieves data from the graph to be used in the simulation
 	 */
@@ -566,4 +577,41 @@ public class Simulation extends Observable{
 		return false;
 	}
 
+	/**
+	 * Export the state object into a XML file
+	 * @param graphicNodes list of graphic nodes
+	 * @param graphicEdges list of graphic edges
+	 * @param file name of the file to export to
+	 * @throws Exception Exception thrown when file export failed
+	 */
+	public void exportXML(Object graphicNodes, Object graphicEdges, File file){
+		SaveState saveState = new SaveState();
+		State state = retrieveState();
+		saveState.setState(state);
+		saveState.setGraphicNodes(graphicNodes);
+		saveState.setGraphicEdges(graphicEdges);
+		saveState.setFrequency(frequency);
+		saveState.setAlgorithm(algorithm);
+		saveState.setPackets(packets);
+		saveState.setGraph(selectedAlgorithm);
+		
+		//TODO Export state into an XML file
+	}
+
+	/**
+	 * Import a XML file
+	 * @param file name of the file to import
+	 * @return state Object to be used by the view to update the view
+	 * @throws Exception Exception thrown when file import failed
+	 */
+	public Object importXML(File file){
+		//TODO import state from an XML file
+		SaveState saveState = new SaveState(); //but the object from file in here
+		frequency = saveState.getFrequency();
+		packets = saveState.getPackets();
+		algorithm = saveState.getAlgorithm();
+		selectedAlgorithm = saveState.getGraph();
+		
+		return saveState;
+	}
 }

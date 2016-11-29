@@ -84,6 +84,8 @@ public class View implements Observer{
 	private JMenuItem runMenuItem;
 	private JMenuItem stepForwardMenuItem;
 	private JMenuItem stepBackMenuItem;
+	private JMenuItem exportXML;
+	private JMenuItem importXML;
 	private JSplitPane splitPane;
 	
 	/**
@@ -191,11 +193,13 @@ public class View implements Observer{
 		resetButton.addActionListener(controller);
 		resetButton.putClientProperty(METHOD_SEARCH_STRING, METHODS.RESET_SIMULATION);
 		
-		dialog = new DefaultOptionDialog(frame, "Default");
+		importXML.addActionListener(controller);
+		importXML.putClientProperty(METHOD_SEARCH_STRING, METHODS.IMPORT_XML);
 		
-		//TODO
-		//I DONT LIKE THIS....COME BACK TO THIS
-		//THIS SMALL THING SHOULDNT NEED AN ENTIRE NEW CLASS
+		exportXML.addActionListener(controller);
+		exportXML.putClientProperty(METHOD_SEARCH_STRING, METHODS.EXPORT_XML);
+		
+		dialog = new DefaultOptionDialog(frame, "Default");
 		dialog.addButtonActionListener(controller);
 		dialog.putDefaultClientProperty(METHOD_SEARCH_STRING, METHODS.DEFAULT_NETWORK);
 		dialog.putNewNetworkClientProperty(METHOD_SEARCH_STRING, METHODS.NEW_NETWORK);
@@ -205,7 +209,7 @@ public class View implements Observer{
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////GUI SETUP BEGINS AT THIS POINT./////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Creates the frame and adds layouts
 	 */
@@ -455,6 +459,17 @@ public class View implements Observer{
 		quitMenu.addActionListener(e -> quit());
 		menu.add(quitMenu);
 		
+		JMenu importFile = new JMenu("Import...");
+		importXML = new JMenuItem("XML File");
+		importXML.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,SHORTCUT_MASK));
+		importFile.add(importXML);
+		menu.add(importFile);
+		
+		JMenu exportFile = new JMenu("Export...");
+		exportXML = new JMenuItem("XML File");
+		exportFile.add(exportXML);
+		menu.add(exportFile);
+		
 		//EDIT menu
 		menu = new JMenu("Edit");
 		menuBar.add(menu);
@@ -552,10 +567,7 @@ public class View implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		State state = (State)arg1;
-		updateMessageList(state.getTotalMessageList(),state.isUndo());
-		updateMessageTable(state.getCurrentMessageList());
-		updateTotalMessagesMetrics(state.getTotalMessages());
-		averageHopsList = state.getAverageHopsList();
+		updateFromState(state);
 	}
 	
 	/**
@@ -669,8 +681,6 @@ public class View implements Observer{
 		        frequencyList, // Array of choices
 		        frequencyList[0]); // Initial choice
 	}
-
-	//TODO these two could be be joined to one
 	
 	/**
 	 * Set the algorithm 
@@ -820,9 +830,68 @@ public class View implements Observer{
 		frame.repaint();
 	}
 	
+	/**
+	 * @return the list of graphic edges
+	 */
+	public Object getGraphicEdges() {
+		return gp.getGraphicEdges();
+	}
+
+	/**
+	 * @return list of graphic nodes
+	 */
+	public Object getGraphicNodes() {
+		return gp.getGraphicNodes();
+	}
+	
+
+	/**
+	 * @param obj state object
+	 */
+	@SuppressWarnings("unchecked")
+	public void importXML(Object obj) {
+		SaveState saveState = (SaveState)obj;
+		gp.setGraphicNodes((List<GraphicNode>)saveState.getGraphicNodes());
+		gp.setGraphicEdges((List<GraphicEdge>)saveState.getGraphicEdges());
+		updateFromState(saveState.getState());
+	}
+
+	public File openFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.addChoosableFileFilter(new SimpleFileFilter(new String[] { "xml" },
+	            "XML (*.xml)"));
+		fileChooser.setCurrentDirectory(new File("."));
+		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			return file;
+		}else{
+			return null;
+		}
+	}
+
+	public File saveFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.addChoosableFileFilter(new SimpleFileFilter(new String[] { "xml" },
+	            "XML (*.xml)"));
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setCurrentDirectory(new File("."));
+		if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			return file;
+		}else{
+			return null;
+		}
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////VIEW HELPER METHODS//////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	private void updateFromState(State state){
+		updateMessageList(state.getTotalMessageList(),state.isUndo());
+		updateMessageTable(state.getCurrentMessageList());
+		updateTotalMessagesMetrics(state.getTotalMessages());
+		averageHopsList = state.getAverageHopsList();
+	}
 	
 	/**
 	 * Creates the table with the nodes list
@@ -1102,5 +1171,4 @@ public class View implements Observer{
 		      System.exit(0);
 		}
 	}
-	
 }
