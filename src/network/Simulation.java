@@ -2,8 +2,8 @@ package network;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
-import java.util.Stack;
 
 
 /**
@@ -33,7 +33,9 @@ public class Simulation extends Observable{
 	public ArrayList<Message> totalMessageList;
 	public ArrayList<Message> currentMessageList;
 	
-	private Stack<State> stateStack;
+	private List<State> stateStack;
+	private int stackPosition;
+	private boolean useAlgorithm;
 	
 	/**
 	 * Constructor initializes the simulation
@@ -48,7 +50,8 @@ public class Simulation extends Observable{
 		totalMessageList = new ArrayList<Message>();
 		currentMessageList = new ArrayList<Message>();
 		selectedAlgorithm = null;
-		stateStack = new Stack<>();
+		stateStack = new ArrayList<>();
+		useAlgorithm = true;
 	}
 	
 	/**
@@ -194,22 +197,46 @@ public class Simulation extends Observable{
 	{
 		selectedAlgorithm.run(stepSize);
 		State state = retrieveState();
+		stateStack.add(state);
+		stackPosition = stateStack.size()-1;
 		setChanged();
 		notifyObservers(state);
+	}
+	
+	public void stepForward(int stepSize){
+		if(useAlgorithm){
+			runAlgorithm(stepSize);
+		}else{
+			stackPosition ++;
+			State state = stateStack.get(stackPosition);
+			if(!(stateStack.size() == 1 || stackPosition == 0)){
+				stepForwardMessages(state.getCurrentMessageList(), stateStack.get(stackPosition-1).getCurrentMessageList());
+			}
+			state.setUndo(false);
+			setChanged();
+			notifyObservers(state);
+
+			if(stackPosition == stateStack.size()-1){
+				useAlgorithm = true;
+			}
+		}
 	}
 
 	/**
 	 * Retrieves the last state and updates the view with it
 	 */
 	public void stepBack() {
-		if(stateStack.size() > 1){
-			stateStack.pop();
-			State state = stateStack.pop();
+		if(stateStack.size() > 1 && stackPosition != 0){
+			stackPosition --;
+			State state = stateStack.get(stackPosition);
 			stepBackMessages(state.getCurrentMessageList());
+			useAlgorithm = false;
 			state.setUndo(true);
 			setChanged();
 			notifyObservers(state);
-			stateStack.push(state);
+		}else{
+			stackPosition--;
+			useAlgorithm = false;
 		}
 	}
 	
@@ -221,6 +248,22 @@ public class Simulation extends Observable{
 	private void stepBackMessages(ArrayList<Message> currentMessageList) {
 		for(Message message : currentMessageList){
 			message.stepBack();
+		}
+	}
+	
+	/**
+	 * Steps all the messages in the current list forward
+	 * @param currentMessageList list of current messages in the network
+	 * @param prevCurrentMessageList previous list of current messages to compare
+	 */
+	private void stepForwardMessages(ArrayList<Message> currentMessageList, ArrayList<Message> prevCurrentMessageList) {	
+		for(Message message : prevCurrentMessageList){
+			if(!currentMessageList.contains(message)){
+				message.setRunning(false);
+			}
+		}
+		for(Message message : currentMessageList){
+			message.stepForward(!prevCurrentMessageList.contains(message));
 		}
 	}
 
@@ -249,7 +292,6 @@ public class Simulation extends Observable{
 		String[] averageHopsList = calculateAverageHops();
 		state.setAverageHopsList(averageHopsList);
 		
-		stateStack.push(state);
 		return state;
 	}
 	
@@ -457,6 +499,7 @@ public class Simulation extends Observable{
 		currentMessageList.clear();
 		selectedAlgorithm = null;
 		stateStack.clear();
+		useAlgorithm = true;
 	}
 	
 	/**

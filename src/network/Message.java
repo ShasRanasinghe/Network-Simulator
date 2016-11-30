@@ -160,16 +160,19 @@ public class Message {
 	
 	/**
 	 * Used to move the message forward once stepped back
-	 * returns false, if we have reached the end
+	 * @param firstTime true if its the first time the message is being seen
+	 * @return returns false, if we have reached the end
 	 */
-	public boolean stepForward(){
-		if(currentListPosition == listOfCurrent.size()){
-			if(listOfCurrent.get(listOfCurrent.size()).get(0).equals(destination)){
+	public boolean stepForward(boolean firstTime){
+		if(currentListPosition == listOfCurrent.size()-1){
+			if(listOfCurrent.get(listOfCurrent.size()-1).get(0).equals(destination)){
 				running = false;
 			}
 			return false;
 		}
-		currentListPosition++;
+		if(!firstTime){
+			currentListPosition++;
+		}
 		return true;
 	}
 	

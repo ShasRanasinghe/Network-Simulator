@@ -548,9 +548,9 @@ public class View implements Observer{
 			tableModel.removeRow(table.getRowCount() - 1);
 			tableModel.removeRow(table.getRowCount() - 1);
 			table.changeSelection(table.getRowCount() - 1, 0, false, false);
-			rowCount = rowCount - 1;
+			rowCount = rowCount - 2;
 		}else{
-			if(tableModel.getRowCount()==1){tableModel.removeRow(0);}
+			if(tableModel.getRowCount() == 1){tableModel.removeRow(0);}
 			stepBackButton.setEnabled(false);
 			stepBackMenuItem.setEnabled(false);
 			messageList.clear();
@@ -962,7 +962,7 @@ public class View implements Observer{
 		rowCount++;
 		
 		ArrayList<ArrayList<String>> allMessages = new ArrayList<>();
-		for(int i = 0;i < tableModel.getColumnCount();i++){
+		for(int i = 0;i < tableModel.getColumnCount()-1;i++){
 			allMessages.add(i, new ArrayList<String>());
 		}
 		
