@@ -1,8 +1,10 @@
 package network;
 
 import static network.Constants.*;
-import java.awt.Color;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -15,10 +17,15 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
+import javax.swing.border.Border;
 
 /**
  * GraphicNode represents a node in a graph.
@@ -31,6 +38,8 @@ public class GraphicNode {
     private Color color;
     private boolean selected = false;
     private Rectangle b = new Rectangle();
+    
+    private ArrayList<JDialog> dialogList;
 
 	/**
 	 * @param nodeID Node id of the node to be drawn
@@ -227,28 +236,26 @@ public class GraphicNode {
 		this.nodeID = nodeID;
 	}
 	
+	/**
+	 * Produces 50 dialogs of an image
+	 */
 	private void easterEggHunt() {
 		Random random = new Random();
- 	    ArrayList<JDialog> dialogList = new ArrayList<>();
+ 	    dialogList = new ArrayList<>();
  	    for(int i = 0;i<50;i++){
  	    	dialogList.add(openPicDialog(random));
  	    }
  	    int response = JOptionPane.showConfirmDialog(null,EASTER_EGG_MESSAGE,"Easter Egg",JOptionPane.PLAIN_MESSAGE,JOptionPane.CLOSED_OPTION);
  	    if(response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION){
- 	    	for(JDialog dialog: dialogList){
- 	    		dialog.setVisible(false);
- 	    		dialog.dispose();
- 	    		try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
- 	    	}
- 	    	System.exit(0);
+ 	    	scaryProgressBar();
  	    }
 	}
 	
-	public JDialog openPicDialog(Random random){
+	/**
+	 * @param random Random number generator
+	 * @return return a dialog at a random location on the screen
+	 */
+	private JDialog openPicDialog(Random random){
 		JDialog dialog = new JDialog();
 	    JLabel label;
 		try {
@@ -262,4 +269,62 @@ public class GraphicNode {
 	    dialog.setLocation(new Point(random.nextInt(SCREEN_DIMENTIONS.width),random.nextInt(SCREEN_DIMENTIONS.height)));
 	    return dialog;
 	}
+	
+	/**
+	 * Create a fake progress bar
+	 */
+	private void scaryProgressBar(){
+		JFrame f = new JFrame("WARNING");
+	    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    Container content = f.getContentPane();
+	    JProgressBar progressBar = new JProgressBar(0,100);
+	    progressBar.setStringPainted(true);
+	    Border border = BorderFactory.createTitledBorder("Deleting C:\\ Drive...");
+	    progressBar.setBorder(border);
+	    content.add(progressBar, BorderLayout.NORTH);
+	    f.setLocation(600,400);
+	    f.setSize(300, 100);
+	    f.setVisible(true);
+		
+	    new ProgressWorker(progressBar, 40).execute();
+	}
+	
+	/**
+	 * @author Shasthra Ranasinghe
+	 * Allows for component to run on the background
+	 *
+	 */
+	public class ProgressWorker extends SwingWorker<Void, Integer> {
+
+        private int delay;
+        private JProgressBar pb;
+
+        public ProgressWorker(JProgressBar progressBar, int delay) {
+            this.pb = progressBar;
+            this.delay = delay;
+        }
+
+        @Override
+        protected void process(List<Integer> chunks) {
+            // Back in the EDT...
+            pb.setValue(chunks.get(chunks.size() - 1)); // only care about the last one...
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            for (int index = 0; index <= 50; index++) {
+                publish(index*2);
+                dialogList.get(index).setVisible(false);
+                dialogList.get(index).dispose();
+                Thread.sleep(delay);
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            System.exit(0);
+        }
+
+    }
 }
