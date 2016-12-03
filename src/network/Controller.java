@@ -2,6 +2,7 @@ package network;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -83,8 +84,40 @@ public class Controller implements ActionListener {
 		case RESET_SIMULATION:
 			resetSimulation();
 			break;
+		case IMPORT_XML:
+			importXML();
+			break;
+		case EXPORT_XML:
+			exportXML();
+			break;
 		default:
 			break;
+		}
+	}
+
+	/**
+	 * Saves the graphic nodes and edges in a state object and exports to an XML file
+	 */
+	private void exportXML() {
+		File file = view.saveFile();
+		if(file == null){
+			view.setStatus("Export Incomplete");
+		}else{
+			simulation.exportXML(view.getGraphicNodes(), view.getGraphicEdges(), file);
+			view.setStatus("Export Complete");
+		}
+	}
+
+	/**
+	 * Imports an XML file and sets the view and model with the information
+	 */
+	private void importXML() {
+		File file = view.openFile();
+		if(file == null){
+			view.setStatus("Import Incomplete");
+		}else{
+			view.importXML(simulation.importXML(file));
+			view.setStatus("Import Complete");
 		}
 	}
 
@@ -245,7 +278,6 @@ public class Controller implements ActionListener {
 					view.errorMessageDialog(Constants.NODE_ALREADY_EXISTS);
 				}
 			}
-			
 		}
 	}
 

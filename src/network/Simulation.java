@@ -1,8 +1,9 @@
 package network;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
-import java.util.Stack;
 
 
 /**
@@ -32,7 +33,9 @@ public class Simulation extends Observable{
 	public ArrayList<Message> totalMessageList;
 	public ArrayList<Message> currentMessageList;
 	
-	private Stack<State> stateStack;
+	private List<State> stateStack;
+	private int stackPosition;
+	private boolean useAlgorithm;
 	
 	/**
 	 * Constructor initializes the simulation
@@ -47,7 +50,8 @@ public class Simulation extends Observable{
 		totalMessageList = new ArrayList<Message>();
 		currentMessageList = new ArrayList<Message>();
 		selectedAlgorithm = null;
-		stateStack = new Stack<>();
+		stateStack = new ArrayList<>();
+		useAlgorithm = true;
 	}
 	
 	/**
@@ -191,28 +195,78 @@ public class Simulation extends Observable{
 	 */
 	public void runAlgorithm(int stepSize)
 	{
-			selectedAlgorithm.run(stepSize);
-			State state = retrieveState();
-			setChanged();
-			notifyObservers(state);
+		selectedAlgorithm.run(stepSize);
+		State state = retrieveState();
+		stateStack.add(state);
+		stackPosition = stateStack.size()-1;
+		setChanged();
+		notifyObservers(state);
 	}
 	
+	public void stepForward(int stepSize){
+		if(useAlgorithm){
+			runAlgorithm(stepSize);
+		}else{
+			stackPosition ++;
+			State state = stateStack.get(stackPosition);
+			if(!(stateStack.size() == 1 || stackPosition == 0)){
+				stepForwardMessages(state.getCurrentMessageList(), stateStack.get(stackPosition-1).getCurrentMessageList());
+			}
+			state.setUndo(false);
+			setChanged();
+			notifyObservers(state);
+
+			if(stackPosition == stateStack.size()-1){
+				useAlgorithm = true;
+			}
+		}
+	}
 
 	/**
 	 * Retrieves the last state and updates the view with it
 	 */
 	public void stepBack() {
-		if(stateStack.size() > 1){
-			stateStack.pop();
-			State state = stateStack.pop();
+		if(stateStack.size() > 1 && stackPosition != 0){
+			stackPosition --;
+			State state = stateStack.get(stackPosition);
+			stepBackMessages(state.getCurrentMessageList());
+			useAlgorithm = false;
 			state.setUndo(true);
 			setChanged();
 			notifyObservers(state);
-			stateStack.push(state);
+		}else{
+			stackPosition--;
+			useAlgorithm = false;
 		}
 	}
 	
 	
+	/**
+	 * Steps all the messages in the current list back
+	 * @param currentMessageList list of current messages in the network
+	 */
+	private void stepBackMessages(ArrayList<Message> currentMessageList) {
+		for(Message message : currentMessageList){
+			message.stepBack();
+		}
+	}
+	
+	/**
+	 * Steps all the messages in the current list forward
+	 * @param currentMessageList list of current messages in the network
+	 * @param prevCurrentMessageList previous list of current messages to compare
+	 */
+	private void stepForwardMessages(ArrayList<Message> currentMessageList, ArrayList<Message> prevCurrentMessageList) {	
+		for(Message message : prevCurrentMessageList){
+			if(!currentMessageList.contains(message)){
+				message.setRunning(false);
+			}
+		}
+		for(Message message : currentMessageList){
+			message.stepForward(!prevCurrentMessageList.contains(message));
+		}
+	}
+
 	/**
 	 * Retrieves data from the graph to be used in the simulation
 	 */
@@ -238,7 +292,6 @@ public class Simulation extends Observable{
 		String[] averageHopsList = calculateAverageHops();
 		state.setAverageHopsList(averageHopsList);
 		
-		stateStack.push(state);
 		return state;
 	}
 	
@@ -439,8 +492,6 @@ public class Simulation extends Observable{
 	 * Resets the simulation
 	 */
 	public void resetSimulation() {
-		frequency = 0;
-		algorithm = null;
 		averageHops = new ArrayList<>();
 		packets = 0;
 		totalMessages = 0;
@@ -448,6 +499,7 @@ public class Simulation extends Observable{
 		currentMessageList.clear();
 		selectedAlgorithm = null;
 		stateStack.clear();
+		useAlgorithm = true;
 	}
 	
 	/**
@@ -568,4 +620,41 @@ public class Simulation extends Observable{
 		return false;
 	}
 
+	/**
+	 * Export the state object into a XML file
+	 * @param graphicNodes list of graphic nodes
+	 * @param graphicEdges list of graphic edges
+	 * @param file name of the file to export to
+	 * @throws Exception Exception thrown when file export failed
+	 */
+	public void exportXML(Object graphicNodes, Object graphicEdges, File file){
+		SaveState saveState = new SaveState();
+		State state = retrieveState();
+		saveState.setState(state);
+		saveState.setGraphicNodes(graphicNodes);
+		saveState.setGraphicEdges(graphicEdges);
+		saveState.setFrequency(frequency);
+		saveState.setAlgorithm(algorithm);
+		saveState.setPackets(packets);
+		saveState.setGraph(selectedAlgorithm);
+		
+		//TODO Export state into an XML file
+	}
+
+	/**
+	 * Import a XML file
+	 * @param file name of the file to import
+	 * @return state Object to be used by the view to update the view
+	 * @throws Exception Exception thrown when file import failed
+	 */
+	public Object importXML(File file){
+		//TODO import state from an XML file
+		SaveState saveState = new SaveState(); //but the object from file in here
+		frequency = saveState.getFrequency();
+		packets = saveState.getPackets();
+		algorithm = saveState.getAlgorithm();
+		selectedAlgorithm = saveState.getGraph();
+		
+		return saveState;
+	}
 }

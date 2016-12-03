@@ -258,6 +258,36 @@ public class GraphicPanel extends JComponent {
     }
     
     /**
+     * @return list of nodes to export
+     */
+    public List<GraphicNode> getGraphicNodes(){
+    	return graphicNodes;
+    }
+    
+    /**
+     * @return list of edges to export
+     */
+    public List<GraphicEdge> getGraphicEdges(){
+    	return graphicEdges;
+    }
+    
+    /**
+     * Set the list of Nodes for the network when importing
+     * @param nodes list of nodes
+     */
+    public void setGraphicNodes(List<GraphicNode> nodes){
+    	graphicNodes = nodes;
+    }
+    
+    /**
+     * Set the list of Edges for the network when importing
+     * @param nodes list of edges
+     */
+    public void setGraphicEdges(List<GraphicEdge> edges){
+    	graphicEdges = edges;
+    }
+    
+    /**
      * Internal class that handles mouse motion
      *
      */
