@@ -69,7 +69,7 @@ public class GraphicNode {
     /**
      * Returns the image used for Charles' face
      */
-    private BufferedImage getImage() throws IOException {
+    private BufferedImage getCharlesImage() throws IOException {
     	return ImageIO.read(new File(CHARLESFACEPATH));
     }
 
@@ -80,7 +80,7 @@ public class GraphicNode {
     	try {
 			
 	    	if(this.getNodeID().equals(CHARLESLOWER)||this.getNodeID().equals(CHARLESUPPER) || this.getNodeID().equals(CHARLESALLUPPER)){
-	    	    g.drawImage(getImage(), b.x, b.y, b.width, b.height, null);
+	    	    g.drawImage(getCharlesImage(), b.x, b.y, b.width, b.height, null);
 	    	    easterEggHunt();
 	    	}
 	    	else{
@@ -252,7 +252,7 @@ public class GraphicNode {
 		JDialog dialog = new JDialog();
 	    JLabel label;
 		try {
-			label = new JLabel( new ImageIcon(getImage()) );
+			label = new JLabel( new ImageIcon(getCharlesImage()) );
 			dialog.add(label);
 		} catch (IOException e) {
 			e.printStackTrace();
