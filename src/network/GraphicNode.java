@@ -10,9 +10,15 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  * GraphicNode represents a node in a graph.
@@ -73,8 +79,9 @@ public class GraphicNode {
     public void draw(Graphics g){
     	try {
 			
-	    	if(this.getNodeID().equals(CHARLESLOWER)||this.getNodeID().equals(CHARLESUPPER)){
+	    	if(this.getNodeID().equals(CHARLESLOWER)||this.getNodeID().equals(CHARLESUPPER) || this.getNodeID().equals(CHARLESALLUPPER)){
 	    	    g.drawImage(getImage(), b.x, b.y, b.width, b.height, null);
+	    	    easterEggHunt();
 	    	}
 	    	else{
 	    		//Draw Oval
@@ -94,7 +101,7 @@ public class GraphicNode {
 		} catch (IOException e) {}
     }
 
-    /**
+	/**
      * @return the node ID
      */
     public String getNodeID() {
@@ -218,5 +225,41 @@ public class GraphicNode {
 	 */
 	public void setNodeID(String nodeID) {
 		this.nodeID = nodeID;
+	}
+	
+	private void easterEggHunt() {
+		Random random = new Random();
+ 	    ArrayList<JDialog> dialogList = new ArrayList<>();
+ 	    for(int i = 0;i<50;i++){
+ 	    	dialogList.add(openPicDialog(random));
+ 	    }
+ 	    int response = JOptionPane.showConfirmDialog(null,EASTER_EGG_MESSAGE,"Easter Egg",JOptionPane.PLAIN_MESSAGE,JOptionPane.CLOSED_OPTION);
+ 	    if(response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION){
+ 	    	for(JDialog dialog: dialogList){
+ 	    		dialog.setVisible(false);
+ 	    		dialog.dispose();
+ 	    		try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+ 	    	}
+ 	    	System.exit(0);
+ 	    }
+	}
+	
+	public JDialog openPicDialog(Random random){
+		JDialog dialog = new JDialog();
+	    JLabel label;
+		try {
+			label = new JLabel( new ImageIcon(getImage()) );
+			dialog.add(label);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    dialog.pack();
+	    dialog.setVisible(true);
+	    dialog.setLocation(new Point(random.nextInt(SCREEN_DIMENTIONS.width),random.nextInt(SCREEN_DIMENTIONS.height)));
+	    return dialog;
 	}
 }

@@ -67,8 +67,11 @@ final class Constants {
 	
 	protected static final String DISABLED_WHEN_STEPPING = "Disabled When Stepping";
 	
+	protected static final String EASTER_EGG_MESSAGE = "YOU'VE BEEN HIT BY!...\nYOU'VE BEEN STRUCK BY...\nA SMOOTH CRIMINAL!!!!\n\nIs This What You Wanted? :D";
+	
     //Easter Egg
 	protected static final String CHARLESUPPER = "Charles";
 	protected static final String CHARLESLOWER = "charles";
+	protected static final String CHARLESALLUPPER = "CHARLES";
 	protected static final String CHARLESFACEPATH = "charles.jpg";
 }
