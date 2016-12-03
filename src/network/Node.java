@@ -2,6 +2,11 @@ package network;
 
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * 
  * @author Alex Hoecht, Andrew Ward, Mohamed Dahrouj, Shasthra Ranasinghe
@@ -10,15 +15,26 @@ import java.util.ArrayList;
  * Class Node implements a possible routing location and contains a List of possible neighbors that may be "visited"
  */
 
-public class Node 
-{
+@XmlRootElement(name = "node")
+@XmlAccessorType (XmlAccessType.FIELD)
+public class Node {
+
 	///////////////////////////////////////////////////////////////////////////////////
 	//			NOTE: POSSIBLE OTHER IMPLEMENTAION COULD HAVE THE HOOD FILLED WITH OTHER NODES
 	//////////////////////////////////////////////////////////////////////////////////
+	@XmlTransient
 	private ArrayList<Node> thehood; // an ArrayList of routes
+	
 	private String id; // the "ID" for the vertex
+	private String hoodIDs;
 	
-	
+	/**
+	 * Default constructor
+	 */
+	public Node()
+	{
+		
+	}
 	
 	/**
 	 * @param id Creates a Vertex with a String id initialize an arraylist of edges(Neighbors)
@@ -27,6 +43,8 @@ public class Node
 	{
 		this.id = id;
 		this.thehood = new ArrayList<Node>();
+		hoodIDs = "";
+		
 	}
 	
 	/**
@@ -39,19 +57,33 @@ public class Node
 		this.thehood = node.getNeighbors();
 	}
 	
+	/**
+	 * @return The hood ids
+	 */
+	public String getHoodIDs()
+	{
+		return hoodIDs.toString();
+	}
 	
 	/**
-	 * @param neighbor This method adds an edge to a Vertex
+	 * @return Node ID
 	 */
-	public void addNeighbor(Node neighbor)
-	{
-		// if the edge object is already in the neighborhood return
-		if(thehood.contains(neighbor))
-		{
-			return;
-		}
-		//otherwise add the edge to the arrayList of neighbors 
-		thehood.add(neighbor);
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id ID to be set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @param hoodIDs Hood to be set
+	 */
+	public void setHoodIDs(String hoodIDs) {
+		this.hoodIDs = hoodIDs;
 	}
 	
 	/**
@@ -91,6 +123,26 @@ public class Node
 		return thehood.size();
 	}
 	
+	/**
+	 * @param neighbor This method adds an edge to a Vertex
+	 */
+	public void addNeighbor(Node neighbor)
+	{
+		// if the edge object is already in the neighborhood return
+		if(thehood.contains(neighbor))
+		{
+			return;
+		}
+		//otherwise add the edge to the arrayList of neighbors 
+		thehood.add(neighbor);
+		//Append to neighbor string list
+		hoodIDs = hoodIDs + neighbor.getId()+" ";
+	}
+	
+	
+	/**
+	 * @param newNodeID New Node ID
+	 */
 	public void setNodeID(String newNodeID) {
 		this.id = newNodeID;
 	}
@@ -102,7 +154,7 @@ public class Node
 	{
 		return thehood;
 	}
-	
+
 	@Override
 	public String toString()
 	{

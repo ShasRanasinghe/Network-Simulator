@@ -20,6 +20,7 @@ import java.util.Observer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -844,11 +845,13 @@ public class View implements Observer{
 	@SuppressWarnings("unchecked")
 	public void importXML(Object obj) {
 		SaveState saveState = (SaveState)obj;
-		gp.setGraphicNodes((List<GraphicNode>)saveState.getGraphicNodes());
-		gp.setGraphicEdges((List<GraphicEdge>)saveState.getGraphicEdges());
-		updateFromState(saveState.getState());
+		//gp.setGraphicNodes((List<GraphicNode>)saveState.getGraphicNodes());
+		//gp.setGraphicEdges((List<GraphicEdge>)saveState.getGraphicEdges());
 	}
 
+	/**
+	 * @return File to be opened
+	 */
 	public File openFile() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.addChoosableFileFilter(new SimpleFileFilter(new String[] { "xml" },
@@ -862,14 +865,20 @@ public class View implements Observer{
 		}
 	}
 
+	/**
+	 * @return File to be saved
+	 */
 	public File saveFile() {
 		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.addChoosableFileFilter(new SimpleFileFilter(new String[] { "xml" },
-	            "XML (*.xml)"));
+		FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("XML File (*.xml)", "xml");
+		fileChooser.setFileFilter(xmlFilter);
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		fileChooser.setCurrentDirectory(new File("."));
 		if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
+			File file = new File(fileChooser.getSelectedFile().getName() + ".xml");
+			
+					
+			
 			return file;
 		}else{
 			return null;
