@@ -19,13 +19,6 @@ import java.util.*;
 
 public class CustomAlgorithm extends Graph{
 	
-	// Total hops that occur during the RANDOM algorithm
-	private int totalCustomHops;
-	// A copy of the messageQueue to remove concurrency issues
-	private ArrayList<Message> currentCustomMessageQueue;
-	
-	// ALL OTHER INSTANCE VARIABLES INHERITED FROM GRAPH!!!!
-	
 	
 	/**
 	 * @param nodes list of nodes in the network
@@ -33,21 +26,12 @@ public class CustomAlgorithm extends Graph{
 	 */
 	public CustomAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
-		// INHERITED FROM GRAPH!!!!!
 		// List of Nodes within the graph
 		this.graphNodes = nodes;
-		// List of ALL messages created during the simulation
-		this.completeMessageList = new ArrayList<Message>();
-		// List of messages currently in the network
-		this.messageQueue = new ArrayList<Message>();
 		// The rate at which messages will be created
 		this.creationFrequency = frequency;
 		
-		// INDEPENDENT CUSTOM ALGORITHM VARIABLES
-		this.totalCustomHops = 0;
-		this.currentCustomMessageQueue = new ArrayList<Message>();
-		
-		// Create the first message
+		// Create the first messages
 		createNewMessage();
 	}
 	
@@ -57,16 +41,15 @@ public class CustomAlgorithm extends Graph{
 	 */
 	public void run(int stepSize)
 	{
-		// Step 1) Loop n times, where n is = to the stepSize
-		int n = 0;
-		while(n != stepSize)
+		// Step 1) Loop n times, where n is = to the step
+		while(steps != stepSize)
 		{
 			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
-			currentCustomMessageQueue.clear();
-			currentCustomMessageQueue.addAll(messageQueue);
+			currentMessageQueue.clear();
+			currentMessageQueue.addAll(messageQueue);
 			
 			// Step 1.2) Iterate through the currentMessageQueue
-			for(Message message : currentCustomMessageQueue)
+			for(Message message : currentMessageQueue)
 			{
 				// Step 1.2.1) Choose a random edge of the current message's location, and save the destination of the edge
 				//											(IN CUSTOM THERE IS ONLY ONE NODE IN THE CURRENT ARRAY LIST)
@@ -86,7 +69,7 @@ public class CustomAlgorithm extends Graph{
 				
 				// Step 1.2.2) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrementHopCount();
-				totalCustomHops++;
+				totalHops++;
 				
 				// Step 1.2.3) Check to see if the message should create a new message
 				checkFrequency(message);
@@ -115,24 +98,8 @@ public class CustomAlgorithm extends Graph{
 					message.setCurrent(newCurrent);
 				}
 			}
-			n++;
+			steps++;
 		}
-	}
-	
-	/**
-	 * @return the total amount of hops it took the custom algorithm to terminate
-	 */
-	public int getTotalHops()
-	{
-		return totalCustomHops;
-	}
-	
-	/* (non-Javadoc)
-	 * @see network.Graph#getNumberOfCurrentMessages()
-	 */
-	public int getNumberOfCurrentMessages()
-	{
-		return messageQueue.size();
 	}
 
 }

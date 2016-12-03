@@ -170,7 +170,7 @@ public class Controller implements ActionListener {
 		if (simulation.networkExists()) {
 			if (simulation.checkFullInitialization()) {
 				view.prepairForSimulation(simulation.getStringArrayNodes());
-				simulation.runAlgorithm(1);
+				simulation.stepForward(1);
 				if (!simulation.isRunning()) {
 					view.simulationComplete();
 				}

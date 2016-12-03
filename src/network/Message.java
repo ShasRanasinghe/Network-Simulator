@@ -238,4 +238,9 @@ public class Message {
 		return returnString;
 	}
 	
+	public boolean stepForward(boolean firstTime)
+	{
+		if(current)
+	}
+	
 }

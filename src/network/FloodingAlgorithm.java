@@ -17,27 +17,14 @@ import java.util.*;
 
 public class FloodingAlgorithm extends Graph{
 	
-	// Total hops that occur during the RANDOM algorithm
-	private int totalFloodingHops;
-	// A copy of the messageQueue to remove concurrency issues
-	private ArrayList<Message> currentFloodingMessageQueue;
-	
-	
+		
 
 	public FloodingAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
-		// INHERITED FROM GRAPH!!!!!
 		// List of Nodes within the graph
 		this.graphNodes = nodes;
-		// List of ALL messages created during the simulation
-		this.completeMessageList = new ArrayList<Message>();
-		// List of messages currently in the network
-		this.messageQueue = new ArrayList<Message>();
 		// The rate at which messages will be created
 		this.creationFrequency = frequency;
-		
-		totalFloodingHops = 0;
-		currentFloodingMessageQueue = new ArrayList<Message>();
 		
 		createNewMessage();
 	}
@@ -45,21 +32,20 @@ public class FloodingAlgorithm extends Graph{
 
 	void run(int stepSize) 
 	{
-		// Step 1) Loop n times, where n is = to the stepSize
-		int n = 0;
-		while(n != stepSize)
+		// Step 1) Loop n times, where n is = to the step
+		while(steps != stepSize)
 		{
 			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
-			currentFloodingMessageQueue.clear();
-			currentFloodingMessageQueue.addAll(messageQueue);
+			currentMessageQueue.clear();
+			currentMessageQueue.addAll(messageQueue);
 			
 			// Step 1.2) Iterate through the currentMessageQueue
-			for(Message message : currentFloodingMessageQueue)
+			for(Message message : currentMessageQueue)
 			{
 
 				// Step 1.2.1) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrementHopCount();
-				totalFloodingHops++;
+				totalHops++;
 				
 				// Step 1.2.2) Check to see if the message should create a new message
 				checkFrequency(message);
@@ -96,21 +82,9 @@ public class FloodingAlgorithm extends Graph{
 				message.setCurrent(newHood);
 				
 			}
-			n++;
+			steps++;
 		}
 		
-	}
-
-	
-	int getTotalHops() 
-	{
-		return totalFloodingHops;
-	}
-
-	
-	int getNumberOfCurrentMessages() 
-	{
-		return messageQueue.size();
 	}
 
 }

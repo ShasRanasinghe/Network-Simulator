@@ -12,17 +12,24 @@ import java.util.*;
 public abstract class Graph {
 	
 	// VARIABLES TO BE SHARED BY ALL ALGORITHMS
-
+	
 	// List of Nodes within the graph
 	protected ArrayList<Node> graphNodes;
 	// List of ALL messages created during the simulation
 	protected ArrayList<Message> completeMessageList = new ArrayList<>();
 	// List of messages currently in the network
-	protected ArrayList<Message> messageQueue;
-	
+	protected ArrayList<Message> messageQueue = new ArrayList<>();
+	// A dynamic copy of the messageQueue to remove concurrency issues
+	protected ArrayList<Message> currentMessageQueue = new ArrayList<Message>();
+	// Total hops that occur during the algorithm
+	protected int totalHops = 0;
+	// A message is created each time a message completes x amount of hops
 	protected int creationFrequency;
-	
+	// The starting amount of messages in the network
 	protected int messageCount = 0;
+	// The amount of steps completed
+	protected int steps = 0;
+	// Used to name each created meassage
 	protected String message = "Message";
 	
 	
@@ -116,6 +123,22 @@ public abstract class Graph {
 		}
 	}
 	
+	/**
+	 * @return Total hops taken in algorithm
+	 */
+	public int getTotalHops()
+	{
+		return totalHops;
+	}
+	
+	/**
+	 * @return The current number of messages in algorithm
+	 */
+	public int getNumberOfCurrentMessages()
+	{
+		return messageQueue.size();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		METHODS THAT HAVE SPECIFIC BEHAVIOR DEPENDING ON THE ALGORITHM										 //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,13 +147,6 @@ public abstract class Graph {
 	 * @param stepSize Step size used when running algorithm against graph
 	 */
 	abstract void run(int stepSize);
-	/**
-	 * @return Total hops taken in algorithm
-	 */
-	abstract int getTotalHops();
-	/**
-	 * @return The current number of messages in algorithm
-	 */
-	abstract int getNumberOfCurrentMessages();
+	
 	
 }
