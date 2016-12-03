@@ -279,9 +279,4 @@ public class Message {
 		return listOfCurrent;
 	}
 	
-	public boolean stepForward(boolean firstTime)
-	{
-		if(current)
-	}
-	
 }
