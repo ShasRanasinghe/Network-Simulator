@@ -62,6 +62,7 @@ public class ShortestPathAlgorithm extends Graph{
 	void run(int stepSize) 
 	{
 		// Step 1) Loop n times, where n is = to the step
+		steps = 0;
 		while(steps != stepSize)
 		{
 			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)

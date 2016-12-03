@@ -16,9 +16,9 @@ public abstract class Graph {
 	// List of Nodes within the graph
 	protected ArrayList<Node> graphNodes;
 	// List of ALL messages created during the simulation
-	protected ArrayList<Message> completeMessageList = new ArrayList<>();
+	protected ArrayList<Message> completeMessageList = new ArrayList<Message>();
 	// List of messages currently in the network
-	protected ArrayList<Message> messageQueue = new ArrayList<>();
+	protected ArrayList<Message> messageQueue = new ArrayList<Message>();
 	// A dynamic copy of the messageQueue to remove concurrency issues
 	protected ArrayList<Message> currentMessageQueue = new ArrayList<Message>();
 	// Total hops that occur during the algorithm
@@ -28,7 +28,7 @@ public abstract class Graph {
 	// The starting amount of messages in the network
 	protected int messageCount = 0;
 	// The amount of steps completed
-	protected int steps = 0;
+	protected int steps;
 	// Used to name each created meassage
 	protected String message = "Message";
 	
@@ -111,7 +111,7 @@ public abstract class Graph {
 	 * 
 	 * @param message The current message the algorithm is handling 
 	 */
-	protected void checkFrequency(Message message)
+	public void checkFrequency(Message message)
 	{
 		// Retrieve the amount of hops the current message has completed
 		int currentHops = message.getHopCount();

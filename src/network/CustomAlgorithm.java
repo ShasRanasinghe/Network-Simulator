@@ -42,6 +42,8 @@ public class CustomAlgorithm extends Graph{
 	public void run(int stepSize)
 	{
 		// Step 1) Loop n times, where n is = to the step
+		// The amount of steps completed
+		steps = 0;
 		while(steps != stepSize)
 		{
 			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)

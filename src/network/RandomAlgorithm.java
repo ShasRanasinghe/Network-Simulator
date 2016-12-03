@@ -29,7 +29,6 @@ public class RandomAlgorithm extends Graph{
 		this.graphNodes = nodes;
 		// The rate at which messages will be created
 		this.creationFrequency = frequency;
-
 		
 		// Create the first message
 		createNewMessage();
@@ -38,6 +37,7 @@ public class RandomAlgorithm extends Graph{
 	public void run(int stepSize)
 	{
 		// Step 1) Loop n times, where n is = to the step
+		steps = 0;
 		while(steps != stepSize)
 		{
 			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
