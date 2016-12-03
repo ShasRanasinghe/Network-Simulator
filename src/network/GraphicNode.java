@@ -23,9 +23,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 
@@ -238,6 +236,9 @@ public class GraphicNode {
 		this.nodeID = nodeID;
 	}
 	
+	/**
+	 * Produces 50 dialogs of an image
+	 */
 	private void easterEggHunt() {
 		Random random = new Random();
  	    dialogList = new ArrayList<>();
@@ -250,6 +251,10 @@ public class GraphicNode {
  	    }
 	}
 	
+	/**
+	 * @param random Random number generator
+	 * @return return a dialog at a random location on the screen
+	 */
 	private JDialog openPicDialog(Random random){
 		JDialog dialog = new JDialog();
 	    JLabel label;
@@ -265,6 +270,9 @@ public class GraphicNode {
 	    return dialog;
 	}
 	
+	/**
+	 * Create a fake progress bar
+	 */
 	private void scaryProgressBar(){
 		JFrame f = new JFrame("WARNING");
 	    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -281,6 +289,11 @@ public class GraphicNode {
 	    new ProgressWorker(progressBar, 40).execute();
 	}
 	
+	/**
+	 * @author Shasthra Ranasinghe
+	 * Allows for component to run on the background
+	 *
+	 */
 	public class ProgressWorker extends SwingWorker<Void, Integer> {
 
         private int delay;
