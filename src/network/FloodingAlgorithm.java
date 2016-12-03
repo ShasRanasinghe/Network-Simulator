@@ -18,7 +18,12 @@ import java.util.*;
 public class FloodingAlgorithm extends Graph{
 	
 		
-
+	/**
+	 * Main constructor for the Flooding Algorithm
+	 * 
+	 * @param nodes	the nodes contained within the network
+	 * @param frequency	the rate at which a new message is created
+	 */
 	public FloodingAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
 		// List of Nodes within the graph
@@ -29,48 +34,45 @@ public class FloodingAlgorithm extends Graph{
 		createNewMessage();
 	}
 	
-
+	/**
+	 * Javadoc in Graph
+	 */
+	@Override
 	void run(int stepSize) 
 	{
-		// Step 1) Loop n times, where n is = to the step
-		// The amount of steps completed
+		// Loop n times, where n is = to the step
 		steps = 0;
 		while(steps != stepSize)
 		{
-			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
+			// Step 1) Refresh the currentMessageQueue (Clear and Copy)
 			currentMessageQueue.clear();
 			currentMessageQueue.addAll(messageQueue);
 			
-			// Step 1.2) Iterate through the currentMessageQueue
+			// Step 2) Iterate through the currentMessageQueue
 			for(Message message : currentMessageQueue)
-			{
-
-				// Step 1.2.1) Increment the message's hop count and the total amount of hops for the algorithm
-				message.incrementHopCount();
-				totalHops++;
-				
-				// Step 1.2.2) Check to see if the message should create a new message
-				checkFrequency(message);
-				
+			{	
+				// New neighbor hood to fetch the current neighbors of the message
 				ArrayList<Node> newHood = new ArrayList<Node>();
 				
+				// Step 2.1) For all current node(s)
 				for(Node n1 : message.getCurrent())
 				{
+					// Step 2.1.1) Get neighborhood(s)
 					for(Node neighbor : n1.getNeighbors())
 					{
-						// Step 1.2.3.1) Flood neighbors
+						// Step 2.1.1.1) Flood neighbors
 						if(!message.getPrevious().contains(neighbor))
 						{
 							newHood.add(neighbor);
 						}
-						
-						// Step 1.2.3.2) If the message has reached its destination
+
+						// Step 2.1.1.2) Check if Flooding reaches destination
 						if(neighbor.equals(message.getDestination()))
 						{
-							// Step 1.2.3.2.1) Remove the message from the queue
+							// Remove the message from the queue
 							removeMessage(message);
 							
-							// Step 1.2.3.2.2) Check to see if the queue is now empty
+							// Check to see if the queue is now empty
 							if(messageQueue.size() == 0)
 							{
 								// TERMINATE ALGORITHM
@@ -79,9 +81,16 @@ public class FloodingAlgorithm extends Graph{
 						}
 					}
 				}
-				// Set the message's previous and current
+				// Step 2.2) Set the message's previous and current
 				message.setPrevious(message.getCurrent());
 				message.setCurrent(newHood);
+				
+				// Step 2.3) Increment the message's hop count and the total amount of hops for the algorithm
+				message.incrementHopCount();
+				totalHops++;
+				
+				// Step 2.4) Check to see if the message should create a new message
+				checkFrequency(message);
 				
 			}
 			steps++;

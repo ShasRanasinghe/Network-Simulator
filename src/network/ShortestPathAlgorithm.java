@@ -25,11 +25,11 @@ public class ShortestPathAlgorithm extends Graph{
 	// The generated shortest path for each message possibility
 	public Map<String, List<Node>> paths= new HashMap<String, List<Node>>();
 	
-
 	/**
+	 * Main constructor for the Shortest Path Algorithm
 	 * 
-	 * @param nodes	
-	 * @param frequency	
+	 * @param nodes	the nodes contained within the network
+	 * @param frequency	the rate at which a new message is created	
 	 */
 	public ShortestPathAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
@@ -56,7 +56,7 @@ public class ShortestPathAlgorithm extends Graph{
 	}
 	
 	/**
-	 * 
+	 * Javadoc in Graph
 	 */
 	@Override
 	void run(int stepSize) 

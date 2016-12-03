@@ -939,17 +939,17 @@ public class View implements Observer{
 	 */
 	private void updateMessageList(ArrayList<Message> totalMessageList,boolean undo)
 	{
-		if(undo){messageList.clear();}
+		/*if(undo){*/messageList.clear();//}
 		for(Message m : totalMessageList)
 		{
-			if(undo){
+			//if(undo){
 				messageList.addElement(m);
-			}else{
+			/*}else{
 				if(!messageList.contains(m))
 				{
 					messageList.addElement(m);
 				}
-			}
+			}*/
 			messageList.update(messageList.indexOf(m));
 		}
 	}

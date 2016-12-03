@@ -68,6 +68,10 @@ public class Message {
 		return name;
 	}
 	
+	/**
+	 * 
+	 * @return the source node of the message
+	 */
 	public Node getSource()
 	{
 		return source;

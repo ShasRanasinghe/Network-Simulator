@@ -21,6 +21,8 @@ public class CustomAlgorithm extends Graph{
 	
 	
 	/**
+	 * Main constructor for the Custom Algorithm
+	 * 
 	 * @param nodes list of nodes in the network
 	 * @param frequency The frequency at which new messages are injected
 	 */
@@ -36,24 +38,24 @@ public class CustomAlgorithm extends Graph{
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see network.Graph#run(int)
+	/**
+	 * Javadoc in Graph
 	 */
-	public void run(int stepSize)
+	@Override
+	void run(int stepSize)
 	{
-		// Step 1) Loop n times, where n is = to the step
-		// The amount of steps completed
+		// Loop n times, where n is = to the step
 		steps = 0;
 		while(steps != stepSize)
 		{
-			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
+			// Step 1) Refresh the currentMessageQueue (Clear and Copy)
 			currentMessageQueue.clear();
 			currentMessageQueue.addAll(messageQueue);
 			
-			// Step 1.2) Iterate through the currentMessageQueue
+			// Step 2) Iterate through the currentMessageQueue
 			for(Message message : currentMessageQueue)
 			{
-				// Step 1.2.1) Choose a random edge of the current message's location, and save the destination of the edge
+				// Step 2.1) Choose a random edge of the current message's location, and save the destination of the edge
 				//											(IN CUSTOM THERE IS ONLY ONE NODE IN THE CURRENT ARRAY LIST)
 				Random random = new Random();
 				Node messageCurrent = message.getCurrent().get(0);
@@ -69,20 +71,20 @@ public class CustomAlgorithm extends Graph{
 					nextNode = messageCurrent.getNeighbor(next);
 				}
 				
-				// Step 1.2.2) Increment the message's hop count and the total amount of hops for the algorithm
+				// Step 2.2) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrementHopCount();
 				totalHops++;
 				
-				// Step 1.2.3) Check to see if the message should create a new message
+				// Step 2.3) Check to see if the message should create a new message
 				checkFrequency(message);
 				
-				// Step 1.2.4) Check if nextNode is the destination of the message
+				// Step 2.4) Check if nextNode is the destination of the message
 				if(message.getDestination().equals(nextNode))
 				{
-					// Step 1.2.4.1) Remove the message from the queue
+					// Step 2.4.1) Remove the message from the queue
 					removeMessage(message);
 					
-					// Step 1.2.4.2) Check to see if the queue is now empty
+					// Step 2.4.2) Check to see if the queue is now empty
 					if(messageQueue.size() == 0)
 					{
 						// TERMINATE ALGORITHM
@@ -90,10 +92,10 @@ public class CustomAlgorithm extends Graph{
 					}
 				}
 				
-				// Step 1.2.5) If nextNode is not the destination of the message
+				// Step 2.5) If nextNode is not the destination of the message
 				else
 				{
-					// Step 1.2.5.1) Forward the message to the nextNode
+					// Step 2.5.1) Forward the message to the nextNode
 					ArrayList<Node> newCurrent = new ArrayList<Node>();
 					message.setPrevious(message.getCurrent());
 					newCurrent.add(nextNode);
