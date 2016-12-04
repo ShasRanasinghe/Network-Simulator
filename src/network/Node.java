@@ -28,12 +28,13 @@ public class Node {
 	private String id; // the "ID" for the vertex
 	private String hoodIDs;
 	
+	
 	/**
-	 * Default constructor
+	 * Default constructor used for marshalling
 	 */
 	public Node()
 	{
-		
+		this.thehood = new ArrayList<Node>();
 	}
 	
 	/**
@@ -113,6 +114,7 @@ public class Node {
 	public void removeNeighbor(Node n)
 	{
 		thehood.remove(n);
+		removeNodeFromHoodIDs(n.getId());
 	}
 	
 	/**
@@ -135,8 +137,8 @@ public class Node {
 		}
 		//otherwise add the edge to the arrayList of neighbors 
 		thehood.add(neighbor);
-		//Append to neighbor string list
-		hoodIDs = hoodIDs + neighbor.getId()+" ";
+		//Generate XML hood IDs string
+		addNodeToHoodIDs(neighbor.getId());
 	}
 	
 	
@@ -153,6 +155,44 @@ public class Node {
 	public ArrayList<Node> getNeighbors()
 	{
 		return thehood;
+	}
+
+	
+	/**
+	 * Remove neighbor node id from hood ids
+	 * Used for XML purposes
+	 */
+	private void removeNodeFromHoodIDs(String newNeighbor){
+		
+		//Remove old neighbor
+		String[] neighborIDs = hoodIDs.split("[\\|\\s]+");
+		for (int i = 0; i < neighborIDs.length; i++){
+		    if (neighborIDs[i].equals(newNeighbor))
+		    {
+		    	neighborIDs[i] = null;
+		    }
+		}
+		
+		//Recreate hoodIDs
+		StringBuilder sb = new StringBuilder();
+		for(String neighborID: neighborIDs){
+			if(neighborID != null){
+				sb.append(neighborID);
+				sb.append("|");
+			}
+		}
+		
+		//Set hoodIDs with removed neighbor
+		hoodIDs = sb.toString();		
+		
+	}
+	
+	/**
+	 * Add neighbor node id to hood ids 
+	 * Used for XML purposes
+	 */
+	private void addNodeToHoodIDs(String newNeighbor){
+		hoodIDs = hoodIDs +newNeighbor+"|";
 	}
 
 	@Override

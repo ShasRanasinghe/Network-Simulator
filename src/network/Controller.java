@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.xml.bind.JAXBException;
 
 /**
  * Controller class that contains a model and view and handles actions
@@ -116,19 +117,20 @@ public class Controller implements ActionListener {
 
 	/**
 	 * Imports an XML file and sets the view and model with the information
+	 * @throws JAXBException 
 	 */
-	private void importXML() {
+	private void importXML() throws JAXBException {
 		File file = view.openFile();
 		if(file == null){
 			view.setStatus("Import Incomplete");
 		}else{
 			resetSimulation();
-			//TODO
-			//view.importXML(simulation.importXML(file));
-			view.setStatus("Import Complete");
+			SaveState ss = simulation.importXML(file);
+			view.importXML(ss);
 			//Update the view
 			view.updateFrequencyMetric(simulation.getFrequency());
-			view.updateAlgorithmMetric(simulation.getAlgorithm().getALGString());	
+			view.updateAlgorithmMetric(simulation.getAlgorithm().getALGString());
+			view.setStatus("Import Complete");
 		}
 	}
 

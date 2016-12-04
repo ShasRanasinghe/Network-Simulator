@@ -827,26 +827,24 @@ public class View implements Observer{
 	/**
 	 * @return the list of graphic edges
 	 */
-	public Object getGraphicEdges() {
+	public List<GraphicEdge> getGraphicEdges() {
 		return gp.getGraphicEdges();
 	}
 
 	/**
 	 * @return list of graphic nodes
 	 */
-	public Object getGraphicNodes() {
+	public List<GraphicNode> getGraphicNodes() {
 		return gp.getGraphicNodes();
 	}
 	
 
 	/**
-	 * @param obj state object
+	 * @param obj SaveState object
 	 */
-	@SuppressWarnings("unchecked")
-	public void importXML(Object obj) {
-		SaveState saveState = (SaveState)obj;
-		//gp.setGraphicNodes((List<GraphicNode>)saveState.getGraphicNodes());
-		//gp.setGraphicEdges((List<GraphicEdge>)saveState.getGraphicEdges());
+	public void importXML(SaveState saveState) {
+		gp.setGraphicNodes((List<GraphicNode>)saveState.getGraphicNodes());
+		gp.setGraphicEdges((List<GraphicEdge>)saveState.getGraphicEdges());
 	}
 
 	/**
@@ -854,8 +852,8 @@ public class View implements Observer{
 	 */
 	public File openFile() {
 		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.addChoosableFileFilter(new SimpleFileFilter(new String[] { "xml" },
-	            "XML (*.xml)"));
+		FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("XML File (*.xml)", "xml");
+		fileChooser.setFileFilter(xmlFilter);
 		fileChooser.setCurrentDirectory(new File("."));
 		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();

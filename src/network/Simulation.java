@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.JAXBException;
 
 
 /**
@@ -624,29 +623,80 @@ public class Simulation extends Observable{
 	}
 
 	/**
-	 * Export the state object into a XML file
+	 * Export the state object which includes nodes, frequency and algorithm into a XML file
 	 * @param file name of the file to export to
 	 * @throws Exception Exception thrown when file export failed
 	 */
-	public void exportXML(File file) throws Exception{
+	public void exportXML(File file) throws JAXBException{
 		
 		SaveState ss = new SaveState();
+		//TODO why after resetting does it initialize to random and 5?
+		ss.setFrequency(frequency);
+		ss.setAlgorithm(algorithm.getALGString());
+		
+		//Add the nodes with locations
 		ss.setSimulationNodes(simulationNodes);
 		
 		//Creates and saves XML
 		XMLDocument.writeSaveState(ss, file);
 	}
 
+
 	/**
-	 * Import a XML file
-	 * @param file name of the file to import
-	 * @return state Object to be used by the view to update the view
-	 * @throws Exception Exception thrown when file import failed
-	 
-	*public Object importXML(File file){
-	*	
-	*	simulationNodes = saveTopology.getSimulationNodes();
-	*	
-	*	return saveTopology;
-	} */
+	 * @param file to read
+	 * @return The
+	 * @throws JAXBException 
+	 */
+	public SaveState importXML(File file) throws JAXBException{
+		
+		//Read the XML file
+		SaveState ss = XMLDocument.readSaveState(file);
+		
+		//New List of simulation nodes -Model
+		simulationNodes = ss.getSimulationNodes();
+		
+		//Add neighbors
+		for(Node n: simulationNodes){
+			if (n!=null){
+				String[] neighborIDs = n.getHoodIDs().split("[\\|\\s]+");
+				//Add all neighbors
+				for(String neighborID :neighborIDs){
+					//Set simulation nodes with the neighbors
+					createLink(n.getId(), neighborID);
+				}
+			}
+		}
+		
+		//Graphical Nodes and Edges
+		GraphicPanel gp = new GraphicPanel();
+		
+		//Add graphical nodes along with their neighbors
+		//Grab list of node IDs
+		ArrayList<String> nodeIDs = new ArrayList<>();
+		for(Node n: ss.getSimulationNodes()){
+			nodeIDs.add(n.getId());
+		}
+		//Create graphical Nodes
+		for(String nodeID: nodeIDs){
+			gp.NewNodeAction(nodeID);
+		}
+		//Create graphical edges
+		for(Node n: ss.getSimulationNodes()){	
+			String[] neighborIDs = n.getHoodIDs().split("[\\|\\s]+");
+			//Add all neighbors
+			for(String neighborID :neighborIDs){
+				gp.ConnectAction(n.getId(), neighborID);
+			}
+		}
+		
+		//Set frequency and algorithm
+		frequency = ss.getFrequency();
+		algorithm = ALGORITHM.getEnum(ss.getAlgorithm());
+		
+		//Set graphical nodes and edges
+		ss.setGraphicNodes(gp.getGraphicNodes());
+		ss.setGraphicEdges(gp.getGraphicEdges());
+		
+		return ss;
+	}
 }
