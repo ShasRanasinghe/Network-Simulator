@@ -458,12 +458,12 @@ public class View implements Observer{
 		
 		JMenu importFile = new JMenu("Import...");
 		importXML = new JMenuItem("XML File");
-		importXML.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,SHORTCUT_MASK));
 		importFile.add(importXML);
 		menu.add(importFile);
 		
 		JMenu exportFile = new JMenu("Export...");
 		exportXML = new JMenuItem("XML File");
+		exportXML.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,SHORTCUT_MASK));
 		exportFile.add(exportXML);
 		menu.add(exportFile);
 		
