@@ -66,21 +66,6 @@ public class GraphicNode {
 	public GraphicNode(String nodeID) {
         this.nodeID = nodeID;
     }
-	
-	/**
-	 * Used when importing from XML
-	 * @param nodeID ID
-	 * @param p Point
-	 */
-	public GraphicNode(String nodeID, Point p) {
-        this.nodeID = nodeID;
-		this.p = p;
-        r = 20;
-        color = new Color(0x1E12FF);
-        setBoundary(b);
-    }
-	
-	
 
     /**
      * Calculate this node's rectangular boundary.
@@ -88,7 +73,6 @@ public class GraphicNode {
     private void setBoundary(Rectangle b) {
         b.setBounds(p.x - r, p.y - r, 2 * r, 2 * r);
     }
-    
     
     /**
      * Returns the image used for Charles' face
