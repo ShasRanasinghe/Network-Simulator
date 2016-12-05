@@ -1,111 +1,103 @@
 package network;
 
-public class SaveState {
+import java.util.ArrayList;
+import java.util.List;
 
-	private State state;
-	private Object graphicNodes;
-	private Object graphicEdges;
-	private int packets;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+@XmlRootElement(name = "Simulation")
+@XmlAccessorType (XmlAccessType.FIELD)
+public class SaveState{
+
+	@XmlElement(name = "node")
+	private ArrayList<Node> simulationNodes;
+	
+	@XmlTransient
+	private List<GraphicNode> graphicNodes;
+	
+	@XmlTransient
+	private List<GraphicEdge> graphicEdges;
+	
+	@XmlElement(name = "frequency")
 	private int frequency;
-	private ALGORITHM algorithm;
-	private Graph graph;
+	
+	@XmlElement(name = "algorithm")
+	private String algorithm;
 	
 	/**
-	 * @return the list of graphic nodes
+	 * @return simulation nodes
 	 */
-	public Object getGraphicNodes() {
+	public ArrayList<Node> getSimulationNodes() {
+		return simulationNodes;
+	}
+
+	/**
+	 * Set simulation nodes
+	 * @param simulationNodes Simulation nodes to be set
+	 */
+	public void setSimulationNodes(ArrayList<Node> simulationNodes) {
+		this.simulationNodes = simulationNodes;
+	}
+
+	/**
+	 * @return The graphic nodes
+	 */
+	public List<GraphicNode> getGraphicNodes() {
 		return graphicNodes;
 	}
 
 	/**
-	 * @param graphicNodes list of graphic nodes
+	 * @param graphicNodes Graphic Nodes to be set
 	 */
-	public void setGraphicNodes(Object graphicNodes) {
+	public void setGraphicNodes(List<GraphicNode> graphicNodes) {
 		this.graphicNodes = graphicNodes;
 	}
 
 	/**
-	 * @return the list of graphic edges
+	 * @return The graphic edges
 	 */
-	public Object getGraphicEdges() {
+	public List<GraphicEdge> getGraphicEdges() {
 		return graphicEdges;
 	}
 
 	/**
-	 * @param graphicEdges list of graphic edges
+	 * @param graphicEdges Graphic edges to be set
 	 */
-	public void setGraphicEdges(Object graphicEdges) {
+	public void setGraphicEdges(List<GraphicEdge> graphicEdges) {
 		this.graphicEdges = graphicEdges;
 	}
 
 	/**
-	 * @return the state
-	 */
-	public State getState() {
-		return state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	/**
-	 * @return the packets
-	 */
-	public int getPackets() {
-		return packets;
-	}
-
-	/**
-	 * @param packets the packets to set
-	 */
-	public void setPackets(int packets) {
-		this.packets = packets;
-	}
-
-	/**
-	 * @return the frequency
+	 * @return Frequency int
 	 */
 	public int getFrequency() {
 		return frequency;
 	}
 
 	/**
-	 * @param frequency the frequency to set
+	 * @param frequency Set the int for frequency
 	 */
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
 
 	/**
-	 * @return the algorithm
+	 * @return The algorithm string
 	 */
-	public ALGORITHM getAlgorithm() {
+	public String getAlgorithm() {
 		return algorithm;
 	}
 
 	/**
-	 * @param algorithm the algorithm to set
+	 * @param algorithm Algorithm string
 	 */
-	public void setAlgorithm(ALGORITHM algorithm) {
+	public void setAlgorithm(String algorithm) {
 		this.algorithm = algorithm;
 	}
-
-	/**
-	 * @return the graph
-	 */
-	public Graph getGraph() {
-		return graph;
-	}
-
-	/**
-	 * @param graph the graph to set
-	 */
-	public void setGraph(Graph graph) {
-		this.graph = graph;
-	}
+	
 	
 }

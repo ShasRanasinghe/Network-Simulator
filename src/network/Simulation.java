@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import javax.xml.bind.JAXBException;
+
 
 /**
  * 
@@ -24,7 +26,7 @@ public class Simulation extends Observable{
 	private int frequency;
 	
 	private ALGORITHM algorithm;
-	private Graph selectedAlgorithm;
+	private Graph graph;
 	
 	// Nodes of the simulation
 	private ArrayList<Node> simulationNodes;
@@ -49,7 +51,7 @@ public class Simulation extends Observable{
 		simulationNodes = new ArrayList<Node>();
 		totalMessageList = new ArrayList<Message>();
 		currentMessageList = new ArrayList<Message>();
-		selectedAlgorithm = null;
+		graph = null;
 		stateStack = new ArrayList<>();
 		useAlgorithm = true;
 	}
@@ -195,7 +197,7 @@ public class Simulation extends Observable{
 	 */
 	public void runAlgorithm(int stepSize)
 	{
-		selectedAlgorithm.run(stepSize);
+		graph.run(stepSize);
 		State state = retrieveState();
 		stateStack.add(state);
 		stackPosition = stateStack.size()-1;
@@ -273,17 +275,17 @@ public class Simulation extends Observable{
 	private State retrieveState()
 	{
 		State state = new State();
-		totalMessageList = selectedAlgorithm.getCompleteMessageList();
+		totalMessageList = graph.getCompleteMessageList();
 		ArrayList<Message> total = new ArrayList<>();
 		total.addAll(totalMessageList);
 		state.setTotalMessageList(total);
 		
-		currentMessageList = selectedAlgorithm.getCurrentMessageList();
+		currentMessageList = graph.getCurrentMessageList();
 		ArrayList<Message> current = new ArrayList<>();
 		current.addAll(currentMessageList);
 		state.setCurrentMessageList(current);
 		
-		setPackets(selectedAlgorithm.getTotalHops());
+		setPackets(graph.getTotalHops());
 		
 		setTotalMessages(totalMessageList.size());
 		state.setTotalMessages(totalMessages);
@@ -383,20 +385,20 @@ public class Simulation extends Observable{
 	{
 		switch(algorithm)
 		{
-			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
-			 				currentMessageList = selectedAlgorithm.messageQueue;
+			case FLOODING:	graph = new FloodingAlgorithm(simulationNodes, frequency);
+			 				currentMessageList = graph.messageQueue;
 			 				break;
 				
-			case SHORTESTPATH:	selectedAlgorithm = new ShortestPathAlgorithm(simulationNodes, frequency);
-			 					currentMessageList = selectedAlgorithm.messageQueue;
+			case SHORTESTPATH:	graph = new ShortestPathAlgorithm(simulationNodes, frequency);
+			 					currentMessageList = graph.messageQueue;
 			 					break;
 				
-			case CUSTOM:	selectedAlgorithm = new CustomAlgorithm(simulationNodes, frequency);
-			 				currentMessageList = selectedAlgorithm.messageQueue;
+			case CUSTOM:	graph = new CustomAlgorithm(simulationNodes, frequency);
+			 				currentMessageList = graph.messageQueue;
 			 				break;
 				
-			default: selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
-					 currentMessageList = selectedAlgorithm.messageQueue;
+			default: graph = new RandomAlgorithm(simulationNodes, frequency);
+					 currentMessageList = graph.messageQueue;
 					 break;
 		}			
 	}
@@ -435,7 +437,7 @@ public class Simulation extends Observable{
 	public boolean checkFullInitialization(){
 		
 		if(frequency != 0 && algorithm != null){
-			if(selectedAlgorithm == null){
+			if(graph == null){
 				setupGraph();
 			}
 			return true;
@@ -463,7 +465,7 @@ public class Simulation extends Observable{
 		if(currentMessageList.size() != 0){
 			return true;
 		}else{
-			selectedAlgorithm = null;
+			graph = null;
 			return false;
 		}
 	}
@@ -497,7 +499,7 @@ public class Simulation extends Observable{
 		totalMessages = 0;
 		totalMessageList.clear();
 		currentMessageList.clear();
-		selectedAlgorithm = null;
+		graph = null;
 		stateStack.clear();
 		useAlgorithm = true;
 	}
@@ -621,40 +623,80 @@ public class Simulation extends Observable{
 	}
 
 	/**
-	 * Export the state object into a XML file
-	 * @param graphicNodes list of graphic nodes
-	 * @param graphicEdges list of graphic edges
+	 * Export the state object which includes nodes, frequency and algorithm into a XML file
 	 * @param file name of the file to export to
 	 * @throws Exception Exception thrown when file export failed
 	 */
-	public void exportXML(Object graphicNodes, Object graphicEdges, File file){
-		SaveState saveState = new SaveState();
-		State state = retrieveState();
-		saveState.setState(state);
-		saveState.setGraphicNodes(graphicNodes);
-		saveState.setGraphicEdges(graphicEdges);
-		saveState.setFrequency(frequency);
-		saveState.setAlgorithm(algorithm);
-		saveState.setPackets(packets);
-		saveState.setGraph(selectedAlgorithm);
+	public void exportXML(File file) throws JAXBException{
 		
-		//TODO Export state into an XML file
+		SaveState ss = new SaveState();
+		//TODO why after resetting does it initialize to random and 5?
+		ss.setFrequency(frequency);
+		ss.setAlgorithm(algorithm.getALGString());
+		
+		//Add the nodes with locations
+		ss.setSimulationNodes(simulationNodes);
+		
+		//Creates and saves XML
+		XMLDocument.writeSaveState(ss, file);
 	}
 
+
 	/**
-	 * Import a XML file
-	 * @param file name of the file to import
-	 * @return state Object to be used by the view to update the view
-	 * @throws Exception Exception thrown when file import failed
+	 * @param file to read
+	 * @return The
+	 * @throws JAXBException 
 	 */
-	public Object importXML(File file){
-		//TODO import state from an XML file
-		SaveState saveState = new SaveState(); //but the object from file in here
-		frequency = saveState.getFrequency();
-		packets = saveState.getPackets();
-		algorithm = saveState.getAlgorithm();
-		selectedAlgorithm = saveState.getGraph();
+	public SaveState importXML(File file) throws JAXBException{
 		
-		return saveState;
+		//Read the XML file
+		SaveState ss = XMLDocument.readSaveState(file);
+		
+		//New List of simulation nodes -Model
+		simulationNodes = ss.getSimulationNodes();
+		
+		//Add neighbors
+		for(Node n: simulationNodes){
+			if (n!=null){
+				String[] neighborIDs = n.getHoodIDs().split("[\\|\\s]+");
+				//Add all neighbors
+				for(String neighborID :neighborIDs){
+					//Set simulation nodes with the neighbors
+					createLink(n.getId(), neighborID);
+				}
+			}
+		}
+		
+		//Graphical Nodes and Edges
+		GraphicPanel gp = new GraphicPanel();
+		
+		//Add graphical nodes along with their neighbors
+		//Grab list of node IDs
+		ArrayList<String> nodeIDs = new ArrayList<>();
+		for(Node n: ss.getSimulationNodes()){
+			nodeIDs.add(n.getId());
+		}
+		//Create graphical Nodes
+		for(String nodeID: nodeIDs){
+			gp.NewNodeAction(nodeID);
+		}
+		//Create graphical edges
+		for(Node n: ss.getSimulationNodes()){	
+			String[] neighborIDs = n.getHoodIDs().split("[\\|\\s]+");
+			//Add all neighbors
+			for(String neighborID :neighborIDs){
+				gp.ConnectAction(n.getId(), neighborID);
+			}
+		}
+		
+		//Set frequency and algorithm
+		frequency = ss.getFrequency();
+		algorithm = ALGORITHM.getEnum(ss.getAlgorithm());
+		
+		//Set graphical nodes and edges
+		ss.setGraphicNodes(gp.getGraphicNodes());
+		ss.setGraphicEdges(gp.getGraphicEdges());
+		
+		return ss;
 	}
 }

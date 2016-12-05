@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.xml.bind.JAXBException;
 
 /**
  * Controller class that contains a model and view and handles actions
@@ -31,14 +32,19 @@ public class Controller implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JComponent component = (JComponent)e.getSource();
-		invokeMethod(component);
+		try {
+			invokeMethod(component);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	/**
 	 * Handles all actions performed
 	 * @param component JComponent
+	 * @throws Exception 
 	 */
-	private void invokeMethod(JComponent component) {
+	private void invokeMethod(JComponent component) throws Exception {
 		METHODS method = (METHODS)component.getClientProperty(Constants.METHOD_SEARCH_STRING);
 		
 		switch(method){
@@ -97,26 +103,33 @@ public class Controller implements ActionListener {
 
 	/**
 	 * Saves the graphic nodes and edges in a state object and exports to an XML file
+	 * @throws Exception 
 	 */
-	private void exportXML() {
+	private void exportXML() throws Exception {
 		File file = view.saveFile();
 		if(file == null){
 			view.setStatus("Export Incomplete");
 		}else{
-			simulation.exportXML(view.getGraphicNodes(), view.getGraphicEdges(), file);
+			simulation.exportXML(file);
 			view.setStatus("Export Complete");
 		}
 	}
 
 	/**
 	 * Imports an XML file and sets the view and model with the information
+	 * @throws JAXBException 
 	 */
-	private void importXML() {
+	private void importXML() throws JAXBException {
 		File file = view.openFile();
 		if(file == null){
 			view.setStatus("Import Incomplete");
 		}else{
-			view.importXML(simulation.importXML(file));
+			resetSimulation();
+			SaveState ss = simulation.importXML(file);
+			view.importXML(ss);
+			//Update the view
+			view.updateFrequencyMetric(simulation.getFrequency());
+			view.updateAlgorithmMetric(simulation.getAlgorithm().getALGString());
 			view.setStatus("Import Complete");
 		}
 	}
