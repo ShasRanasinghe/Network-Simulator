@@ -856,7 +856,7 @@ public class View implements Observer{
 		fileChooser.setFileFilter(xmlFilter);
 		fileChooser.setCurrentDirectory(new File("."));
 		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
+			File file = new File(fileChooser.getSelectedFile().getName() + ".xml");
 			return file;
 		}else{
 			return null;
