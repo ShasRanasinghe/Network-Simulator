@@ -95,6 +95,9 @@ public class Simulation extends Observable{
 		for(int i = 0; i<simulationNodes.size();i++){
 			Node node = simulationNodes.get(i);
 			if(node.toString().equals(nodeID)){
+				for(Node neighbor: node.getNeighbors()){
+					neighbor.removeNeighbor(node);
+				}
 				simulationNodes.remove(i);
 				return true;
 			}
