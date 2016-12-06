@@ -25,11 +25,11 @@ final class Constants {
 			+ "* Flooding\n"
 			+ "* Shortest path\n"
 			+ "* Custom method\n\n"
-			+ "Version: Milestone 3";
+			+ "Version: Milestone 4";
 	
 	protected static final String README = "UserManual.txt";
 	
-	protected static final String UML = "Milestone3_UML.pdf";
+	protected static final String UML = "Milestone4_UML.pdf";
 	
 	protected static final String JAVADOC1 = "doc\\index.html";
 	
