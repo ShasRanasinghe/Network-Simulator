@@ -125,6 +125,7 @@ public class Controller implements ActionListener {
 			view.setStatus("Import Incomplete");
 		}else{
 			resetSimulation();
+			newNetwork();
 			SaveState ss = simulation.importXML(file);
 			view.importXML(ss);
 			//Update the view

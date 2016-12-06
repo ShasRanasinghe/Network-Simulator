@@ -628,9 +628,9 @@ public class Simulation extends Observable{
 	/**
 	 * Export the state object which includes nodes, frequency and algorithm into a XML file
 	 * @param file name of the file to export to
-	 * @throws Exception Exception thrown when file export failed
+	 * @throws JAXBException thrown when file export failed
 	 */
-	public void exportXML(File file) throws JAXBException{
+	public void exportXML(File file) throws JAXBException {
 		
 		SaveState ss = new SaveState();
 		//TODO why after resetting does it initialize to random and 5?
@@ -646,9 +646,9 @@ public class Simulation extends Observable{
 
 
 	/**
-	 * @param file to read
-	 * @return The
-	 * @throws JAXBException 
+	 * @param file to import from
+	 * @return The state of the network being imported
+	 * @throws JAXBException thrown when file export failed
 	 */
 	public SaveState importXML(File file) throws JAXBException{
 		

@@ -281,7 +281,7 @@ public class GraphicPanel extends JComponent {
     
     /**
      * Set the list of Edges for the network when importing
-     * @param nodes list of edges
+     * @param edges list of edges
      */
     public void setGraphicEdges(List<GraphicEdge> edges){
     	graphicEdges = edges;

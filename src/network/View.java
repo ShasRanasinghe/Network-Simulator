@@ -840,7 +840,7 @@ public class View implements Observer{
 	
 
 	/**
-	 * @param obj SaveState object
+	 * @param saveState State to import
 	 */
 	public void importXML(SaveState saveState) {
 		gp.setGraphicNodes((List<GraphicNode>)saveState.getGraphicNodes());
