@@ -130,8 +130,8 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		/**
 		 * 
-		 * @param s
-		 * @param d
+		 * @param s Source node of path
+		 * @param d	Destination node of path
 		 */
 		public Path(Node s, Node d)
 		{
@@ -191,7 +191,7 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		/**
 		 * 
-		 * @return
+		 * @return String id of the Node
 		 */
 		public String getiD()
 		{

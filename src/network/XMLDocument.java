@@ -32,7 +32,7 @@ public class XMLDocument {
 	 * Parse XML- Unmarshaller
 	 * @param file File to be unmarshalled
 	 * @return The SaveState object which included the list of Nodes with neighbors
-	 * @throws JAXBException
+	 * @throws JAXBException Exception
 	 */
 	public static SaveState readSaveState(File file) throws JAXBException 
 	{
