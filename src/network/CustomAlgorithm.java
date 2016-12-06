@@ -19,56 +19,43 @@ import java.util.*;
 
 public class CustomAlgorithm extends Graph{
 	
-	// Total hops that occur during the RANDOM algorithm
-	private int totalCustomHops;
-	// A copy of the messageQueue to remove concurrency issues
-	private ArrayList<Message> currentCustomMessageQueue;
-	
-	// ALL OTHER INSTANCE VARIABLES INHERITED FROM GRAPH!!!!
-	
 	
 	/**
+	 * Main constructor for the Custom Algorithm
+	 * 
 	 * @param nodes list of nodes in the network
 	 * @param frequency The frequency at which new messages are injected
 	 */
 	public CustomAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
-		// INHERITED FROM GRAPH!!!!!
 		// List of Nodes within the graph
 		this.graphNodes = nodes;
-		// List of ALL messages created during the simulation
-		this.completeMessageList = new ArrayList<Message>();
-		// List of messages currently in the network
-		this.messageQueue = new ArrayList<Message>();
 		// The rate at which messages will be created
 		this.creationFrequency = frequency;
 		
-		// INDEPENDENT CUSTOM ALGORITHM VARIABLES
-		this.totalCustomHops = 0;
-		this.currentCustomMessageQueue = new ArrayList<Message>();
-		
-		// Create the first message
+		// Create the first messages
 		createNewMessage();
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see network.Graph#run(int)
+	/**
+	 * Javadoc in Graph
 	 */
-	public void run(int stepSize)
+	@Override
+	void run(int stepSize)
 	{
-		// Step 1) Loop n times, where n is = to the stepSize
-		int n = 0;
-		while(n != stepSize)
+		// Loop n times, where n is = to the step
+		steps = 0;
+		while(steps != stepSize)
 		{
-			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
-			currentCustomMessageQueue.clear();
-			currentCustomMessageQueue.addAll(messageQueue);
+			// Step 1) Refresh the currentMessageQueue (Clear and Copy)
+			currentMessageQueue.clear();
+			currentMessageQueue.addAll(messageQueue);
 			
-			// Step 1.2) Iterate through the currentMessageQueue
-			for(Message message : currentCustomMessageQueue)
+			// Step 2) Iterate through the currentMessageQueue
+			for(Message message : currentMessageQueue)
 			{
-				// Step 1.2.1) Choose a random edge of the current message's location, and save the destination of the edge
+				// Step 2.1) Choose a random edge of the current message's location, and save the destination of the edge
 				//											(IN CUSTOM THERE IS ONLY ONE NODE IN THE CURRENT ARRAY LIST)
 				Random random = new Random();
 				Node messageCurrent = message.getCurrent().get(0);
@@ -84,20 +71,20 @@ public class CustomAlgorithm extends Graph{
 					nextNode = messageCurrent.getNeighbor(next);
 				}
 				
-				// Step 1.2.2) Increment the message's hop count and the total amount of hops for the algorithm
+				// Step 2.2) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrementHopCount();
-				totalCustomHops++;
+				totalHops++;
 				
-				// Step 1.2.3) Check to see if the message should create a new message
+				// Step 2.3) Check to see if the message should create a new message
 				checkFrequency(message);
 				
-				// Step 1.2.4) Check if nextNode is the destination of the message
+				// Step 2.4) Check if nextNode is the destination of the message
 				if(message.getDestination().equals(nextNode))
 				{
-					// Step 1.2.4.1) Remove the message from the queue
+					// Step 2.4.1) Remove the message from the queue
 					removeMessage(message);
 					
-					// Step 1.2.4.2) Check to see if the queue is now empty
+					// Step 2.4.2) Check to see if the queue is now empty
 					if(messageQueue.size() == 0)
 					{
 						// TERMINATE ALGORITHM
@@ -105,34 +92,18 @@ public class CustomAlgorithm extends Graph{
 					}
 				}
 				
-				// Step 1.2.5) If nextNode is not the destination of the message
+				// Step 2.5) If nextNode is not the destination of the message
 				else
 				{
-					// Step 1.2.5.1) Forward the message to the nextNode
+					// Step 2.5.1) Forward the message to the nextNode
 					ArrayList<Node> newCurrent = new ArrayList<Node>();
 					message.setPrevious(message.getCurrent());
 					newCurrent.add(nextNode);
 					message.setCurrent(newCurrent);
 				}
 			}
-			n++;
+			steps++;
 		}
-	}
-	
-	/**
-	 * @return the total amount of hops it took the custom algorithm to terminate
-	 */
-	public int getTotalHops()
-	{
-		return totalCustomHops;
-	}
-	
-	/* (non-Javadoc)
-	 * @see network.Graph#getNumberOfCurrentMessages()
-	 */
-	public int getNumberOfCurrentMessages()
-	{
-		return messageQueue.size();
 	}
 
 }

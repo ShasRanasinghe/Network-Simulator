@@ -2,9 +2,11 @@ package network;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.xml.bind.JAXBException;
 
 /**
  * Controller class that contains a model and view and handles actions
@@ -30,14 +32,19 @@ public class Controller implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JComponent component = (JComponent)e.getSource();
-		invokeMethod(component);
+		try {
+			invokeMethod(component);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	/**
 	 * Handles all actions performed
 	 * @param component JComponent
+	 * @throws Exception 
 	 */
-	private void invokeMethod(JComponent component) {
+	private void invokeMethod(JComponent component) throws Exception {
 		METHODS method = (METHODS)component.getClientProperty(Constants.METHOD_SEARCH_STRING);
 		
 		switch(method){
@@ -83,8 +90,48 @@ public class Controller implements ActionListener {
 		case RESET_SIMULATION:
 			resetSimulation();
 			break;
+		case IMPORT_XML:
+			importXML();
+			break;
+		case EXPORT_XML:
+			exportXML();
+			break;
 		default:
 			break;
+		}
+	}
+
+	/**
+	 * Saves the graphic nodes and edges in a state object and exports to an XML file
+	 * @throws Exception 
+	 */
+	private void exportXML() throws Exception {
+		File file = view.saveFile();
+		if(file == null){
+			view.setStatus("Export Incomplete");
+		}else{
+			simulation.exportXML(file);
+			view.setStatus("Export Complete");
+		}
+	}
+
+	/**
+	 * Imports an XML file and sets the view and model with the information
+	 * @throws JAXBException 
+	 */
+	private void importXML() throws JAXBException {
+		File file = view.openFile();
+		if(file == null){
+			view.setStatus("Import Incomplete");
+		}else{
+			resetSimulation();
+			newNetwork();
+			SaveState ss = simulation.importXML(file);
+			view.importXML(ss);
+			//Update the view
+			view.updateFrequencyMetric(simulation.getFrequency());
+			view.updateAlgorithmMetric(simulation.getAlgorithm().getALGString());
+			view.setStatus("Import Complete");
 		}
 	}
 
@@ -170,7 +217,7 @@ public class Controller implements ActionListener {
 		if (simulation.networkExists()) {
 			if (simulation.checkFullInitialization()) {
 				view.prepairForSimulation(simulation.getStringArrayNodes());
-				simulation.runAlgorithm(1);
+				simulation.stepForward(1);
 				if (!simulation.isRunning()) {
 					view.simulationComplete();
 				}
@@ -245,7 +292,6 @@ public class Controller implements ActionListener {
 					view.errorMessageDialog(Constants.NODE_ALREADY_EXISTS);
 				}
 			}
-			
 		}
 	}
 

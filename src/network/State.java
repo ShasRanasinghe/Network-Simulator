@@ -14,7 +14,7 @@ public class State {
 	private ArrayList<Message> totalMessageList;
 	private ArrayList<Message> currentMessageList;
 	private boolean undo = false;
-
+	
 	/**
 	 * @param totalMessageList Total messages currently in network
 	 */
@@ -85,5 +85,4 @@ public class State {
 	public boolean isUndo() {
 		return undo;
 	}
-
 }

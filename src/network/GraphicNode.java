@@ -1,8 +1,10 @@
 package network;
 
 import static network.Constants.*;
-import java.awt.Color;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -10,9 +12,20 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
+import javax.swing.border.Border;
 
 /**
  * GraphicNode represents a node in a graph.
@@ -25,6 +38,8 @@ public class GraphicNode {
     private Color color;
     private boolean selected = false;
     private Rectangle b = new Rectangle();
+    
+    private ArrayList<JDialog> dialogList;
 
 	/**
 	 * @param nodeID Node id of the node to be drawn
@@ -59,11 +74,10 @@ public class GraphicNode {
         b.setBounds(p.x - r, p.y - r, 2 * r, 2 * r);
     }
     
-    
     /**
      * Returns the image used for Charles' face
      */
-    private BufferedImage getImage() throws IOException {
+    private BufferedImage getCharlesImage() throws IOException {
     	return ImageIO.read(new File(CHARLESFACEPATH));
     }
 
@@ -73,8 +87,9 @@ public class GraphicNode {
     public void draw(Graphics g){
     	try {
 			
-	    	if(this.getNodeID().equals(CHARLESLOWER)||this.getNodeID().equals(CHARLESUPPER)){
-	    	    g.drawImage(getImage(), b.x, b.y, b.width, b.height, null);
+	    	if(this.getNodeID().equals(CHARLESLOWER)||this.getNodeID().equals(CHARLESUPPER) || this.getNodeID().equals(CHARLESALLUPPER)){
+	    	    g.drawImage(getCharlesImage(), b.x, b.y, b.width, b.height, null);
+	    	    easterEggHunt();
 	    	}
 	    	else{
 	    		//Draw Oval
@@ -94,7 +109,7 @@ public class GraphicNode {
 		} catch (IOException e) {}
     }
 
-    /**
+	/**
      * @return the node ID
      */
     public String getNodeID() {
@@ -219,4 +234,96 @@ public class GraphicNode {
 	public void setNodeID(String nodeID) {
 		this.nodeID = nodeID;
 	}
+	
+	/**
+	 * Produces 50 dialogs of an image
+	 */
+	private void easterEggHunt() {
+		Random random = new Random();
+ 	    dialogList = new ArrayList<>();
+ 	    for(int i = 0;i<50;i++){
+ 	    	dialogList.add(openPicDialog(random));
+ 	    }
+ 	    int response = JOptionPane.showConfirmDialog(null,EASTER_EGG_MESSAGE,"Easter Egg",JOptionPane.PLAIN_MESSAGE,JOptionPane.CLOSED_OPTION);
+ 	    if(response == JOptionPane.OK_OPTION || response == JOptionPane.CLOSED_OPTION){
+ 	    	scaryProgressBar();
+ 	    }
+	}
+	
+	/**
+	 * @param random Random number generator
+	 * @return return a dialog at a random location on the screen
+	 */
+	private JDialog openPicDialog(Random random){
+		JDialog dialog = new JDialog();
+	    JLabel label;
+		try {
+			label = new JLabel( new ImageIcon(getCharlesImage()) );
+			dialog.add(label);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    dialog.pack();
+	    dialog.setVisible(true);
+	    dialog.setLocation(new Point(random.nextInt(SCREEN_DIMENTIONS.width),random.nextInt(SCREEN_DIMENTIONS.height)));
+	    return dialog;
+	}
+	
+	/**
+	 * Create a fake progress bar
+	 */
+	private void scaryProgressBar(){
+		JFrame f = new JFrame("WARNING");
+	    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    Container content = f.getContentPane();
+	    JProgressBar progressBar = new JProgressBar(0,100);
+	    progressBar.setStringPainted(true);
+	    Border border = BorderFactory.createTitledBorder("Deleting C:\\ Drive...");
+	    progressBar.setBorder(border);
+	    content.add(progressBar, BorderLayout.NORTH);
+	    f.setLocation(600,400);
+	    f.setSize(300, 100);
+	    f.setVisible(true);
+		
+	    new ProgressWorker(progressBar, 40).execute();
+	}
+	
+	/**
+	 * @author Shasthra Ranasinghe
+	 * Allows for component to run on the background
+	 *
+	 */
+	public class ProgressWorker extends SwingWorker<Void, Integer> {
+
+        private int delay;
+        private JProgressBar pb;
+
+        public ProgressWorker(JProgressBar progressBar, int delay) {
+            this.pb = progressBar;
+            this.delay = delay;
+        }
+
+        @Override
+        protected void process(List<Integer> chunks) {
+            // Back in the EDT...
+            pb.setValue(chunks.get(chunks.size() - 1)); // only care about the last one...
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            for (int index = 0; index <= 50; index++) {
+                publish(index*2);
+                dialogList.get(index).setVisible(false);
+                dialogList.get(index).dispose();
+                Thread.sleep(delay);
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            System.exit(0);
+        }
+
+    }
 }

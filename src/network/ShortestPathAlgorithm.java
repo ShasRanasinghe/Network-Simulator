@@ -22,35 +22,21 @@ import java.util.*;
 
 public class ShortestPathAlgorithm extends Graph{
 	
-	// Total hops that occur during the SHORTESTPATH algorithm
-	private int totalShortestPathHops;
-	// A copy of the messageQueue to remove concurrency issues
-	private ArrayList<Message> currentShortestPathMessageQueue;
+	// The generated shortest path for each message possibility
+	public Map<String, List<Node>> paths= new HashMap<String, List<Node>>();
 	
-	public Map<String, List<Node>> paths;
-	
-
 	/**
+	 * Main constructor for the Shortest Path Algorithm
 	 * 
-	 * @param nodes
-	 * @param frequency
+	 * @param nodes	the nodes contained within the network
+	 * @param frequency	the rate at which a new message is created	
 	 */
 	public ShortestPathAlgorithm(ArrayList<Node> nodes, int frequency)
 	{
-		// INHERITED FROM GRAPH!!!!!
 		// List of Nodes within the graph
 		this.graphNodes = nodes;
-		// List of ALL messages created during the simulation
-		this.completeMessageList = new ArrayList<Message>();
-		// List of messages currently in the network
-		this.messageQueue = new ArrayList<Message>();
 		// The rate at which messages will be created
 		this.creationFrequency = frequency;
-		
-		totalShortestPathHops = 0;
-		currentShortestPathMessageQueue = new ArrayList<Message>();
-		
-		paths = new HashMap<String, List<Node>>();
 		
 		// Generate ALL shortest paths
 		for(Node n1 : graphNodes)
@@ -65,25 +51,26 @@ public class ShortestPathAlgorithm extends Graph{
 			}
 		}
 		
+		// Create the first message
 		createNewMessage();
 	}
 	
 	/**
-	 * 
+	 * Javadoc in Graph
 	 */
 	@Override
 	void run(int stepSize) 
 	{
-		// Step 1) Loop n times, where n is = to the stepSize
-		int n = 0;
-		while(n != stepSize)
+		// Step 1) Loop n times, where n is = to the step
+		steps = 0;
+		while(steps != stepSize)
 		{
 			// Step 1.1) Refresh the currentMessageQueue (Clear and Copy)
-			currentShortestPathMessageQueue.clear();
-			currentShortestPathMessageQueue.addAll(messageQueue);
+			currentMessageQueue.clear();
+			currentMessageQueue.addAll(messageQueue);
 			
 			// Step 1.2) Iterate through the currentMessageQueue
-			for(Message message : currentShortestPathMessageQueue)
+			for(Message message : currentMessageQueue)
 			{
 				String id = "" + message.getSource() + message.getDestination();
 				List<Node> path = paths.get(id);
@@ -110,35 +97,16 @@ public class ShortestPathAlgorithm extends Graph{
 				// Otherwise, Step
 				// Step 1.2.) Increment the message's hop count and the total amount of hops for the algorithm
 				message.incrementHopCount();
-				totalShortestPathHops++;
+				totalHops++;
 				
 				// Step 1.2.) Check to see if the message should create a new message
 				checkFrequency(message);
 			}
-			n++;
+			steps++;
 		}
 		// END OF ALGORITHM
 	}
 
-
-/**
- * 
- */
-	@Override
-	int getTotalHops() 
-	{
-		return totalShortestPathHops;
-	}
-
-
-/**
- * 
- */
-	@Override
-	int getNumberOfCurrentMessages() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
@@ -162,8 +130,8 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		/**
 		 * 
-		 * @param s
-		 * @param d
+		 * @param s Source node of path
+		 * @param d	Destination node of path
 		 */
 		public Path(Node s, Node d)
 		{
@@ -223,7 +191,7 @@ public class ShortestPathAlgorithm extends Graph{
 		
 		/**
 		 * 
-		 * @return
+		 * @return String id of the Node
 		 */
 		public String getiD()
 		{

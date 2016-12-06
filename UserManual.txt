@@ -1,7 +1,7 @@
 Initialize Network:
 _______________________
 
-When 'Milestone3.jar' is executed the user will be prompted to use to the default network (Specified in the Project Requirements)
+When 'Milestone4.jar' is executed the user will be prompted to use to the default network (Specified in the Project Requirements)
 
         1)If the user selects 'Default', the network will be initialized with following default settings:
 	
@@ -96,7 +96,11 @@ After the Network GUI has been initialized, the user can use the following funct
                         _____________			
                                         Displayed as JTable in a pop up. Can be seen at any time during run time.
                                         
-                                        Displays source, destination, number of messages with same source/destination and average.                                        
+                                        Displays source, destination, number of messages with same source/destination and average.  
+                                        
+                        'Step Back' - Steps the network to its previously saved state, allowing the user to traverse forward and                                  
+						___________	
+										backward through the execution of the network.
 							
 							
                         'Run' - Runs the currently configured network simulation, and displays each step of

@@ -14,12 +14,14 @@ import java.util.*;
 public class Message {
 	
 	private Node source; // source node
-	private ArrayList<Node> current; // current nodes of message
+	private ArrayList<ArrayList<Node>> listOfCurrent; //list of the lists containing the current node of the message
+	//private ArrayList<Node> current; // current nodes of message
 	private ArrayList<Node> previous; // previous node of message
 	private Node destination; // destination node
 	private String name;	// string id of the message
 	private boolean running;	// is the message still in the network?
 	private int hopCount; // hop count for this message
+	private int currentListPosition = 0;
 
 	/**
 	 * @param source node
@@ -33,8 +35,10 @@ public class Message {
 		running = true;
 		name = "";
 		hopCount = 0;
-		current = new ArrayList<Node>();
+		listOfCurrent = new ArrayList<>();
+		ArrayList<Node> current = new ArrayList<Node>();
 		current.add(source);
+		listOfCurrent.add(current);
 		previous = new ArrayList<Node>();		
 	}
 	
@@ -47,7 +51,7 @@ public class Message {
 		source = message.getSource();
 		destination = message.getDestination();
 		hopCount = message.getHopCount();
-		current = message.getCurrent();
+		listOfCurrent = message.getListOfCurrent();
 		running = message.isRunning();
 		name = message.toString();
 		previous = new ArrayList<Node>();
@@ -64,6 +68,10 @@ public class Message {
 		return name;
 	}
 	
+	/**
+	 * 
+	 * @return the source node of the message
+	 */
 	public Node getSource()
 	{
 		return source;
@@ -74,7 +82,7 @@ public class Message {
 	 */
 	public ArrayList<Node> getCurrent() 
 	{
-		return current;
+		return listOfCurrent.get(currentListPosition);
 	}
 	
 	/**
@@ -123,7 +131,8 @@ public class Message {
 	 */
 	public void setCurrent(ArrayList<Node> c)
 	{
-		current = c;
+		listOfCurrent.add(c);
+		currentListPosition++;
 	}
 	
 	/**
@@ -139,6 +148,36 @@ public class Message {
 	public void setHopCount(int hopCount) 
 	{
 		this.hopCount = hopCount;
+	}
+	
+	/**
+	 * Used to get the previous positions of the message
+	 */
+	public void stepBack(){
+		if(!running){
+			running = true;
+		}else{
+			currentListPosition--;
+			hopCount--;
+		}
+	}
+	
+	/**
+	 * Used to move the message forward once stepped back
+	 * @param firstTime true if its the first time the message is being seen
+	 * @return returns false, if we have reached the end
+	 */
+	public boolean stepForward(boolean firstTime){
+		if(currentListPosition == listOfCurrent.size()-1){
+			if(listOfCurrent.get(listOfCurrent.size()-1).get(0).equals(destination)){
+				running = false;
+			}
+			return false;
+		}
+		if(!firstTime){
+			currentListPosition++;
+		}
+		return true;
 	}
 	
 	/**
@@ -232,10 +271,16 @@ public class Message {
 		if(!running){
 			returnString += destination;
 		}else{
-			returnString += current;
+			for(Node node : listOfCurrent.get(currentListPosition)){
+				returnString += node.toString() + " ";
+			}
 		}
 		
 		return returnString;
+	}
+
+	public ArrayList<ArrayList<Node>> getListOfCurrent() {
+		return listOfCurrent;
 	}
 	
 }

@@ -1,8 +1,11 @@
 package network;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
-import java.util.Stack;
+
+import javax.xml.bind.JAXBException;
 
 
 /**
@@ -23,7 +26,7 @@ public class Simulation extends Observable{
 	private int frequency;
 	
 	private ALGORITHM algorithm;
-	private Graph selectedAlgorithm;
+	private Graph graph;
 	
 	// Nodes of the simulation
 	private ArrayList<Node> simulationNodes;
@@ -32,7 +35,9 @@ public class Simulation extends Observable{
 	public ArrayList<Message> totalMessageList;
 	public ArrayList<Message> currentMessageList;
 	
-	private Stack<State> stateStack;
+	private List<State> stateStack;
+	private int stackPosition;
+	private boolean useAlgorithm;
 	
 	/**
 	 * Constructor initializes the simulation
@@ -46,8 +51,9 @@ public class Simulation extends Observable{
 		simulationNodes = new ArrayList<Node>();
 		totalMessageList = new ArrayList<Message>();
 		currentMessageList = new ArrayList<Message>();
-		selectedAlgorithm = null;
-		stateStack = new Stack<>();
+		graph = null;
+		stateStack = new ArrayList<>();
+		useAlgorithm = true;
 	}
 	
 	/**
@@ -89,6 +95,9 @@ public class Simulation extends Observable{
 		for(int i = 0; i<simulationNodes.size();i++){
 			Node node = simulationNodes.get(i);
 			if(node.toString().equals(nodeID)){
+				for(Node neighbor: node.getNeighbors()){
+					neighbor.removeNeighbor(node);
+				}
 				simulationNodes.remove(i);
 				return true;
 			}
@@ -191,45 +200,95 @@ public class Simulation extends Observable{
 	 */
 	public void runAlgorithm(int stepSize)
 	{
-			selectedAlgorithm.run(stepSize);
-			State state = retrieveState();
-			setChanged();
-			notifyObservers(state);
+		graph.run(stepSize);
+		State state = retrieveState();
+		stateStack.add(state);
+		stackPosition = stateStack.size()-1;
+		setChanged();
+		notifyObservers(state);
 	}
 	
+	public void stepForward(int stepSize){
+		if(useAlgorithm){
+			runAlgorithm(stepSize);
+		}else{
+			stackPosition ++;
+			State state = stateStack.get(stackPosition);
+			if(!(stateStack.size() == 1 || stackPosition == 0)){
+				stepForwardMessages(state.getCurrentMessageList(), stateStack.get(stackPosition-1).getCurrentMessageList());
+			}
+			state.setUndo(false);
+			setChanged();
+			notifyObservers(state);
+
+			if(stackPosition == stateStack.size()-1){
+				useAlgorithm = true;
+			}
+		}
+	}
 
 	/**
 	 * Retrieves the last state and updates the view with it
 	 */
 	public void stepBack() {
-		if(stateStack.size() > 1){
-			stateStack.pop();
-			State state = stateStack.pop();
+		if(stateStack.size() > 1 && stackPosition != 0){
+			stackPosition --;
+			State state = stateStack.get(stackPosition);
+			stepBackMessages(state.getCurrentMessageList());
+			useAlgorithm = false;
 			state.setUndo(true);
 			setChanged();
 			notifyObservers(state);
-			stateStack.push(state);
+		}else{
+			stackPosition--;
+			useAlgorithm = false;
 		}
 	}
 	
 	
+	/**
+	 * Steps all the messages in the current list back
+	 * @param currentMessageList list of current messages in the network
+	 */
+	private void stepBackMessages(ArrayList<Message> currentMessageList) {
+		for(Message message : currentMessageList){
+			message.stepBack();
+		}
+	}
+	
+	/**
+	 * Steps all the messages in the current list forward
+	 * @param currentMessageList list of current messages in the network
+	 * @param prevCurrentMessageList previous list of current messages to compare
+	 */
+	private void stepForwardMessages(ArrayList<Message> currentMessageList, ArrayList<Message> prevCurrentMessageList) {	
+		for(Message message : prevCurrentMessageList){
+			if(!currentMessageList.contains(message)){
+				message.setRunning(false);
+			}
+		}
+		for(Message message : currentMessageList){
+			message.stepForward(!prevCurrentMessageList.contains(message));
+		}
+	}
+
 	/**
 	 * Retrieves data from the graph to be used in the simulation
 	 */
 	private State retrieveState()
 	{
 		State state = new State();
-		totalMessageList = selectedAlgorithm.getCompleteMessageList();
+		totalMessageList = graph.getCompleteMessageList();
 		ArrayList<Message> total = new ArrayList<>();
 		total.addAll(totalMessageList);
 		state.setTotalMessageList(total);
 		
-		currentMessageList = selectedAlgorithm.getCurrentMessageList();
+		currentMessageList = graph.getCurrentMessageList();
 		ArrayList<Message> current = new ArrayList<>();
 		current.addAll(currentMessageList);
 		state.setCurrentMessageList(current);
 		
-		setPackets(selectedAlgorithm.getTotalHops());
+		setPackets(graph.getTotalHops());
 		
 		setTotalMessages(totalMessageList.size());
 		state.setTotalMessages(totalMessages);
@@ -238,7 +297,6 @@ public class Simulation extends Observable{
 		String[] averageHopsList = calculateAverageHops();
 		state.setAverageHopsList(averageHopsList);
 		
-		stateStack.push(state);
 		return state;
 	}
 	
@@ -330,20 +388,20 @@ public class Simulation extends Observable{
 	{
 		switch(algorithm)
 		{
-			case FLOODING:	selectedAlgorithm = new FloodingAlgorithm(simulationNodes, frequency);
-			 				currentMessageList = selectedAlgorithm.messageQueue;
+			case FLOODING:	graph = new FloodingAlgorithm(simulationNodes, frequency);
+			 				currentMessageList = graph.messageQueue;
 			 				break;
 				
-			case SHORTESTPATH:	selectedAlgorithm = new ShortestPathAlgorithm(simulationNodes, frequency);
-			 					currentMessageList = selectedAlgorithm.messageQueue;
+			case SHORTESTPATH:	graph = new ShortestPathAlgorithm(simulationNodes, frequency);
+			 					currentMessageList = graph.messageQueue;
 			 					break;
 				
-			case CUSTOM:	selectedAlgorithm = new CustomAlgorithm(simulationNodes, frequency);
-			 				currentMessageList = selectedAlgorithm.messageQueue;
+			case CUSTOM:	graph = new CustomAlgorithm(simulationNodes, frequency);
+			 				currentMessageList = graph.messageQueue;
 			 				break;
 				
-			default: selectedAlgorithm = new RandomAlgorithm(simulationNodes, frequency);
-					 currentMessageList = selectedAlgorithm.messageQueue;
+			default: graph = new RandomAlgorithm(simulationNodes, frequency);
+					 currentMessageList = graph.messageQueue;
 					 break;
 		}			
 	}
@@ -382,7 +440,7 @@ public class Simulation extends Observable{
 	public boolean checkFullInitialization(){
 		
 		if(frequency != 0 && algorithm != null){
-			if(selectedAlgorithm == null){
+			if(graph == null){
 				setupGraph();
 			}
 			return true;
@@ -410,7 +468,7 @@ public class Simulation extends Observable{
 		if(currentMessageList.size() != 0){
 			return true;
 		}else{
-			selectedAlgorithm = null;
+			graph = null;
 			return false;
 		}
 	}
@@ -439,15 +497,14 @@ public class Simulation extends Observable{
 	 * Resets the simulation
 	 */
 	public void resetSimulation() {
-		frequency = 0;
-		algorithm = null;
 		averageHops = new ArrayList<>();
 		packets = 0;
 		totalMessages = 0;
 		totalMessageList.clear();
 		currentMessageList.clear();
-		selectedAlgorithm = null;
+		graph = null;
 		stateStack.clear();
+		useAlgorithm = true;
 	}
 	
 	/**
@@ -568,4 +625,81 @@ public class Simulation extends Observable{
 		return false;
 	}
 
+	/**
+	 * Export the state object which includes nodes, frequency and algorithm into a XML file
+	 * @param file name of the file to export to
+	 * @throws JAXBException thrown when file export failed
+	 */
+	public void exportXML(File file) throws JAXBException {
+		
+		SaveState ss = new SaveState();
+		//TODO why after resetting does it initialize to random and 5?
+		ss.setFrequency(frequency);
+		ss.setAlgorithm(algorithm.getALGString());
+		
+		//Add the nodes with locations
+		ss.setSimulationNodes(simulationNodes);
+		
+		//Creates and saves XML
+		XMLDocument.writeSaveState(ss, file);
+	}
+
+
+	/**
+	 * @param file to import from
+	 * @return The state of the network being imported
+	 * @throws JAXBException thrown when file export failed
+	 */
+	public SaveState importXML(File file) throws JAXBException{
+		
+		//Read the XML file
+		SaveState ss = XMLDocument.readSaveState(file);
+		
+		//New List of simulation nodes -Model
+		simulationNodes = ss.getSimulationNodes();
+		
+		//Add neighbors
+		for(Node n: simulationNodes){
+			if (n!=null){
+				String[] neighborIDs = n.getHoodIDs().split("[\\|\\s]+");
+				//Add all neighbors
+				for(String neighborID :neighborIDs){
+					//Set simulation nodes with the neighbors
+					createLink(n.getId(), neighborID);
+				}
+			}
+		}
+		
+		//Graphical Nodes and Edges
+		GraphicPanel gp = new GraphicPanel();
+		
+		//Add graphical nodes along with their neighbors
+		//Grab list of node IDs
+		ArrayList<String> nodeIDs = new ArrayList<>();
+		for(Node n: ss.getSimulationNodes()){
+			nodeIDs.add(n.getId());
+		}
+		//Create graphical Nodes
+		for(String nodeID: nodeIDs){
+			gp.NewNodeAction(nodeID);
+		}
+		//Create graphical edges
+		for(Node n: ss.getSimulationNodes()){	
+			String[] neighborIDs = n.getHoodIDs().split("[\\|\\s]+");
+			//Add all neighbors
+			for(String neighborID :neighborIDs){
+				gp.ConnectAction(n.getId(), neighborID);
+			}
+		}
+		
+		//Set frequency and algorithm
+		frequency = ss.getFrequency();
+		algorithm = ALGORITHM.getEnum(ss.getAlgorithm());
+		
+		//Set graphical nodes and edges
+		ss.setGraphicNodes(gp.getGraphicNodes());
+		ss.setGraphicEdges(gp.getGraphicEdges());
+		
+		return ss;
+	}
 }
